@@ -6,7 +6,6 @@ exports.up = function(knex, Promise) {
       .createTable("Client", tbl => {
 
         tbl.increments()
-        tbl.integer().notNullable().unsigned()
         tbl.boolean("isActive").defaultTo(false)
         tbl.integer('WorkFlow_id').notNullable().unsigned()
       })
