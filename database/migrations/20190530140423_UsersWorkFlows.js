@@ -1,25 +1,25 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable("UsersWorkFlows", tbl => {
+  return knex.schema.createTable("users_workflows", tbl => {
     tbl
-      .integer("User_id")
+      .integer("user_id")
       .unsigned()
       .notNullable()
       .references("id")
-      .inTable("Users")
+      .inTable("users")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
 
     tbl
-      .integer("Workflow_id")
+      .integer("workflow_id")
       .unsigned()
       .notNullable()
       .references("id")
-      .inTable("WorkFlows")
+      .inTable("workFlows")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists("UsersWorkFlows");
+  return knex.schema.dropTableIfExists("users_workflows");
 };

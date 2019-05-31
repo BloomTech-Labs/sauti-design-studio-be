@@ -1,38 +1,38 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable("WorkFlows", tbl => {
+  return knex.schema.createTable("workflows", tbl => {
     tbl.increments();
     tbl
-      .integer("User_id")
+      .integer("user_id")
       .unsigned()
       .notNullable();
 
     tbl
-      .string("Name", 128)
+      .string("name", 128)
       .notNullable()
       .unique();
 
     tbl
-      .string("AreaCode", 128)
+      .string("area_code", 128)
       .notNullable()
       .unique();
 
-    tbl.string("Category").notNullable();
+    tbl.string("category").notNullable();
 
     tbl
-      .integer("Client_id")
+      .integer("client_id")
       .unsigned()
       .notNullable()
       .references("id")
-      .inTable("Client")
+      .inTable("client")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
 
     tbl
-      .integer("Questions")
+      .integer("questions")
       .unsigned()
       .notNullable()
       .references("id")
-      .inTable("Questions")
+      .inTable("questions")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
   });
@@ -41,5 +41,5 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
 
     return knex.schema
-    .dropTableIfExists("WorkFlows")
+    .dropTableIfExists("workflows")
 };
