@@ -1,5 +1,6 @@
 require("dotenv").config();
 const server = require("./api/server");
+const passport = require("./config/passport-setup");
 
 const port = process.env.PORT || 5000;
 
