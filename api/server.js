@@ -13,7 +13,6 @@ const keys = require("../config/keys");
 serverConfig(server);
 
 //routes
-server.set("view engine", "ejs");
 
 server.use(
   cookieSession({
@@ -36,15 +35,17 @@ server.use("/auth", AuthRouter);
 server.use("/users", UsersRouter);
 
 server.get("/", (req, res) => {
-  res.send(`We're live!`);
+  res.send(`We're live! Please Login`);
 });
 
 server.get("/home", (req, res) => {
-  res.render("home");
+  res.status(200).json({ message: "Success" });
 });
 
-server.get("/loggedIn", (req, res) => {
-  res.send("You are now signed In!!");
+// Logout route
+server.get("/logout", (req, res) => {
+  req.logOut();
+  res.send("You successfuly logged out");
 });
 
 module.exports = server;

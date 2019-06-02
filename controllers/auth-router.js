@@ -13,7 +13,7 @@ router.get(
 
 // google login redirect
 router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-  res.status(200).redirect("/loggedIn");
+  res.status(200).redirect("/home");
 });
 
 // register manually
