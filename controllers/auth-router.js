@@ -2,7 +2,7 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-const secrets = require("../config/keys");
+const jwtSecrets = require("../config/keys");
 const Users = require("../models/User-model");
 
 // Login with google
@@ -36,8 +36,10 @@ router.post("/register", async (req, res) => {
     try {
       const hash = bcrypt.hashSync(user.password, 10);
       user.password = hash;
-      await Users.add(user);
-      res.status(201).json({ message: "Success" });
+
+      const newUser = await Users.add(user);
+      const token = await generateToken(newUser);
+      res.status(201).json({ message: "Success", token });
     } catch (error) {
       res.status(500).json(error);
     }
@@ -51,15 +53,17 @@ router.post("/login", async (req, res) => {
     if (
       email === "" ||
       email === null ||
+      !email ||
       password === "" ||
-      password === null
+      password === null ||
+      !password
     ) {
       res
         .status(401)
         .json({ message: "Please make sure login credentials are accurate" });
     } else {
-      const user = await Users.findByEmail(email).first();
-      const token = generateToken(user);
+      const newUser = await Users.getByEmail(email);
+      const token = generateToken(newUser);
       res.status(200).json({ message: "Success", token });
     }
   } catch (error) {
@@ -70,13 +74,13 @@ router.post("/login", async (req, res) => {
 function generateToken(user) {
   const payload = {
     id: user.id,
-    name: user.company_name,
+    companyName: user.company_name,
     email: user.email
   };
   const options = {
-    expiresIn: "1h"
+    expiresIn: "3h"
   };
-  return jwt.sign(payload, secrets.jwtSecret, options);
+  return jwt.sign(payload, jwtSecrets.jwt.jwtSecret, options);
 }
 
 module.exports = router;

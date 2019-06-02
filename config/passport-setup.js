@@ -1,5 +1,5 @@
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const keys = require("./keys");
 const Users = require("../models/User-Model");
 
@@ -25,13 +25,11 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       verifyUser(profile, done);
-      //   console.log("callback func", profile);
     }
   )
 );
 
 async function verifyUser(profile, done) {
-  //   console.log(profile);
   const user = await Users.getByEmail(profile.emails[0].value);
   if (user) {
     let currentUser = {
