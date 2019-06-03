@@ -8,6 +8,7 @@ const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
 const AuthRouter = require("../controllers/auth-router");
 const keys = require("../config/keys");
+const authCheck = require("../controllers/authCheck");
 
 //middleware
 serverConfig(server);
@@ -32,7 +33,7 @@ server.use(passport.session());
 server.use("/auth", AuthRouter);
 
 // endpoints
-server.use("/users", UsersRouter);
+server.use("/users", authCheck, UsersRouter);
 
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login`);
