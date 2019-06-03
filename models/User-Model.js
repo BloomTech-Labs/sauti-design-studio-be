@@ -4,7 +4,8 @@ module.exports = {
   find,
   getBy,
   getById,
-  add
+  add,
+  getByEmail
 };
 
 function find() {
@@ -12,14 +13,22 @@ function find() {
 }
 
 function getBy(filter) {
-  return db('users').where(filter);
+  return db("users").where(filter);
+}
+
+function getByEmail(filter) {
+  return db("users")
+    .where("email", "=", filter)
+    .first();
 }
 function getById(id) {
-  return db('users').where({ id }).first();
+  return db("users")
+    .where({ id })
+    .first();
 }
 
 async function add(user) {
-    const [id] = await db('users').insert(user);
+  const [id] = await db("users").insert(user);
 
-    return getById(id);
+  return getById(id);
 }

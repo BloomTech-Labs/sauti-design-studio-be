@@ -1,17 +1,51 @@
 const express = require("express");
+const passportSetup = require("../config/passport-setup");
+const passport = require("passport");
 
 const server = express();
+const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
+const AuthRouter = require("../controllers/auth-router");
+const keys = require("../config/keys");
+
 //middleware
 serverConfig(server);
 
 //routes
-server.use("/users", UsersRouter);
+
+server.use(
+  cookieSession({
+    name: "cookie",
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [keys.session.cookieKey],
+    secure: false,
+    // httpOnly: true,
+    signed: true
+  })
+);
+// initialize passport
+server.use(passport.initialize());
+server.use(passport.session());
+
+//  Register and login routes
+server.use("/auth", AuthRouter);
+
 // endpoints
+server.use("/users", UsersRouter);
 
 server.get("/", (req, res) => {
-  res.send("We are live ");
+  res.send(`We're live! Please Login`);
+});
+
+server.get("/home", (req, res) => {
+  res.status(200).json({ message: "Success" });
+});
+
+// Logout route
+server.get("/logout", (req, res) => {
+  req.logOut();
+  res.send("You successfuly logged out");
 });
 
 module.exports = server;

@@ -23,7 +23,7 @@ exports.up = function(knex, Promise) {
       .unsigned()
       .notNullable()
       .references("id")
-      .inTable("client")
+      .inTable("clients")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
 
@@ -39,7 +39,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-
-    return knex.schema
-    .dropTableIfExists("workflows")
+  return knex.schema.dropTableIfExists("workflows");
 };
