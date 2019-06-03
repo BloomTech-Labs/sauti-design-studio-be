@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const Users = require("../models/User-Model");
-const authCheck = require("../controllers/authCheck");
 
-router.get("/", authCheck, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const users = await Users.find();
     res.status(200).json(users);

@@ -8,6 +8,7 @@ const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
 const AuthRouter = require("../controllers/auth-router");
 const keys = require("../config/keys");
+const authCheck = require("../controllers/authCheck");
 
 //middleware
 serverConfig(server);
@@ -18,7 +19,7 @@ server.use(
   cookieSession({
     name: "cookie",
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [keys.session.cookieKey],
+    keys: [process.env.SESSION_COOKIE || keys.session.cookieKey],
     secure: false,
     // httpOnly: true,
     signed: true
@@ -32,7 +33,7 @@ server.use(passport.session());
 server.use("/auth", AuthRouter);
 
 // endpoints
-server.use("/users", UsersRouter);
+server.use("/users", authCheck, UsersRouter);
 
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login`);

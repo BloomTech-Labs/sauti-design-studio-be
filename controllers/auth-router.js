@@ -80,7 +80,8 @@ function generateToken(user) {
   const options = {
     expiresIn: "3h"
   };
-  return jwt.sign(payload, jwtSecrets.jwt.jwtSecret, options);
+  const secret = process.env.JWT_SECRET || jwtSecrets.jwt.jwtSecret;
+  return jwt.sign(payload, secret, options);
 }
 
 module.exports = router;
