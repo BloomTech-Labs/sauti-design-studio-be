@@ -19,7 +19,7 @@ server.use(
   cookieSession({
     name: "cookie",
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.SESSION_COOKIE || keys.session.cookieKey],
+    keys: [process.env.SESSION_COOKIE],
     secure: false,
     // httpOnly: true,
     signed: true
