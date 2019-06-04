@@ -26,9 +26,6 @@ function getById(id) {
     .where({ id })
     .first();
 }
-
-async function add(user) {
-  const [id] = await db("users").insert(user);
-
-  return getById(id);
+function add(user) {
+  return db("users").insert(user, "id");
 }
