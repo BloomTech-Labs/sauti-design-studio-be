@@ -35,7 +35,7 @@ server.use("/auth", AuthRouter);
 server.use("/users", authCheck, UsersRouter);
 
 server.get("/", (req, res) => {
-  res.send(`We're live! Please Login`);
+  res.send(`We're live! Please Login.`);
 });
 
 server.get("/home", (req, res) => {

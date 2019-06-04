@@ -2,7 +2,7 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-const Users = require("../models/user-model");
+const Users = require("../models/user-models");
 
 // Login with google
 router.get(
