@@ -7,7 +7,6 @@ const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
 const AuthRouter = require("../controllers/auth-router");
-const keys = require("../config/keys");
 const authCheck = require("../controllers/authCheck");
 
 //middleware

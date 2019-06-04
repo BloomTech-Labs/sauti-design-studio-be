@@ -2,7 +2,6 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-const jwtSecrets = require("../config/keys");
 const Users = require("../models/User-model");
 
 // Login with google
@@ -80,7 +79,7 @@ function generateToken(user) {
   const options = {
     expiresIn: "3h"
   };
-  const secret = process.env.JWT_SECRET || jwtSecrets.jwt.jwtSecret;
+  const secret = process.env.JWT_SECRET;
   return jwt.sign(payload, secret, options);
 }
 
