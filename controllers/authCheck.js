@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const secrets = require("../config/keys");
 
 module.exports = authCheck;
 function authCheck(req, res, next) {
@@ -8,7 +7,7 @@ function authCheck(req, res, next) {
   if (!req.user && !token) {
     res.status(400).json({ message: "Please Login" });
   } else {
-    const secret = process.env.JWT_SECRET || secrets.jwt.jwtSecret;
+    const secret = process.env.JWT_SECRET;
     if (token) {
       jwt.verify(token, secret, (err, decodedToken) => {
         if (err) {
