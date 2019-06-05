@@ -29,32 +29,31 @@ passport.use(
 );
 
 async function verifyUser(profile, done) {
-  const user = await Users.getByEmail(profile.emails[0].value);
-  if (user) {
-    let currentUser = {
-      id: user.id,
-      displayName: user.display_name,
-      email: user.email
-    };
-    done(null, currentUser);
-  } else {
-    console.log("!!!!!!");
-    console.log("no user found", Object.keys(profile), profile._json);
-    console.log("!!!!!!");
-    const newUser = {
-      display_name: profile.name,
-      email: profile.emails[0].value,
-      google_id: profile.id
-    }
-    const user = await Users.add(newUser)
+  try {
+    const user = await Users.getByEmail(profile.emails[0].value);
     if (user) {
-
-      done(null, user)  
-     }
-     else {
-     done("Cannot create user")
-     }
+      let currentUser = {
+        id: user.id,
+        displayName: user.display_name,
+        email: user.email
+      };
+      done(null, currentUser);
+    } else {
+      console.log("!!!!!!");
+      console.log("no user found", Object.keys(profile), profile._json);
+      console.log("!!!!!!");
+      const newUser = {
+        display_name: profile.name,
+        email: profile.emails[0].value,
+        google_id: profile.id
+      };
+      const user = await Users.add(newUser);
+      if (user) {
+        done(null, user);
+      } else {
+        done("Cannot create user");
+      }
+    }
+  } catch (error) {console.log("this is the catch error", error);
   }
 }
-
-
