@@ -3,16 +3,16 @@ exports.up = function(knex, Promise) {
     knex.schema
 
       // USERS TABLE
-      .createTable("users", users => {
-        users.increments();
-        users.string("company_name", 128);
-        users.string("country", 128);
-        users.string("display_name", 158);
-        users.string("email", 128).notNullable();
-        users.string("phone_num", 128);
-        users.string("password", 16);
-        users.integer("google_id");
-        users.integer("facebook_id");
+      .createTable("users", tbl => {
+        tbl.increments();
+        tbl.string("company_name", 128);
+        tbl.string("country", 128);
+        tbl.string("display_name", 158);
+        tbl.string("email", 128).notNullable();
+        tbl.string("phone_num", 128);
+        tbl.string("password", 16);
+        tbl.integer("google_id");
+        tbl.integer("facebook_id");
       })
   );
 };
