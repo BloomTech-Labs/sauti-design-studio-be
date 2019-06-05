@@ -41,9 +41,13 @@ async function verifyUser(profile, done) {
     console.log("!!!!!!");
     console.log("no user found", Object.keys(profile), profile._json);
     console.log("!!!!!!");
-    // const newUser = {
-
-    // }
-    // const user = await Users.add()
+    const newUser = {
+      display_name: profile.name,
+      email: profile.email,
+      google_id: profile.id
+    }
+    const user = await Users.add(newUser)
+    console.log(user);
+    
   }
 }
