@@ -4,15 +4,18 @@ function createUser() {
   return {
     company_name: faker.company.companyName(),
     country: faker.address.country(),
+    display_name: faker.name.firstName(),
     email: faker.internet.email(),
     phone_num: faker.phone.phoneNumber(),
-    password: "randomPassword"
+    password: "randomPassword",
+    google_id: faker.random.uuid(),
+    facebook_id: faker.random.uuid()
   };
 }
 
 let userList = [];
 
-for (let i = 0; i < 150; i++) {
+for (let i = 0; i < 100; i++) {
   userList.push(createUser());
 }
 

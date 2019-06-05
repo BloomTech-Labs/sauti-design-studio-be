@@ -33,13 +33,25 @@ async function verifyUser(profile, done) {
   if (user) {
     let currentUser = {
       id: user.id,
-      companyName: user.company_name,
+      displayName: user.display_name,
       email: user.email
     };
     done(null, currentUser);
   } else {
     console.log("!!!!!!");
-    console.log("no user found");
+    console.log("no user found", Object.keys(profile), profile._json);
     console.log("!!!!!!");
+    const newUser = {
+      display_name: profile.name,
+      email: profile.email,
+      google_id: profile.id
+    }
+    const user = await Users.add(newUser)
+    if (user) {
+    done(null, user)  
+    }
+    else {
+    done("Cannot create user")
+    }
   }
 }
