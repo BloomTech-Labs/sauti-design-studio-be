@@ -2,18 +2,6 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Users = require("../models/user-models");
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await Users.getById(id);
-  if (user) {
-    done(null, user);
-  } else {
-    done("No user found");
-  }
-});
 
 passport.use(
   new GoogleStrategy(
@@ -28,32 +16,19 @@ passport.use(
   )
 );
 
-async function verifyUser(profile, done) {
-  try {
-    const user = await Users.getByEmail(profile.emails[0].value);
-    if (user) {
-      let currentUser = {
-        id: user.id,
-        displayName: user.display_name,
-        email: user.email
-      };
-      done(null, currentUser);
-    } else {
-      console.log("!!!!!!");
-      console.log("no user found", Object.keys(profile), profile._json);
-      console.log("!!!!!!");
-      const newUser = {
-        display_name: profile.name,
-        email: profile.emails[0].value,
-        google_id: profile.id
-      };
-      const user = await Users.add(newUser);
-      if (user) {
-        done(null, user);
-      } else {
-        done("Cannot create user");
-      }
-    }
-  } catch (error) {console.log("this is the catch error", error);
+
+
+const verifyUser = async (profile, done) => {
+  const user = await Users.getByEmail(profile.emails[0].value);
+  if (!user) {
+    const newUser = await Users.add({
+      display_name: profile.name,
+      email: profile.emails[0].value,
+      google_id: profile.id
+    });
+    done(null, newUser)
+  } else {
+    done(null, user)
   }
 }
+
