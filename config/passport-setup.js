@@ -47,7 +47,11 @@ async function verifyUser(profile, done) {
       google_id: profile.id
     }
     const user = await Users.add(newUser)
-    console.log(user);
-    
+    if (user) {
+    done(null, user)  
+    }
+    else {
+    done("Cannot create user")
+    }
   }
 }
