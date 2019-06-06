@@ -2,18 +2,14 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Users = require("../models/user-models");
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
+passport.serializeUser(function (user, done) {
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-  const user = await Users.getById(id);
-  if (user) {
-    done(null, user);
-  } else {
-    done("No user found");
-  }
+passport.deserializeUser(function (user, done) {
+  done(null, user);
 });
+
 
 passport.use(
   new GoogleStrategy(
@@ -37,7 +33,7 @@ const verifyUser = async (profile, done) => {
       display_name: profile.name,
       email: profile.emails[0].value,
       google_id: profile.id
-    });
+    })
     done(null, newUser)
   } else {
     done(null, user)
