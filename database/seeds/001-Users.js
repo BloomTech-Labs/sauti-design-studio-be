@@ -8,8 +8,8 @@ function createUser() {
     email: faker.internet.email(),
     phone_num: faker.phone.phoneNumber(),
     password: "randomPassword",
-    google_id: faker.random.uuid(),
-    facebook_id: faker.random.uuid()
+    google_id: faker.random.number({ min: 1, max: 100000000000000000000 }),
+    facebook_id: faker.random.number({ min: 1, max: 100000000000000000000 }),
   };
 }
 
@@ -19,8 +19,8 @@ for (let i = 0; i < 100; i++) {
   userList.push(createUser());
 }
 
-exports.seed = function(knex, Promise) {
-  return knex("users").then(function() {
+exports.seed = function (knex, Promise) {
+  return knex("users").then(function () {
     // Inserts seed entries
     return knex("users").insert(userList);
   });
