@@ -88,3 +88,8 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Environment db
+database/sautiStudio.db3
+*/sautiStudio.db3
+*.db3
