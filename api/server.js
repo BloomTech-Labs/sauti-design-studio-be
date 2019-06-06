@@ -6,6 +6,7 @@ const server = express();
 const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
+const WorkflowsRouter = require('../controllers/workflows-router')
 const AuthRouter = require("../controllers/auth-router");
 const authCheck = require("../controllers/authCheck");
 
@@ -42,7 +43,7 @@ server.use("/auth", AuthRouter);
 
 // endpoints
 server.use("/users", authCheck, UsersRouter);
-
+server.use("/workflows", WorkflowsRouter)
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login.`);
 });
