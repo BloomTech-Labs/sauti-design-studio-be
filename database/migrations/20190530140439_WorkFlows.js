@@ -4,7 +4,11 @@ exports.up = function(knex, Promise) {
     tbl
       .integer("user_id")
       .unsigned()
-      .notNullable();
+      .notNullable()
+      .references("id")
+      .inTable("users")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE")
 
     tbl
       .string("name", 128)
@@ -28,7 +32,7 @@ exports.up = function(knex, Promise) {
       .onUpdate("CASCADE");
 
     tbl
-      .integer("questions")
+      .integer("question_id")
       .unsigned()
       .notNullable()
       .references("id")
