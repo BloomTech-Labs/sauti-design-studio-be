@@ -8,8 +8,8 @@ function createUser() {
     email: faker.internet.email(),
     phone_num: faker.phone.phoneNumber(),
     password: "randomPassword",
-    google_id: faker.random.number({ min: 1, max: 100000000000000000000 }),
-    facebook_id: faker.random.number({ min: 1, max: 100000000000000000000 }),
+    google_id: faker.random.number({ min: 1, max: 10 }),
+    facebook_id: faker.random.number({ min: 1, max: 10 }),
   };
 }
 
