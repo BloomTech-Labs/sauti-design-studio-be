@@ -12,6 +12,15 @@ const authCheck = require("../controllers/authCheck");
 //middleware
 serverConfig(server);
 
+console.log(process.env.NODE_ENV)
+
+server.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+  next();
+});
+
 //routes
 
 server.use(
