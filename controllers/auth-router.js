@@ -12,7 +12,7 @@ router.get(
 
 // google login redirect
 router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-  res.status(200).redirect("/home");
+  res.status(200).redirect(`${process.env.FRONTEND_URL}/users`);
 });
 
 module.exports = router;
