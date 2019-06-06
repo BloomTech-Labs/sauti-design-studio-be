@@ -28,15 +28,19 @@ passport.use(
 
 const verifyUser = async (profile, done) => {
   const user = await Users.getByEmail(profile.emails[0].value);
-  if (!user) {
-    const newUser = await Users.add({
-      display_name: profile.name,
-      email: profile.emails[0].value,
-      google_id: profile.id
-    })
-    done(null, newUser)
-  } else {
-    done(null, user)
+  try {
+    if (!user) {
+      const newUser = await Users.add({
+        display_name: profile.name,
+        email: profile.emails[0].value,
+        google_id: profile.id
+      })
+      done(null, newUser)
+    } else {
+      done(null, user)
+    }
+  } catch (e) {
+    console.log(e)
   }
 }
 
