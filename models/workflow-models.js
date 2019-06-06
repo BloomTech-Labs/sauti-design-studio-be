@@ -1,7 +1,12 @@
 const db = require('../database/dbConfig')
 
 module.exports = {
- find
+ find,
+ getBy,
+ getById,
+ add,
+ findByQuestionId,
+
 }
 
 function find() {
@@ -13,9 +18,15 @@ function getBy(filter) {
 }
 
 function getById(id) {
-    return db('workflows').where({id}).first();
+    return db('workflows').select('id','user_id','questions');
 }
 
 function add(workflow) {
     return db('workflows').insert(workflow,"id")
 }
+
+// // select 
+
+// SELECT UsersWorkflows.id
+// FROM UsersWorkflows
+// INNER JOIN WorkFlow ON  UsersWorkflows.workflow_id = workflow.id
