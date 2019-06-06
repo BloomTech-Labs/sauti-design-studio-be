@@ -4,8 +4,7 @@ module.exports = {
  find,
  getBy,
  getById,
- add,
- findByQuestionId,
+ add
 
 }
 

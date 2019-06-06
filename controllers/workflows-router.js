@@ -12,7 +12,8 @@ const restricted = require('../controllers/authCheck')
 // GETS ALL THE WORKFLOWS
 router.get('/', async(req,res) => {
     try {
-        const workflows = await Workflows.getById(req.params.id)
+        const workflows = await Workflows.find(req.params.id)
+        res.status(200).json(workflows)
     } catch (error) {
         res.status(500).json({error: "Could not retrieve the workflows"})
     }
@@ -58,3 +59,5 @@ router.delete("/:id", async(req,res) => {
         res.status(500).json({ message: "Unable to delete this workflow."})
     }
 })
+
+module.exports = router;
