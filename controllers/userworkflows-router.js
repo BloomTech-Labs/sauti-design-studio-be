@@ -5,27 +5,29 @@ const router = require('express').Router();
 const Users = require('../models/user-models')
 const Workflows = require('../models/workflow-models')
 
+const UserWorkflows = require('../models/user-workflow-models')
 // Middleware
 
 const restricted = require('../controllers/authCheck')
 
-// GETS ALL THE WORKFLOWS
+
+// GETS ALL THE USER WORKFLOWS
 router.get('/', restricted,async(req,res) => {
     try {
-        const workflows = await Workflows.find(req.params.id)
-        res.status(200).json(workflows)
+        const userworkflows = await UserWorkflows.find(req.params.id)
+        res.status(200).json(userworkflows)
     } catch (error) {
-        res.status(500).json({error: "Could not retrieve the workflows"})
+        res.status(500).json({error: "Could not retrieve the user workflows"})
     }
 })
 
-// GET SPECEFIC ID OF WORKFLOW
+// GET SPECEFIC ID OF USER WORKFLOWS
 
 router.get('/:id', async (req,res) => {
-    const workflows = await Workflows.getById(req.params.id);
+    const userworkflows = await UserWorkflows.getById(req.params.id);
     try {
-            if (workflows) {
-                res.status(200).json(workflows)
+            if (userworkflows) {
+                res.status(200).json(userworkflows)
             } else {
                 res.status(404).json({message : "workflow with taht ID does not exist."})
             }
@@ -33,7 +35,7 @@ router.get('/:id', async (req,res) => {
         res.status(500).json({ error: " Error retrieving that workflow"})    }
 })
 
-// POSTS THE WORKFLOW.. -- BUG?
+// POSTS THE USERWORKFLOWS.. -- BUG?
 router.post("/", async (req,res) => {
     const {
         user_id,name,area_code,category,client_id,question_id
@@ -49,7 +51,7 @@ router.post("/", async (req,res) => {
     }
 })
 
-// UPDATES THE WORKFLOW -- BUG?
+// UPDATES THE USER WORKFLOWS -- BUG?
 router.put("/:id", async (req,res) => {
 try {
     const updateWorkflow = await Workflows.update(req.params.id,req.body);
@@ -60,7 +62,7 @@ try {
 }
 })
 
-// DELETE WORKFLOW -- BUG?
+// DELETE USER WORKFLOWS -- BUG?
 router.delete("/:id", async(req,res) => {
     try {
         const deleteWorkflow = await Workflows.removeWorkflow(req.params.id)
@@ -72,5 +74,6 @@ router.delete("/:id", async(req,res) => {
         res.status(500).json({ message: "Unable to delete this workflow."})
     }
 })
+
 
 module.exports = router;

@@ -5,8 +5,12 @@ const passport = require("passport");
 const server = express();
 const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
+//ROUTES
 const UsersRouter = require("../controllers/users-router");
 const WorkflowsRouter = require('../controllers/workflows-router')
+const UsersWorkflows = require('../controllers/userworkflows-router')
+const ClientsRouter = require('../controllers/clients-router')
+//Authentication
 const AuthRouter = require("../controllers/auth-router");
 const authCheck = require("../controllers/authCheck");
 
@@ -22,7 +26,7 @@ server.use(function (req, res, next) {
   next();
 });
 
-//routes
+
 
 server.use(
   cookieSession({
@@ -43,7 +47,9 @@ server.use("/auth", AuthRouter);
 
 // endpoints
 server.use("/users", authCheck, UsersRouter);
+server.use("/users-workflows", UsersWorkflows)
 server.use("/workflows", WorkflowsRouter)
+server.use("/clients", ClientsRouter)
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login.`);
 });
