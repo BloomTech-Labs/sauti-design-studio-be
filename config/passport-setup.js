@@ -17,7 +17,7 @@ passport.use(
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL: "/auth/facebook/redirect",
-      profileFields: ['id', 'displayName', 'photos', 'email']
+      profileFields: ["id", "displayName", "photos", "email"]
     },
     (accessToken, refreshToken, profile, done) => {
       verifyFacebookUser(profile, done);
@@ -43,7 +43,7 @@ const verifyUser = async (profile, done) => {
   try {
     if (!user) {
       const newUser = await Users.add({
-        display_name: profile.name,
+        display_name: profile.displayName,
         email: profile.emails[0].value,
         google_id: profile.id
       });
@@ -58,7 +58,7 @@ const verifyUser = async (profile, done) => {
 
 const verifyFacebookUser = async (profile, done) => {
   console.log(profile);
-  
+
   const fbookUser = await Users.getByEmail(profile.emails[0].value);
   try {
     if (!fbookUser) {
@@ -75,5 +75,3 @@ const verifyFacebookUser = async (profile, done) => {
     console.log(e);
   }
 };
-
-
