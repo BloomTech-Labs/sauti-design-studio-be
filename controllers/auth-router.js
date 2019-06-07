@@ -7,7 +7,7 @@ const Users = require("../models/user-models");
 // Login with google
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account" })
 );
 
 // google login redirect
