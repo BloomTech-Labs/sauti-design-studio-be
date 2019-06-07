@@ -56,13 +56,13 @@ const verifyUser = async (profile, done) => {
 };
 
 const verifyFacebookUser = async (profile, done) => {
-  const user = await Users.getByEmail(profile.email[0].value);
+  const user = await Users.getByEmail(profile.emails[0].value);
   try {
     if (!user) {
       const newUser = await Users.add({
-        display_name: profileFields.displayName,
-        email: profileFields.email[0].value,
-        facebook_id: profileFields.id
+        display_name: profile.displayName,
+        email: profile.emails[0].value,
+        facebook_id: profile.id
       });
       done(null, newUser);
     } else {
