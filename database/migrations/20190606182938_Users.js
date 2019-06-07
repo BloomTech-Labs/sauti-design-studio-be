@@ -11,8 +11,8 @@ exports.up = function (knex, Promise) {
         tbl.string("email", 128).notNullable();
         tbl.string("phone_num", 128);
         tbl.string("password", 16);
-        tbl.integer("google_id");
-        tbl.integer("facebook_id");
+        tbl.string("google_id", 255);
+        tbl.string("facebook_id", 255);
       })
   );
 };
