@@ -59,17 +59,17 @@ const verifyUser = async (profile, done) => {
 const verifyFacebookUser = async (profile, done) => {
   console.log(profile);
   
-  const user = await Users.getByEmail(profile.emails[0].value);
+  const fbookUser = await Users.getByEmail(profile.emails[0].value);
   try {
-    if (!user) {
-      const newUser = await Users.add({
+    if (!fbookUser) {
+      const newFbookUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
         facebook_id: profile.id
       });
-      done(null, newUser);
+      done(null, newFbookUser);
     } else {
-      done(null, user);
+      done(null, fbookUser);
     }
   } catch (e) {
     console.log(e);
