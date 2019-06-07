@@ -30,7 +30,7 @@ router.get('/:id', async (req,res) => {
                 res.status(404).json({message : "error getting client with that ID does not exist."})
             }
     } catch (error) {
-        res.status(500).json({ error: " Error retrieving that workflow"})    }
+        res.status(500).json({ error: " Error retrieving that Client"})    }
 })
 
 
