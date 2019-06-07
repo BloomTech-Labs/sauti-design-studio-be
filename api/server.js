@@ -6,18 +6,22 @@ const server = express();
 const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
 const UsersRouter = require("../controllers/users-router");
-const WorkflowsRouter = require('../controllers/workflows-router')
+const WorkflowsRouter = require("../controllers/workflows-router");
 const AuthRouter = require("../controllers/auth-router");
 const authCheck = require("../controllers/authCheck");
+const ProfileRouter = require("../controllers/profile-router");
 
 //middleware
 serverConfig(server);
 
-console.log(process.env.NODE_ENV)
+console.log(process.env.NODE_ENV);
 
-server.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Credentials", true);
+server.use(function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   next();
 });
@@ -43,7 +47,9 @@ server.use("/auth", AuthRouter);
 
 // endpoints
 server.use("/users", authCheck, UsersRouter);
-server.use("/workflows", WorkflowsRouter)
+server.use("/workflows", WorkflowsRouter);
+server.use("/profile", authCheck, ProfileRouter);
+
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login.`);
 });
@@ -55,7 +61,7 @@ server.get("/home", (req, res) => {
 // Logout route
 server.get("/logout", (req, res) => {
   req.logOut();
-  res.send("You successfuly logged out");
+  res.status(400).redirect(`${process.env.FRONTEND_URL}`);
 });
 
 module.exports = server;
