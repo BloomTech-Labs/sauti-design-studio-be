@@ -4,7 +4,9 @@ module.exports = {
  find,
  getBy,
  getById,
- add
+ add,
+ updateWorkflow,
+ removeWorkflow
 
 }
 
@@ -17,13 +19,23 @@ function getBy(filter) {
 }
 
 function getById(id) {
-    return db('workflows').select('id','user_id','questions');
+    return db('workflows').where({ id }).first();
 }
 
 function add(workflow) {
-    return db('workflows').insert(workflow,"id")
+    return db('workflows').insert(workflow,"id").then(id => {
+            return find(id[0]);
+        });
 }
 
+function updateWorkflow(id, changes) {
+    return db('workflows').where({ id }).update(changes)
+
+}
+
+function removeWorkflow(id) {
+    return db('workflows').where('user_id', user_id).del()
+}
 // // select 
 
 // SELECT UsersWorkflows.id

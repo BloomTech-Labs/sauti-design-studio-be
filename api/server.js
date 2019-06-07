@@ -5,8 +5,14 @@ const passport = require("passport");
 const server = express();
 const cookieSession = require("cookie-session");
 const serverConfig = require("./serverConfig");
+//ROUTES
 const UsersRouter = require("../controllers/users-router");
-const WorkflowsRouter = require("../controllers/workflows-router");
+const WorkflowsRouter = require('../controllers/workflows-router')
+const UsersWorkflows = require('../controllers/userworkflows-router')
+const ClientsRouter = require('../controllers/clients-router')
+const AnswersRouter = require('../controllers/answers-router')
+const QuestionsRouter = require('../controllers/questions-router')
+//Authentication
 const AuthRouter = require("../controllers/auth-router");
 const authCheck = require("../controllers/authCheck");
 const ProfileRouter = require("../controllers/profile-router");
@@ -26,7 +32,7 @@ server.use(function(req, res, next) {
   next();
 });
 
-//routes
+
 
 server.use(
   cookieSession({
@@ -46,10 +52,13 @@ server.use(passport.session());
 server.use("/auth", AuthRouter);
 
 // endpoints
+server.use('/profile', authCheck, ProfileRouter)
 server.use("/users", authCheck, UsersRouter);
-server.use("/workflows", WorkflowsRouter);
-server.use("/profile", authCheck, ProfileRouter);
-
+server.use("/users-workflows", UsersWorkflows)
+server.use("/workflows", WorkflowsRouter)
+server.use("/clients", ClientsRouter)
+server.use("/answers",AnswersRouter)
+server.use('/questions', QuestionsRouter)
 server.get("/", (req, res) => {
   res.send(`We're live! Please Login.`);
 });

@@ -10,19 +10,19 @@ module.exports = {
 }
 
 function find() {
-    return db("clients");
+    return db("answers");
 }
 
 function getBy(filter) {
-    return db('clients').where(filter);
+    return db('answers').where(filter);
 }
 
 function getById(id) {
-    return db('clients').where({ id }).first();
+    return db('answers').where({ id }).first();
 }
 
-function add(client) {
-    return db('clients').insert(client,"id").then(id => {
+function add(answer) {
+    return db('answers').insert(answer,"id").then(id => {
             return find(id[0]);
         });
 }
