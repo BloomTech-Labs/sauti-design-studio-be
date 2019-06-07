@@ -2,14 +2,13 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Users = require("../models/user-models");
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
+passport.deserializeUser(function(user, done) {
   done(null, user);
 });
-
 
 passport.use(
   new GoogleStrategy(
@@ -24,23 +23,20 @@ passport.use(
   )
 );
 
-
-
 const verifyUser = async (profile, done) => {
   const user = await Users.getByEmail(profile.emails[0].value);
   try {
     if (!user) {
       const newUser = await Users.add({
-        display_name: profile.name,
+        display_name: profile.displayName,
         email: profile.emails[0].value,
         google_id: profile.id
-      })
-      done(null, newUser)
+      });
+      done(null, newUser);
     } else {
-      done(null, user)
+      done(null, user);
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-}
-
+};
