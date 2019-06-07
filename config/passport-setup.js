@@ -16,7 +16,8 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: "/auth/facebook/redirect"
+      callbackURL: "/auth/facebook/redirect",
+      profileFields: ['id', 'displayName', 'photos', 'email']
     },
     (accessToken, refreshToken, profile, done) => {
       verifyFacebookUser(profile, done);
@@ -56,6 +57,8 @@ const verifyUser = async (profile, done) => {
 };
 
 const verifyFacebookUser = async (profile, done) => {
+  console.log(profile);
+  
   const user = await Users.getByEmail(profile.emails[0].value);
   try {
     if (!user) {
@@ -72,4 +75,5 @@ const verifyFacebookUser = async (profile, done) => {
     console.log(e);
   }
 };
+
 
