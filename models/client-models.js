@@ -5,7 +5,10 @@ module.exports = {
  find,
  getBy,
  getById,
- add
+ add,
+ updateClient,
+ removeClient
+
 
 }
 
@@ -25,4 +28,13 @@ function add(client) {
     return db('clients').insert(client,"id").then(id => {
             return find(id[0]);
         });
+}
+
+function updateClient(id, changes) {
+    return db('clients').where({ id }).update(changes)
+
+}
+
+function removeClient(id) {
+    return db('clients').where('id', id).del()
 }

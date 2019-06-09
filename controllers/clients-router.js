@@ -5,7 +5,6 @@ const router = require('express').Router();
 const Clients = require('../models/client-models')
 
 // Middleware
-
 const restricted = require('../controllers/authCheck')
 
 
@@ -33,6 +32,30 @@ router.get('/:id', async (req,res) => {
         res.status(500).json({ error: " Error retrieving that Client"})    }
 })
 
+
+// UPDATES THE WORKFLOW -- BUG?
+router.put("/:id", async (req,res) => {
+    try {
+        const updateClient = await Clients.update(req.params.id,req.body);
+            if(updateClient)
+                res.status(200).json({ message: `Client: ${updateClient}`, updateClientInfo:req.body})
+    } catch (error) {
+        res.status(500).json({ message: "Unable to update the client at this time.. please try again later"})
+    }
+    })
+    
+    // DELETE WORKFLOW - WORKS
+    router.delete("/:id", async(req,res) => {
+        try {
+            const deleteClient = await Clients.removeClient(req.params.id)
+                if(deleteClient)
+                    res.status(200).json({ message: "You have successfully deleted the Client"})
+        } 
+        
+        catch (error) {
+            res.status(500).json({ message: "Unable to delete this Client."})
+        }
+    })
 
 
 module.exports = router;
