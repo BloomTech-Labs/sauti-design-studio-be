@@ -60,8 +60,8 @@ router.post('/', async(req, res) => {
 router.put("/:id", async (req,res) => {
 
     try {
-        const updateClient = await Clients.updateClient(req.params.id,req.body);
-            if(updateClient)
+        const updateAnswers = await Clients.updateAnswers(req.params.id,req.body);
+            if(updateAnswer)
                 res.status(200).json({ message: `Client: ${updateClient}`, updateClientInfo:req.body})
     } catch (error) {
         res.status(500).json({ message: "Unable to update the client at this time.. please try again later"})

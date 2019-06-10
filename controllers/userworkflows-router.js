@@ -2,8 +2,6 @@
 const router = require('express').Router();
 
 //Models
-const Users = require('../models/user-models')
-const Workflows = require('../models/workflow-models')
 
 const UserWorkflows = require('../models/user-workflow-models')
 // Middleware
@@ -29,7 +27,7 @@ router.get('/:id', async (req,res) => {
             if (userworkflows) {
                 res.status(200).json(userworkflows)
             } else {
-                res.status(404).json({message : "workflow with taht ID does not exist."})
+                res.status(404).json({message : "user workflow with that ID does not exist."})
             }
     } catch (error) {
         res.status(500).json({ error: " Error retrieving that workflow"})    }
@@ -38,25 +36,25 @@ router.get('/:id', async (req,res) => {
 // POSTS THE USERWORKFLOWS.. -- BUG?
 router.post("/", async (req,res) => {
     const {
-        user_id,name,area_code,category,client_id,question_id
+        user_id,workflow_id
     } = req.body
 
-    if (!user_id || !name || !area_code || !category || !client_id || !question_id)
+    if (!user_id || !workflow_id)
         res.status(400).json({message: "Please provide the missing information"})
     try {
-        const workflows = await Workflows.add(req.body)
-            res.status(workflows);
+        const userworkflows = await UserWorkflows.add(req.body)
+            res.status(userworkflows);
     } catch (error) {
-        res.status(500).json({message: "unable to post workflow", error})
+        res.status(500).json({message: "unable to post user workflow", error})
     }
 })
 
 // UPDATES THE USER WORKFLOWS -- BUG?
 router.put("/:id", async (req,res) => {
 try {
-    const updateWorkflow = await Workflows.update(req.params.id,req.body);
-        if(updateWorkflow)
-            res.status(200).json({ message: `workflow: ${updateWorkflow}`, updateWorkflowInfo:req.body})
+    const updateUserWorkflow = await UserWorkflows.update(req.params.id,req.body);
+        if(updateUserWorkflow)
+            res.status(200).json({ message: `workflow: ${updateUserWorkflow}`, updateUserWorkflowInfo:req.body})
 } catch (error) {
     res.status(500).json({ message: "Unable to update this workflow at this time.. please try again later"})
 }
