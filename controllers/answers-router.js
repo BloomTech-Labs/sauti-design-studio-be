@@ -9,7 +9,7 @@ const Answers = require('../models/answer-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE ANSWERS
-router.get('/', async(req,res) => {
+router.get('/', restricted, async(req,res) => {
     try {
         const answers = await Answers.find(req.params.id)
         res.status(200).json(answers)

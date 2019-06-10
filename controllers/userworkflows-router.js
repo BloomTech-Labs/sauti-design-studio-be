@@ -10,7 +10,7 @@ const UserWorkflows = require('../models/user-workflow-models');
 
 
 // GETS ALL THE USER WORKFLOWS
-router.get('/',async(req,res) => {
+router.get('/', restricted, async(req,res) => {
     try {
         const userworkflows = await UserWorkflows.find(req.params.id)
         res.status(200).json(userworkflows)

@@ -10,7 +10,6 @@ const Workflows = require('../models/workflow-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE WORKFLOWS
-<<<<<<< HEAD
 router.get('/', async(req,res) => {
     try {
         const workflows = await Workflows.find(req.params.id)
@@ -19,7 +18,6 @@ router.get('/', async(req,res) => {
         res.status(500).json({error: "Could not retrieve the workflows"})
     }
 })
-=======
 router.get('/all', restricted, async (req, res) => {
   console.log(req.user)
   try {
@@ -40,7 +38,6 @@ router.get('/', restricted, async (req, res) => {
     res.status(500).json({ error: 'Could not retrieve the workflows' });
   }
 });
->>>>>>> master
 
 // GET SPECEFIC ID OF WORKFLOW
 router.get('/:id', async (req, res) => {

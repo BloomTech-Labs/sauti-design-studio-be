@@ -9,7 +9,7 @@ const Questions = require('../models/question-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE USER WORKFLOWS
-router.get('/', async(req,res) => {
+router.get('/', restricted, async(req,res) => {
     try {
         const questions = await Questions.find(req.params.id)
         res.status(200).json(questions)

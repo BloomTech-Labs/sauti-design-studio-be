@@ -9,7 +9,7 @@ const restricted = require('../controllers/authCheck')
 
 
 // GETS ALL THE CLIENTS
-router.get('/', async(req,res) => {
+router.get('/', restricted, async(req,res) => {
     try {
         const clients = await Clients.find(req.params.id)
         res.status(200).json(clients)
