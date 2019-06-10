@@ -9,7 +9,7 @@ const restricted = require('../controllers/authCheck')
 
 
 // GETS ALL THE CLIENTS
-router.get('/', restricted,async(req,res) => {
+router.get('/', async(req,res) => {
     try {
         const clients = await Clients.find(req.params.id)
         res.status(200).json(clients)
@@ -33,10 +33,36 @@ router.get('/:id', async (req,res) => {
 })
 
 
-// UPDATES THE WORKFLOW -- BUG?
-router.put("/:id", async (req,res) => {
+
+// POST - CREATES NEW
+router.post('/', async(req, res) => {
+    const {
+        phone_num,
+        isActive,
+        workflow_id
+    } = req.body
+    if (!phone_num || !isActive || !workflow_id) {
+        res
+            .status(400)
+            .json({ message: "Please provide missing information" });
+    }
     try {
-        const updateClient = await Clients.update(req.params.id,req.body);
+        const clientPosts = await Clients.add(req.body);
+        res
+            .json(clientPosts);
+    } catch (err) {
+        res
+            .status(500)
+            .json({ err: "The post could not be added at this time." });
+    }
+});
+
+
+// UPDATES THE WORKFLOW 
+router.put("/:id", async (req,res) => {
+
+    try {
+        const updateClient = await Clients.updateClient(req.params.id,req.body);
             if(updateClient)
                 res.status(200).json({ message: `Client: ${updateClient}`, updateClientInfo:req.body})
     } catch (error) {

@@ -10,7 +10,7 @@ const Workflows = require('../models/workflow-models')
 const restricted = require('../controllers/authCheck')
 
 // GETS ALL THE WORKFLOWS
-router.get('/', restricted,async(req,res) => {
+router.get('/', async(req,res) => {
     try {
         const workflows = await Workflows.find(req.params.id)
         res.status(200).json(workflows)

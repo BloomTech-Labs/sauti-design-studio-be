@@ -10,7 +10,7 @@ const restricted = require('../controllers/authCheck')
 
 
 // GETS ALL THE ANSWERS
-router.get('/', restricted,async(req,res) => {
+router.get('/', async(req,res) => {
     try {
         const answers = await Answers.find(req.params.id)
         res.status(200).json(answers)
@@ -32,8 +32,42 @@ router.get('/:id', async (req,res) => {
     } catch (error) {
         res.status(500).json({ error: " Error retrieving that Answer"})    }
 })
+// POST - CREATES NEW
+router.post('/', async(req, res) => {
+    const {
+        answer_text,
+        answer_number,
+    
+    } = req.body
+    if (!answer_text || !answer_number) {
+        res
+            .status(400)
+            .json({ message: "Please provide missing information" });
+    }
+    try {
+        const answerPosts = await Answers.add(req.body);
+        res
+            .json(answerPosts);
+    } catch (err) {
+        res
+            .status(500)
+            .json({ err: "The answer could not be added at this time." });
+    }
+});
 
-    // DELETE WORKFLOW - WORKS
+
+// UPDATES THE ANSWERS
+router.put("/:id", async (req,res) => {
+
+    try {
+        const updateClient = await Clients.updateClient(req.params.id,req.body);
+            if(updateClient)
+                res.status(200).json({ message: `Client: ${updateClient}`, updateClientInfo:req.body})
+    } catch (error) {
+        res.status(500).json({ message: "Unable to update the client at this time.. please try again later"})
+    }
+    })
+    // DELETE ANSWERS - WORKS
     router.delete("/:id", async(req,res) => {
         try {
             const deleteAnswer = await Answers.removeAnswer(req.params.id)
