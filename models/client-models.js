@@ -1,5 +1,4 @@
-
-const db = require('../database/dbConfig')
+const db = require('../database/dbConfig');
 
 module.exports = {
  find,
@@ -13,21 +12,23 @@ module.exports = {
 }
 
 function find() {
-    return db("clients");
+  return db('clients');
 }
 
 function getBy(filter) {
-    return db('clients').where(filter);
+  return db('clients').where(filter);
 }
 
 function getById(id) {
-    return db('clients').where({ id }).first();
+  return db('clients')
+    .where({ id })
+    .first();
 }
 
 function add(client) {
-    return db('clients').insert(client,"id").then(id => {
-            return find(id[0]);
-        });
+  return db('clients')
+    .insert(client, 'id')
+    .then(id => find(id[0]));
 }
 
 function updateClient(id, changes) {

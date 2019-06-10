@@ -1,7 +1,7 @@
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const FacebookStrategy = require("passport-facebook").Strategy;
-const Users = require("../models/user-models");
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const Users = require('../models/user-models');
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -16,8 +16,8 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: "/auth/facebook/redirect",
-      profileFields: ["id", "displayName", "photos", "email"]
+      callbackURL: '/auth/facebook/redirect',
+      profileFields: ['id', 'displayName', 'photos', 'email'],
     },
     (accessToken, refreshToken, profile, done) => {
       verifyFacebookUser(profile, done);
@@ -28,9 +28,9 @@ passport.use(
 passport.use(
   new GoogleStrategy(
     {
-      callbackURL: "/auth/google/redirect",
+      callbackURL: '/auth/google/redirect',
       clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
       verifyUser(profile, done);
@@ -45,7 +45,7 @@ const verifyUser = async (profile, done) => {
       const newUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
-        google_id: profile.id
+        google_id: profile.id,
       });
       done(null, newUser);
     } else {
@@ -65,7 +65,7 @@ const verifyFacebookUser = async (profile, done) => {
       const newFbookUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
-        facebook_id: profile.id
+        facebook_id: profile.id,
       });
       done(null, newFbookUser);
     } else {

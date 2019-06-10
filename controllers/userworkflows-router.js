@@ -1,9 +1,9 @@
-//Dependencies
+// Dependencies
 const router = require('express').Router();
 
 //Models
 
-const UserWorkflows = require('../models/user-workflow-models')
+const UserWorkflows = require('../models/user-workflow-models');
 // Middleware
 
 // const restricted = require('../controllers/authCheck')

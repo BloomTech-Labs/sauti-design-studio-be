@@ -1,42 +1,44 @@
-const db = require('../database/dbConfig')
+const db = require('../database/dbConfig');
 
 module.exports = {
- find,
- getBy,
- getById,
- add,
- updateWorkflow,
- removeWorkflow
-
-}
+  find,
+  getBy,
+  getById,
+  add,
+  updateWorkflow,
+  removeWorkflow,
+};
 
 function find() {
-    return db('workflows');
+  return db('workflows');
 }
 
 function getBy(filter) {
-    return db('workflows').where(filter);
+  return db('workflows').where(filter);
 }
 
 function getById(id) {
-    return db('workflows').where({ id }).first();
+  return db('workflows')
+    .where({ id })
+    .first();
 }
 
 function add(workflow) {
-    return db('workflows').insert(workflow,"id").then(id => {
-            return find(id[0]);
-        });
+  return db('workflows')
+    .insert(workflow, 'id')
+    .then(id => find(id[0]));
 }
 
 function updateWorkflow(id, changes) {
-    return db('workflows').where({ id }).update(changes)
-
+  return db('workflows')
+    .where({ id })
+    .update(changes);
 }
 
 function removeWorkflow(id) {
     return db('workflows').where('id', id).del()
 }
-// // select 
+// // select
 
 // SELECT UsersWorkflows.id
 // FROM UsersWorkflows

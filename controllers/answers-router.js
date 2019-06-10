@@ -1,13 +1,12 @@
-//Dependencies
+// Dependencies
 const router = require('express').Router();
 
-//Models
-const Answers = require('../models/answer-models')
+// Models
+const Answers = require('../models/answer-models');
 
 // Middleware
 
-const restricted = require('../controllers/authCheck')
-
+const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE ANSWERS
 router.get('/', async(req,res) => {
