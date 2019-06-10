@@ -1,7 +1,6 @@
 const db = require('../database/dbConfig');
 
 module.exports = {
-<<<<<<< HEAD
  find,
  getBy,
  getById,
@@ -10,13 +9,6 @@ module.exports = {
  removeQuestion
 
 }
-=======
-  find,
-  getBy,
-  getById,
-  add,
-};
->>>>>>> master
 
 function find() {
   return db('questions');
