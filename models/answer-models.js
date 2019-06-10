@@ -5,7 +5,8 @@ module.exports = {
  find,
  getBy,
  getById,
- add
+ add,
+ removeAnswer
 
 }
 
@@ -25,4 +26,8 @@ function add(answer) {
     return db('answers').insert(answer,"id").then(id => {
             return find(id[0]);
         });
+}
+
+function removeAnswer(id) {
+    return db('answers').where('id',id).del();
 }

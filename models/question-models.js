@@ -4,7 +4,8 @@ module.exports = {
  find,
  getBy,
  getById,
- add
+ add,
+ removeQuestion
 
 }
 
@@ -24,4 +25,8 @@ function add(client) {
     return db('questions').insert(client,"id").then(id => {
             return find(id[0]);
         });
+}
+
+function removeQuestion(id) {
+    return db('questions').where('id',id).del();
 }

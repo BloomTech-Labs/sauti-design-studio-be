@@ -33,5 +33,17 @@ router.get('/:id', async (req,res) => {
         res.status(500).json({ error: " Error retrieving that question"})    }
 })
 
+ // DELETE WORKFLOW - WORKS
+ router.delete("/:id", async(req,res) => {
+    try {
+        const deleteQuestion = await Answers.removeQuestion(req.params.id)
+            if(deleteQuestion)
+                res.status(200).json({ message: "You have successfully deleted the Question"})
+    } 
+    
+    catch (error) {
+        res.status(500).json({ message: "Unable to delete this Question."})
+    }
+})
 
 module.exports = router;

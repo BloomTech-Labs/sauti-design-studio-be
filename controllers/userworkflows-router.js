@@ -65,13 +65,13 @@ try {
 // DELETE USER WORKFLOWS -- BUG?
 router.delete("/:id", async(req,res) => {
     try {
-        const deleteWorkflow = await Workflows.removeWorkflow(req.params.id)
-            if(deleteWorkflow)
-                res.status(200).json({ message: "You have successfully deleted the workflow"})
+        const deleteUsersWorkflow = await Workflows.removeUsersworkflow(req.params.id)
+            if(deleteUsersWorkflow)
+                res.status(200).json({ message: "You have successfully deleted the user-workflow"})
     } 
     
     catch (error) {
-        res.status(500).json({ message: "Unable to delete this workflow."})
+        res.status(500).json({ message: "Unable to delete this user-workflow."})
     }
 })
 

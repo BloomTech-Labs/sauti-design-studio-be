@@ -5,7 +5,8 @@ module.exports = {
  find,
  getBy,
  getById,
- add
+ add,
+ removeUsersworkflow
 
 }
 
@@ -25,4 +26,8 @@ function add(usersworkflow) {
     return db('users_workflows').insert(usersworkflow,"id").then(id => {
             return find(id[0]);
         });
+}
+
+function removeUsersworkflow(id) {
+    return db('users_workflows').where('id',id).del();
 }
