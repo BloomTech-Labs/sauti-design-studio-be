@@ -10,9 +10,21 @@ const Workflows = require('../models/workflow-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE WORKFLOWS
-router.get('/', restricted, async (req, res) => {
+router.get('/all', restricted, async (req, res) => {
+  console.log(req.user)
   try {
-    const workflows = await Workflows.find(req.params.id);
+    const workflows = await Workflows.find();
+    res.status(200).json(workflows);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not retrieve the workflows' });
+  }
+});
+
+
+router.get('/', restricted, async (req, res) => {
+
+  try {
+    const workflows = await Workflows.userFlows(req.user.id);
     res.status(200).json(workflows);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the workflows' });
@@ -20,9 +32,8 @@ router.get('/', restricted, async (req, res) => {
 });
 
 // GET SPECEFIC ID OF WORKFLOW
-
 router.get('/:id', async (req, res) => {
-  const workflows = await Workflows.getById(req.params.id);
+  const workflows = await Workflows.getBy({ id: req.params.id, user_id: req.user.id });
   try {
     if (workflows) {
       res.status(200).json(workflows);
@@ -36,33 +47,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POSTS THE WORKFLOW.. -- BUG?
-router.post('/', async (req, res) => {
-  const {
-    user_id,
-    name,
-    area_code,
-    category,
-    client_id,
-    question_id,
-  } = req.body;
+// POSTS THE WORKFLOW
+router.post('/', (req, res) => {
+  const { name, area_code, category, client_id, question_id } = req.body;
 
-  if (
-    !user_id ||
-    !name ||
-    !area_code ||
-    !category ||
-    !client_id ||
-    !question_id
-  )
+  if (!req.user)
+    res.status(400).json({ message: 'You must be logged in to do that' });
+
+  const user_id = req.user.id
+
+  const workflow = { name, area_code, category, client_id, question_id, user_id }
+
+
+  if (!name || !area_code || !category || !client_id || !question_id)
     res.status(400).json({ message: 'Please provide the missing information' });
-  try {
-    const workflows = await Workflows.add(req.body);
-    res.status(workflows);
-  } catch (error) {
-    res.status(500).json({ message: 'unable to post workflow', error });
-  }
-});
+
+  Workflows.add(workflow)
+    .then(workflows => res.status(200).json(workflows))
+    .catch(err => res.status(500).json({ message: err }))
+
+})
+
 
 // UPDATES THE WORKFLOW -- BUG?
 router.put('/:id', async (req, res) => {
