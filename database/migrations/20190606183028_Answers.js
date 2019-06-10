@@ -1,16 +1,15 @@
-exports.up = function (knex, Promise) {
-  return knex.schema.createTable("answers", tbl => {
+exports.up = function(knex, Promise) {
+  return knex.schema.createTable('answers', tbl => {
     tbl.increments();
-    tbl.string("answer_text", 128).notNullable();
+    tbl.string('answer_text', 128).notNullable();
 
     tbl
-      .integer("answer_number")
+      .integer('answer_number')
       .unsigned()
-      .notNullable()
-
+      .notNullable();
   });
 };
 
-exports.down = function (knex, Promise) {
-  return knex.schema.dropTableIfExists("answers");
+exports.down = function(knex, Promise) {
+  return knex.schema.dropTableIfExists('answers');
 };
