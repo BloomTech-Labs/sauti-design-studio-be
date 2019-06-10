@@ -1,27 +1,26 @@
-exports.up = function (knex, Promise) {
-  return knex.schema.createTable("users_workflows", tbl => {
+exports.up = function(knex, Promise) {
+  return knex.schema.createTable('users_workflows', tbl => {
+    tbl.increments();
     tbl
-      .increments();
-    tbl
-      .integer("user_id")
+      .integer('user_id')
       .unsigned()
       .notNullable()
-      .references("id")
-      .inTable("users")
-      .onDelete("CASCADE")
-      .onUpdate("CASCADE");
+      .references('id')
+      .inTable('users')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
 
     tbl
-      .integer("workflow_id")
+      .integer('workflow_id')
       .unsigned()
       .notNullable()
-      .references("id")
-      .inTable("workflows")
-      .onDelete("CASCADE")
-      .onUpdate("CASCADE");
+      .references('id')
+      .inTable('workflows')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
   });
 };
 
-exports.down = function (knex, Promise) {
-  return knex.schema.dropTableIfExists("users_workflows");
+exports.down = function(knex, Promise) {
+  return knex.schema.dropTableIfExists('users_workflows');
 };
