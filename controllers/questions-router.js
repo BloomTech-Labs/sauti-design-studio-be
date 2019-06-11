@@ -35,7 +35,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // POST - CREATES NEW
 router.post('/', async(req, res) => {
     const {
@@ -88,6 +87,3 @@ router.put("/:id", async (req,res) => {
 
 
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> master

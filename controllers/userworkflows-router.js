@@ -6,7 +6,7 @@ const router = require('express').Router();
 const UserWorkflows = require('../models/user-workflow-models');
 // Middleware
 
-// const restricted = require('../controllers/authCheck')
+const restricted = require('../controllers/authCheck')
 
 
 // GETS ALL THE USER WORKFLOWS
