@@ -39,11 +39,13 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { user_id, workflow_id } = req.body;
 
-  if (!user_id || !workflow_id)
-    res.status(400).json({ message: "Please provide the missing information" });
+  if (!user_id || !workflow_id) 
+
+   return res.status(400).json({ message: "Please provide the missing information" });
+  
   try {
     const userworkflows = await UserWorkflows.add(req.body);
-    res.status(userworkflows);
+    res.status(201).json({ userworkflows });
   } catch (error) {
     res.status(500).json({ message: "unable to post user workflow", error });
   }
@@ -73,10 +75,10 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE USER WORKFLOWS -- BUG?
+// DELETE USER WORKFLOWS
 router.delete("/:id", async (req, res) => {
   try {
-    const deleteUsersWorkflow = await Workflows.removeUsersworkflow(
+    const deleteUsersWorkflow = await UserWorkflows.removeUsersworkflow(
       req.params.id
     );
     if (deleteUsersWorkflow)
