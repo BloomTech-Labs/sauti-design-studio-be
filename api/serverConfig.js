@@ -5,13 +5,13 @@ const helmet = require('helmet');
 
 
 const corsOptions = {
-  origin: 'http://localhost:8000',
+  origin: process.env.FRONTEND_URL,
   credentials: true,
 }
 
 module.exports = server => {
-  server.use(cors(corsOptions));
   server.use(helmet());
   server.use(express.json());
+  server.use(cors(corsOptions));
   server.use(morgan('dev'));
 };
