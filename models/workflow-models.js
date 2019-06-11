@@ -2,6 +2,7 @@ const db = require('../database/dbConfig');
 
 module.exports = {
   find,
+  userFlows,
   getBy,
   getById,
   add,
@@ -10,7 +11,11 @@ module.exports = {
 };
 
 function find() {
-  return db('workflows');
+  return db('workflows')
+}
+
+function userFlows(userId) {
+  return db('workflows').where({ user_id: userId });
 }
 
 function getBy(filter) {
@@ -26,7 +31,7 @@ function getById(id) {
 function add(workflow) {
   return db('workflows')
     .insert(workflow, 'id')
-    .then(id => find(id[0]));
+    .then(id => find(id));
 }
 
 function updateWorkflow(id, changes) {

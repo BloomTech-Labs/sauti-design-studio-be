@@ -1,6 +1,7 @@
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return knex.schema.createTable('workflows', tbl => {
     tbl.increments();
+
     tbl
       .integer('user_id')
       .unsigned()
@@ -13,12 +14,10 @@ exports.up = function(knex, Promise) {
     tbl
       .string('name', 128)
       .notNullable()
-      .unique();
 
     tbl
       .string('area_code', 128)
       .notNullable()
-      .unique();
 
     tbl.string('category').notNullable();
 
@@ -42,6 +41,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return knex.schema.dropTableIfExists('workflows');
 };
