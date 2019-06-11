@@ -27,8 +27,10 @@ function getById(id) {
 function add(usersworkflow) {
   return db('users_workflows')
     .insert(usersworkflow, 'id')
-    .then(id => find(id[0]));
-}
+    .then(([id]) => {
+      return findById(id);
+    })
+  }
 
 function updateUserWorkflow(id, changes) {
     return db('users_workflows').where({ id }).update(changes)
