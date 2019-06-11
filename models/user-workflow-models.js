@@ -28,7 +28,7 @@ function add(usersworkflow) {
   return db('users_workflows')
     .insert(usersworkflow, 'id')
     .then(([id]) => {
-      return findById(id);
+      return getById(id);
     })
   }
 

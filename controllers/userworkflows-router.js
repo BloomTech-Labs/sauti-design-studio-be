@@ -9,7 +9,7 @@ const UserWorkflows = require("../models/user-workflow-models");
 const restricted = require("../controllers/authCheck");
 
 // GETS ALL THE USER WORKFLOWS
-router.get("/", restricted, async (req, res) => {
+router.get("/",  async (req, res) => {
   try {
     const userworkflows = await UserWorkflows.find(req.params.id);
     res.status(200).json(userworkflows);
