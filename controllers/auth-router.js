@@ -29,7 +29,7 @@ router.get(
   "/facebook/redirect",
   passport.authenticate("facebook"),
   (req, res) => {
-    res.status(200).redirect(`https://sautistudio.netlify.com/profile`);
+    res.status(200).redirect(`${process.env.FRONTEND_URL}/profile`);
   }
 );
 
