@@ -16,7 +16,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: '/auth/facebook/redirect',
+      callbackURL: 'https://sauti-studio.herokuapp.com/auth/facebook/redirect',
       profileFields: ['id', 'displayName', 'photos', 'email'],
     },
     (accessToken, refreshToken, profile, done) => {
