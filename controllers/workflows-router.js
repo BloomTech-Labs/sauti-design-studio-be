@@ -60,14 +60,10 @@ router.post("/", (req, res) => {
 
   const workflow = {
     name,
-    area_code,
     category,
-    client_id,
-    question_id,
-    user_id
   };
 
-  if (!name || !area_code || !category || !client_id || !question_id)
+  if (!name)
     res.status(400).json({ message: "Please provide the missing information" });
 
   Workflows.add(workflow)

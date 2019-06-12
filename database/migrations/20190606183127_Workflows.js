@@ -17,14 +17,12 @@ exports.up = function (knex, Promise) {
 
     tbl
       .string('area_code', 128)
-      .notNullable()
 
     tbl.string('category').notNullable();
 
     tbl
       .integer('client_id')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('clients')
       .onDelete('CASCADE')
@@ -33,7 +31,6 @@ exports.up = function (knex, Promise) {
     tbl
       .integer('question_id')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('questions')
       .onDelete('CASCADE')
