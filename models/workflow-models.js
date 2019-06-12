@@ -41,9 +41,7 @@ function updateWorkflow(id, changes) {
 }
 
 function removeWorkflow(id) {
-  return db('workflows')
-    .where('user_id', user_id)
-    .del();
+    return db('workflows').where('id', id).del()
 }
 // // select
 
