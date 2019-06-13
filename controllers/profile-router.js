@@ -3,19 +3,19 @@ const ProfileModel = require('../models/profile-model');
 
 router.get('/', async (req, res) => {
   try {
-    const { id } = req.user
+    const { id } = req.user;
     res.status(200).json(await ProfileModel.getById(id).first());
   } catch (e) {
-    res.status(500).json({ message: "Could not get user" });
+    res.status(500).json({ message: 'Could not get user' });
   }
-})
+});
 
 router.put('/', async (req, res) => {
-  let obj = {}
+  const obj = {};
 
-  if (req.body.company_name !== '') obj.company_name = req.body.company_name
-  if (req.body.country !== '') obj.country = req.body.country
-  if (req.body.phone_num !== '') obj.phone_num = req.body.phone_num
+  if (req.body.company_name !== '') obj.company_name = req.body.company_name;
+  if (req.body.country !== '') obj.country = req.body.country;
+  if (req.body.phone_num !== '') obj.phone_num = req.body.phone_num;
 
   try {
     const userInfo = req.body;
