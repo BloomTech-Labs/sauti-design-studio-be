@@ -1,19 +1,22 @@
 const router = require('express').Router();
 const ProfileModel = require('../models/profile-model');
 
-router.get('/', (req, res) => {
-  const user = {
-    id: req.user.id,
-    displayName: req.user.display_name,
-    email: req.user.email,
-    phoneNumber: req.user.phone_num,
-    googleId: req.user.google_id,
-    facebookId: req.user.facebook_id,
-  };
-  res.status(200).json(user);
-});
+router.get('/', async (req, res) => {
+  try {
+    const { id } = req.user
+    res.status(200).json(await ProfileModel.getById(id).first());
+  } catch (e) {
+    res.status(500).json({ message: "Could not get user" });
+  }
+})
 
 router.put('/', async (req, res) => {
+  let obj = {}
+
+  if (req.body.company_name !== '') obj.company_name = req.body.company_name
+  if (req.body.country !== '') obj.country = req.body.country
+  if (req.body.phone_num !== '') obj.phone_num = req.body.phone_num
+
   try {
     const userInfo = req.body;
     const { id } = req.user;
