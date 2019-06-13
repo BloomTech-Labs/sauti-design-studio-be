@@ -11,7 +11,7 @@ module.exports = {
 };
 
 function find() {
-  return db('workflows')
+  return db('workflows');
 }
 
 function userFlows(userId) {
@@ -41,7 +41,9 @@ function updateWorkflow(id, changes) {
 }
 
 function removeWorkflow(id) {
-    return db('workflows').where('id', id).del()
+  return db('workflows')
+    .where('id', id)
+    .del();
 }
 // // select
 
