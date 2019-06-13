@@ -1,4 +1,4 @@
-exports.up = function (knex, Promise) {
+exports.up = function(knex, Promise) {
   return knex.schema.createTable('workflows', tbl => {
     tbl.increments();
 
@@ -11,12 +11,9 @@ exports.up = function (knex, Promise) {
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
-    tbl
-      .string('name', 128)
-      .notNullable()
+    tbl.string('name', 128).notNullable();
 
-    tbl
-      .string('area_code', 128)
+    tbl.string('area_code', 128);
 
     tbl.string('category').notNullable();
 
@@ -38,6 +35,6 @@ exports.up = function (knex, Promise) {
   });
 };
 
-exports.down = function (knex, Promise) {
+exports.down = function(knex, Promise) {
   return knex.schema.dropTableIfExists('workflows');
 };
