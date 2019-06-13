@@ -3,11 +3,11 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const Users = require('../models/user-models');
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
+passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
@@ -16,7 +16,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: 'https://sauti-studio.herokuapp.com/auth/facebook/redirect',
+      callbackURL: process.env.REDIRECT_URL,
       profileFields: ['id', 'displayName', 'photos', 'email'],
     },
     (accessToken, refreshToken, profile, done) => {
@@ -39,7 +39,7 @@ passport.use(
 );
 
 const verifyGoogleUser = async (profile, done) => {
-  console.log(profile)
+  console.log(profile);
 
   const user = await Users.getByEmail(profile.emails[0].value);
 
@@ -49,7 +49,7 @@ const verifyGoogleUser = async (profile, done) => {
         display_name: profile.displayName,
         email: profile.emails[0].value,
         google_id: profile.id,
-        pic: profile._json.picture
+        pic: profile._json.picture,
       }).then(res => console.log(res));
       done(null, newUser);
     } else {
@@ -71,7 +71,7 @@ const verifyFacebookUser = async (profile, done) => {
         display_name: profile.displayName,
         email: profile.emails[0].value,
         facebook_id: profile.id,
-        pic: profile._pic
+        pic: profile._pic,
       });
       done(null, newFbookUser);
     } else {
