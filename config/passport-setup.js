@@ -3,11 +3,11 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const Users = require('../models/user-models');
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
@@ -33,20 +33,24 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
-      verifyUser(profile, done);
+      verifyGoogleUser(profile, done);
     }
   )
 );
 
-const verifyUser = async (profile, done) => {
+const verifyGoogleUser = async (profile, done) => {
+  console.log(profile)
+
   const user = await Users.getByEmail(profile.emails[0].value);
+
   try {
     if (!user) {
       const newUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
         google_id: profile.id,
-      });
+        pic: profile._json.picture
+      }).then(res => console.log(res));
       done(null, newUser);
     } else {
       done(null, user);
@@ -57,15 +61,17 @@ const verifyUser = async (profile, done) => {
 };
 
 const verifyFacebookUser = async (profile, done) => {
+  const fbookUser = await Users.getByEmail(profile.emails[0].value);
+
   console.log(profile);
 
-  const fbookUser = await Users.getByEmail(profile.emails[0].value);
   try {
     if (!fbookUser) {
       const newFbookUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
         facebook_id: profile.id,
+        pic: profile._pic
       });
       done(null, newFbookUser);
     } else {
