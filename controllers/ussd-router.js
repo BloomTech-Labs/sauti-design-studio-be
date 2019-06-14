@@ -18,17 +18,11 @@ const screen = {
 
 // Constructor for questions and options
 class BuildScreen {
-  constructor(args) {
-    (this.question = args.questionText), (this.options = args.options);
-  }
-
-  screenDetails() {
-    console.log(this.question, this.options);
+  constructor(screens) {
+    this.question = screens.questionText;
+    this.options = screens.options;
   }
 }
-const args = {
-  sessionId: req.body.sessionId,
-};
 
 function getSessionInfo(body) {
   const session = {
@@ -40,78 +34,75 @@ function getSessionInfo(body) {
   return session;
 }
 // DYNAMIC ROUTE HANDLER
-router.post('/', (req, res) => {
-  // create a new menu for each request
-  const menu = createMenu();
-  const session = getSessionInfo(req.body);
-  const ussdSess = UssdModel.addSession(session.sessionId)
-    .then(response => {
-      console.log(response);
-    })
-    .catch(e => {
-      res.status(500).json(e);
+router.post('/', async (req, res) => {
+  try {
+    // create a new menu for each request
+    const menu = createMenu();
+    const session = getSessionInfo(req.body);
+    const ussdSess = await UssdModel.addSession(session.sessionId);
+    // construct questions and options object for a given flow
+    const newScreen = new BuildScreen(screen);
+
+    // format options to be sent to AfricasTalking API
+    const nextState = newScreen.options.reduce(
+      (obj, item) => ({
+        ...obj,
+        ...{ [item.number]: item.text },
+      }),
+      {}
+    );
+
+    // Format options to be displayed to clients
+    const screenOpts = newScreen.options;
+    const currentOption = Object.keys(screenOpts)
+      .map((obj, i) => `${screenOpts[obj].number}. ${screenOpts[obj].text}`)
+      .toString()
+      .split(',')
+      .join('\n');
+    //   Format questions to be sent to be displayed to clients
+    const currentQuestion = `${newScreen.question} \n${currentOption}`;
+
+    // The first menu shown to clients
+    menu.startState({
+      run: () => {
+        menu.con(currentQuestion);
+      },
+      next: nextState,
     });
-  // construct questions and options object for a given flow
-  const newScreen = new BuildScreen(screen);
+    menu.state('Home', {
+      run: () => {
+        menu.con(currentQuestion);
+      },
+      next: nextState,
+    });
+    menu.state('Show Balance', {
+      run: () => {
+        const balance = '234,434,344';
+        menu.end(`Your balance is USD${balance}`);
+      },
+    });
 
-  // format options to be sent to AfricasTalking API
-  const nextState = newScreen.options.reduce(
-    (obj, item) => ({
-      ...obj,
-      ...{ [item.number]: item.text },
-    }),
-    {}
-  );
+    menu.state('Buy Airtime', {
+      run: () => {
+        menu.con('Enter amount: \n1. Go Back');
+      },
+      next: {
+        '*\\d+': 'buyAirtime.amount',
+        '1': 'Home'
+      },
+    });
+    menu.state('buyAirtime.amount', {
+      run: () => {
+        menu.end('Airtime bought successfully!');
+      },
+    });
 
-  // Format options to be displayed to clients
-  const screenOpts = newScreen.options;
-  const currentOption = Object.keys(screenOpts)
-    .map((obj, i) => `${screenOpts[obj].number}. ${screenOpts[obj].text}`)
-    .toString()
-    .split(',')
-    .join('\n');
-
-  //   Format questions to be sent to be displayed to clients
-  const currentQuestion = `${newScreen.question} \n${currentOption}`;
-
-  // The first menu shown to clients
-  menu.startState({
-    run: () => {
-      menu.con(currentQuestion);
-    },
-    next: nextState,
-  });
-  menu.state('Home', {
-    run: () => {
-      menu.con(currentQuestion);
-    },
-    next: nextState,
-  });
-  menu.state('Show Balance', {
-    run: () => {
-      const balance = '234,434,344';
-      menu.end(`Your balance is USD${balance}`);
-    },
-  });
-
-  menu.state('Buy Airtime', {
-    run: () => {
-      menu.con('Enter amount: \n1. Go Back');
-    },
-    next: {
-      '*\\d+': 'buyAirtime.amount',
-      '1': 'Home'
-    },
-  });
-  menu.state('buyAirtime.amount', {
-    run: () => {
-      menu.end('Airtime bought successfully!');
-    },
-  });
-
-  menu.run(req.body, msg => {
-    res.send(msg);
-  });
+    menu.run(req.body, msg => {
+      res.send(msg);
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.get('/', (req, res) => {
