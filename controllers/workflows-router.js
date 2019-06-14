@@ -29,23 +29,41 @@ router.get('/', restricted, async (req, res) => {
 });
 
 // GET SPECEFIC ID OF WORKFLOW
+// router.get('/:id', async (req, res) => {
+//   const workflows = await Workflows.getBy({
+//     id: req.params.id,
+//     user_id: req.user.id,
+//   });
+//   try {
+//     if (workflows) {
+//       res.status(200).json(workflows);
+//     } else {
+//       res
+//         .status(404)
+//         .json({ message: 'workflow with taht ID does not exist.' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: ' Error retrieving that workflow' });
+//   }
+// });
+
+
 router.get('/:id', async (req, res) => {
-  const workflows = await Workflows.getBy({
-    id: req.params.id,
-    user_id: req.user.id,
-  });
+
+  const { user } = req
+  const workflow = await Workflows.getBy({ id: req.params.id, user_id: user.id }).first()
+
   try {
-    if (workflows) {
-      res.status(200).json(workflows);
+    if (!workflow) {
+      res.status(404).json({ message: `Workflow ${req.params.id} does not exist.` })
     } else {
-      res
-        .status(404)
-        .json({ message: 'workflow with taht ID does not exist.' });
+      res.status(200).json(workflow)
     }
   } catch (error) {
-    res.status(500).json({ error: ' Error retrieving that workflow' });
+    res.status(500).json({ message: "Problem retrieving the workflow" })
   }
-});
+
+})
 
 // POSTS THE WORKFLOW
 router.post('/', (req, res) => {
@@ -57,6 +75,7 @@ router.post('/', (req, res) => {
   const user_id = req.user.id;
 
   const workflow = {
+    user_id,
     name,
     category,
   };
