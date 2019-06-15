@@ -47,23 +47,25 @@ router.get('/', restricted, async (req, res) => {
 //   }
 // });
 
-
 router.get('/:id', async (req, res) => {
-
-  const { user } = req
-  const workflow = await Workflows.getBy({ id: req.params.id, user_id: user.id }).first()
+  const { user } = req;
+  const workflow = await Workflows.getBy({
+    id: req.params.id,
+    user_id: user.id,
+  }).first();
 
   try {
     if (!workflow) {
-      res.status(404).json({ message: `Workflow ${req.params.id} does not exist.` })
+      res
+        .status(404)
+        .json({ message: `Workflow ${req.params.id} does not exist.` });
     } else {
-      res.status(200).json(workflow)
+      res.status(200).json(workflow);
     }
   } catch (error) {
-    res.status(500).json({ message: "Problem retrieving the workflow" })
+    res.status(500).json({ message: 'Problem retrieving the workflow' });
   }
-
-})
+});
 
 // POSTS THE WORKFLOW
 router.post('/', (req, res) => {
