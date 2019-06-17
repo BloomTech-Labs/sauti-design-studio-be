@@ -32,4 +32,18 @@ router.put('/', async (req, res) => {
   }
 });
 
+router.delete('/:id', async(req,res) => {
+// DELETE USER PROFILE
+  try {
+    const deleteUserProfile = await ProfileModel.deleteUser(
+      req.params.id
+    );
+    if (deleteUserProfile)
+      res
+        .status(200)
+        .json({ message: 'You have successfully deleted the user-profile' });
+  } catch (error) {
+    res.status(500).json({ message: 'Unable to delete this user-profile.' });
+  }
+});
 module.exports = router;

@@ -26,9 +26,9 @@ class BuildScreen {
     console.log(this.question, this.options);
   }
 }
-const args = {
-  sessionId: req.body.sessionId,
-};
+// const args = {
+//   sessionId: req.body.sessionId,
+// };
 
 function getSessionInfo(body) {
   const session = {
