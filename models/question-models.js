@@ -3,30 +3,33 @@ const db = require('../database/dbConfig');
 module.exports = {
   find,
   getBy,
-  getById,
   add,
   updateQuestion,
   removeQuestion,
 };
 
-function find() {
-  return db('questions');
+function find(user_id, workflow_id) {
+  return db('questions_answers')
+    .join('questions', { 'questions_answers.question_id': 'questions.id' })
+    .where({
+      'questions_answers.workflow_id': workflow_id,
+    });
+}
+
+async function add(user_id, workflow_id, question_text) {
+  const [id] = await db('questions')
+    .insert({ question_text })
+    .returning('id');
+
+  const question_id = id;
+
+  await db('questions_answers').insert({ workflow_id, question_id });
+
+  return await find(user_id, workflow_id);
 }
 
 function getBy(filter) {
   return db('questions').where(filter);
-}
-
-function getById(id) {
-  return db('questions')
-    .where({ id })
-    .first();
-}
-
-function add(client) {
-  return db('questions')
-    .insert(client, 'id')
-    .then(id => find(id[0]));
 }
 
 function updateQuestion(id, changes) {
@@ -35,7 +38,7 @@ function updateQuestion(id, changes) {
     .update(changes);
 }
 
-function removeQuestion(id) {
+async function removeQuestion(id) {
   return db('questions')
     .where('id', id)
     .del();

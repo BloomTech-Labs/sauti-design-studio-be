@@ -9,45 +9,30 @@ const Questions = require('../models/question-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE USER WORKFLOWS
-router.get('/', restricted, async (req, res) => {
+router.get('/:workflow_id', async (req, res) => {
+  const { workflow_id } = req.params;
+  const { id: user_id } = req.user;
+
   try {
-    const questions = await Questions.find(req.params.id);
+    const questions = await Questions.find(user_id, workflow_id);
+
+    console.log(questions);
     res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user questions' });
   }
 });
 
-// GET SPECEFIC ID OF USER WORKFLOWS
-
-router.get('/:id', async (req, res) => {
-  const questions = await Questions.getById(req.params.id);
+router.post('/:workflow_id', async (req, res) => {
+  const { workflow_id } = req.params;
+  const { question_text } = req.body;
+  const { id: user_id } = req.user;
   try {
-    if (questions) {
-      res.status(200).json(questions);
-    } else {
-      res
-        .status(404)
-        .json({ message: 'Question with that ID does not exist.' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: ' Error retrieving that question' });
-  }
-});
-
-// POST - CREATES NEW
-router.post('/', async (req, res) => {
-  const { options, question_text, option_number } = req.body;
-  if (!options || !question_text || !option_number) {
-    res.status(400).json({ message: 'Please provide missing information' });
-  }
-  try {
-    const answerPosts = await Questions.add(req.body);
-    res.json(answerPosts);
-  } catch (err) {
     res
-      .status(500)
-      .json({ err: 'The question could not be added at this time.' });
+      .status(200)
+      .json(await Questions.add(user_id, workflow_id, question_text));
+  } catch (e) {
+    res.status(500).json(e);
   }
 });
 
@@ -70,6 +55,7 @@ router.put('/:id', async (req, res) => {
     });
   }
 });
+
 // DELETE QUestions
 router.delete('/:id', async (req, res) => {
   try {

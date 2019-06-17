@@ -4,4 +4,6 @@ function addSession(sess) {
   return db('sessions').insert(sess, 'id');
 }
 
-module.exports = addSession;
+module.exports = {
+  addSession,
+};

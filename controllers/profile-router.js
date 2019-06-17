@@ -32,12 +32,10 @@ router.put('/', async (req, res) => {
   }
 });
 
-router.delete('/:id', async(req,res) => {
-// DELETE USER PROFILE
+router.delete('/:id', async (req, res) => {
+  // DELETE USER PROFILE
   try {
-    const deleteUserProfile = await ProfileModel.deleteUser(
-      req.params.id
-    );
+    const deleteUserProfile = await ProfileModel.deleteUser(req.params.id);
     if (deleteUserProfile)
       res
         .status(200)

@@ -1,28 +1,34 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('client_response', tbl => {
+  return knex.schema.createTable('questions_answers', tbl => {
     tbl.increments();
+
     tbl
-      .integer('question_id')
+      .integer('workflow_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('questions')
+      .inTable('workflows')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
     tbl
       .integer('answer_id')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('answers')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
-    tbl.string('response_text', 128);
+    tbl
+      .integer('question_id')
+      .unsigned()
+      .references('id')
+      .inTable('questions')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('client_response');
+  return knex.schema.dropTableIfExists('questions_answers');
 };

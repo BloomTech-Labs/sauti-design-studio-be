@@ -3,7 +3,7 @@ const db = require('../database/dbConfig');
 module.exports = {
   getById,
   updateUser,
-  deleteUser
+  deleteUser,
 };
 
 function getById(id) {
