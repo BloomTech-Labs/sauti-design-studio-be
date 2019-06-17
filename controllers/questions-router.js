@@ -9,40 +9,30 @@ const Questions = require('../models/question-models');
 const restricted = require('../controllers/authCheck');
 
 // GETS ALL THE USER WORKFLOWS
-router.get('/:wfId', async (req, res) => {
-  // const { id } = req.user
-  const { wfId } = req.params;
-  const { id } = req.user;
+router.get('/:workflow_id', async (req, res) => {
+  const { workflow_id } = req.params;
+  const { id:user_id } = req.user;
 
   try {
-    const questions = await Questions.find(id, wfId);
+    const questions = await Questions.find(101, workflow_id);
+
+    console.log(questions)
     res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user questions' });
   }
 });
 
-router.post('/', async (req, res) => {
-  const user_id = req.user.id;
-  const { workflow_id, question_text, option_number } = req.body;
-
-  const question_id = await Questions.getId(question_text, option_number).then(
-    res => res.id
-  );
-
-  const newQuestion = await Questions.add(
-    user_id,
-    workflow_id,
-    question_text,
-    option_number
-  ).then(() => Questions.assign(user_id, workflow_id, question_id));
-
-  console.log(question_id);
+router.post('/:workflow_id', async (req, res) => {
+  const { workflow_id } = req.params
+  const { question_text, option_number } = req.body
+  const { id: user_id } = req.user
   try {
-    res.status(200).json(newQuestion);
+    res.status(200).json(await Questions.add(user_id, workflow_id, question_text, option_number))
   } catch (e) {
-    res.status(500).json(newQuestion);
+    res.status(500).json(e)
   }
+
 });
 
 // UPDATES THE Questions
@@ -64,6 +54,7 @@ router.put('/:id', async (req, res) => {
     });
   }
 });
+
 // DELETE QUestions
 router.delete('/:id', async (req, res) => {
   try {
