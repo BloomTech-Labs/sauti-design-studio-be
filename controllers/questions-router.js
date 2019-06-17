@@ -11,12 +11,12 @@ const restricted = require('../controllers/authCheck');
 // GETS ALL THE USER WORKFLOWS
 router.get('/:workflow_id', async (req, res) => {
   const { workflow_id } = req.params;
-  const { id:user_id } = req.user;
+  const { id: user_id } = req.user;
 
   try {
-    const questions = await Questions.find(101, workflow_id);
+    const questions = await Questions.find(user_id, workflow_id);
 
-    console.log(questions)
+    console.log(questions);
     res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user questions' });
@@ -24,15 +24,16 @@ router.get('/:workflow_id', async (req, res) => {
 });
 
 router.post('/:workflow_id', async (req, res) => {
-  const { workflow_id } = req.params
-  const { question_text, option_number } = req.body
-  const { id: user_id } = req.user
+  const { workflow_id } = req.params;
+  const { question_text } = req.body;
+  const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Questions.add(user_id, workflow_id, question_text, option_number))
+    res
+      .status(200)
+      .json(await Questions.add(user_id, workflow_id, question_text));
   } catch (e) {
-    res.status(500).json(e)
+    res.status(500).json(e);
   }
-
 });
 
 // UPDATES THE Questions

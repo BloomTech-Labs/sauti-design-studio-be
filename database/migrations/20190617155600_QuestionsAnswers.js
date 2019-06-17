@@ -1,14 +1,6 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('workflow_questions', tbl => {
+  return knex.schema.createTable('questions_answers', tbl => {
     tbl.increments();
-    tbl
-      .integer('user_id')
-      .unsigned()
-      .notNullable()
-      .references('id')
-      .inTable('users')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
 
     tbl
       .integer('workflow_id')
@@ -20,9 +12,16 @@ exports.up = function(knex, Promise) {
       .onUpdate('CASCADE');
 
     tbl
+      .integer('answer_id')
+      .unsigned()
+      .references('id')
+      .inTable('answers')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
+
+    tbl
       .integer('question_id')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('questions')
       .onDelete('CASCADE')
@@ -31,5 +30,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('workflow_questions');
+  return knex.schema.dropTableIfExists('questions_answers');
 };
