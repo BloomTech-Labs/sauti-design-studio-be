@@ -3,13 +3,25 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('client_response', tbl => {
       tbl.increments();
       tbl
-      .integer('response_id')
+      .integer('question_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('questions','answers')
+      .inTable('questions')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
+
+      tbl
+      .integer('answer_id')
+      .unsigned()
+      .notNullable()
+      .references('id')
+      .inTable('answers')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
+
+    tbl
+    .string('response_text', 128)
 
   })
 };
