@@ -22,7 +22,8 @@ async function find(question_id) {
   const answers = await db('answers')
     // .select('answer_text', 'question_id')
     .where({ question_id });
-  const questions = await db('questions').where({ question_id });
+  const questions = await db('questions').where({ question_id })
+    .orderBy('order');
 
   return [...answers, ...questions];
 }
@@ -37,11 +38,12 @@ function getById(id) {
     .first();
 }
 
-async function add(answer_text, answer_number, question_id) {
+async function add(answer_text, answer_number, next, question_id) {
   const [id] = await db('answers')
     .insert({
       answer_text,
       answer_number,
+      next,
       question_id
     })
     .returning('id');

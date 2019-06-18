@@ -21,12 +21,12 @@ router.get('/:question_id', async (req, res) => {
 // POST - CREATES NEW
 router.post('/:question_id', async (req, res) => {
   const { question_id } = req.params;
-  const { answer_text, answer_number } = req.body;
+  const { answer_text, answer_number, next } = req.body;
 
   try {
     res
       .status(200)
-      .json(await Answers.add(answer_text, answer_number, question_id));
+      .json(await Answers.add(answer_text, answer_number, next, question_id));
   } catch (e) {
     res.status(500).json(e);
   }
@@ -48,6 +48,7 @@ router.put('/:id', async (req, res) => {
     });
   }
 });
+
 // DELETE ANSWERS - WORKS
 router.delete('/:id', async (req, res) => {
   try {
