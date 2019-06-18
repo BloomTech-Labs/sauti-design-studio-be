@@ -18,10 +18,13 @@ FROM
   JOIN questions_answers qa ON a.id = qa.answer_id
 */
 
-function find(question_id) {
-  return db('answers')
-    .select('answer_text', 'question_id')
+async function find(question_id) {
+  const answers = await db('answers')
+    // .select('answer_text', 'question_id')
     .where({ question_id });
+  const questions = await db('questions').where({ question_id });
+
+  return [...answers, ...questions];
 }
 
 function getBy(filter) {
@@ -52,8 +55,11 @@ function updateAnswer(id, changes) {
     .update(changes);
 }
 
-function removeAnswer(id) {
-  return db('answers')
+async function removeAnswer(id) {
+  const [question_id] = await db('answers')
     .where('id', id)
-    .del();
+    .del()
+    .returning('question_id');
+
+  return await find(question_id);
 }
