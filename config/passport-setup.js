@@ -39,19 +39,17 @@ passport.use(
 );
 
 const verifyGoogleUser = async (profile, done) => {
-  console.log(profile);
-
   const user = await Users.getByEmail(profile.emails[0].value);
 
   try {
     if (!user) {
-      const newUser = await Users.add({
+      const [id] = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
         google_id: profile.id,
         pic: profile._json.picture,
-      }).then(res => console.log(res));
-      done(null, newUser);
+      });
+      done(null, await Users.getById(id));
     } else {
       done(null, user);
     }
@@ -73,6 +71,7 @@ const verifyFacebookUser = async (profile, done) => {
         facebook_id: profile.id,
         pic: profile._pic,
       });
+
       done(null, newFbookUser);
     } else {
       done(null, fbookUser);
