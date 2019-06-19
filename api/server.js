@@ -21,8 +21,6 @@ const ProfileRouter = require('../controllers/profile-router');
 // middleware
 serverConfig(server);
 
-console.log(process.env.NODE_ENV);
-
 server.use(
   cookieSession({
     name: 'cookie',
