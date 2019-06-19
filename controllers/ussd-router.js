@@ -9,7 +9,7 @@ const createMenu = () => {
 };
 
 const screen = {
-  questionText: 'Welcome! What would you like to look up?',
+  questionText: 'Welcome to Sauti Studio!',
   options: [
     { number: 1, text: 'Show Balance' },
     { number: 2, text: 'Buy Airtime' }
