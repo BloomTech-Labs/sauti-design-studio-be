@@ -6,11 +6,26 @@ module.exports = {
   getById,
   add,
   updateAnswer,
-  removeAnswer,
+  removeAnswer
 };
 
-function find() {
-  return db('answers');
+/*
+SELECT
+	answer_text,
+	answer_text
+FROM
+	answers a
+  JOIN questions_answers qa ON a.id = qa.answer_id
+*/
+
+async function find(question_id) {
+  const answers = await db('answers')
+    // .select('answer_text', 'question_id')
+    .where({ question_id });
+  const questions = await db('questions').where({ question_id })
+    .orderBy('order');
+
+  return [...answers, ...questions];
 }
 
 function getBy(filter) {
@@ -23,19 +38,30 @@ function getById(id) {
     .first();
 }
 
-function add(answer) {
-  return db('answers')
-    .insert(answer, 'id')
-    .then(id => find(id[0]));
+async function add(answer_text, answer_number, next, question_id) {
+  const [id] = await db('answers')
+    .insert({
+      answer_text,
+      answer_number,
+      next,
+      question_id
+    })
+    .returning('id');
+
+  return await find(question_id);
 }
+
 function updateAnswer(id, changes) {
   return db('answers')
     .where({ id })
     .update(changes);
 }
 
-function removeAnswer(id) {
-  return db('answers')
+async function removeAnswer(id) {
+  const [question_id] = await db('answers')
     .where('id', id)
-    .del();
+    .del()
+    .returning('question_id');
+
+  return await find(question_id);
 }
