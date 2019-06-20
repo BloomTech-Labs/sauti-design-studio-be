@@ -13,7 +13,7 @@ exports.up = function(knex, Promise) {
 
     tbl.string('name', 128).notNullable();
 
-    tbl.string('area_code', 128);
+    tbl.string('service_code');
 
     tbl.string('category').notNullable();
 
