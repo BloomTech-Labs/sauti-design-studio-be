@@ -11,6 +11,6 @@ module.exports = {
     key: process.env.PUSHER_KEY,
     secret: process.env.PUSHER_SECRET,
     cluster: 'us2',
-    encrypted: true,
+    // encrypted: true,
   },
 };
