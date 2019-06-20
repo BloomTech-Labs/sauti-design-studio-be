@@ -25,10 +25,11 @@ class BuildScreen {
 }
 
 function getSessionInfo(body) {
+  console.log(body);
   const session = {
-    session_id: body.session_id,
-    phone_num: body.phone_num,
-    service_code: body.service_code,
+    session_id: body.sessionId,
+    phone_num: body.phoneNumber,
+    service_code: body.serviceCode,
     text: body.text,
   };
   return session;
