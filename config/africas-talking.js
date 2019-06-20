@@ -7,9 +7,9 @@ module.exports = {
     format: 'json',
   },
   pusher: {
-    appId: '808353',
-    key: '5f2f3ae5e4171e326f3f',
-    secret: 'a3c402f0a3e3d243701f',
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_KEY,
+    secret: process.env.PUSHER_SECRET,
     cluster: 'us2',
     encrypted: true,
   },
