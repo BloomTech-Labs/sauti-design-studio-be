@@ -1,111 +1,73 @@
 const router = require('express').Router();
-const UssdMenu = require('ussd-menu-builder');
-const UssdModel = require('../models/ussd-model');
 
 // Function to create a new menu. Recommended to create a new menu for each request
-const createMenu = () => {
-  const menu = new UssdMenu();
-  return menu;
-};
+// configure AT
+const webURL = 'http://foodigo.com/menu';
+const welcomeMsg = `CON Hello and welcome to Foodigo.
+Have your food delivered to you fast and hot!
+Please find our menu ${webURL}
+Enter your name to continue`;
 
-const screen = {
-  questionText: 'Welcome to Sauti Studio!',
-  options: [
-    { number: 1, text: 'Show Balance' },
-    { number: 2, text: 'Buy Airtime' }
-  ],
+const orderDetails = {
+  name: '',
+  description: '',
+  address: '',
+  telephone: '',
+  open: true,
 };
+let lastData = '';
 
-// Constructor for questions and options
-class BuildScreen {
-  constructor(screens) {
-    this.question = screens.questionText;
-    this.options = screens.options;
+router.post('/', function(req, res) {
+  console.log(req.body);
+  let message = 'Hello';
+
+  const { sessionId } = req.body;
+  const { serviceCode } = req.body;
+  const { phoneNumber } = req.body;
+  const { text } = req.body;
+  const textValue = text.split('*').length;
+
+  if (text === '') {
+    message = welcomeMsg;
+  } else if (textValue === 1) {
+    message = 'CON What do you want to eat?';
+    orderDetails.name = text;
+  } else if (textValue === 2) {
+    message = 'CON Where do we deliver it?';
+    orderDetails.description = text.split('*')[1];
+  } else if (textValue === 3) {
+    message = "CON What's your telephone number?";
+    orderDetails.address = text.split('*')[2];
+  } else if (textValue === 4) {
+    message = `CON Would you like to place this order?
+        1. Yes
+        2. No`;
+    lastData = text.split('*')[3];
+  } else {
+    message = `END Thanks for your order
+        Enjoy your meal in advance`;
+    orderDetails.telephone = lastData;
   }
-}
 
-function getSessionInfo(body) {
-  const session = {
-    sessionId: body.sessionId,
-    phoneNumber: body.phoneNumber,
-    serviceCode: body.serviceCode,
-    text: body.text,
-  };
-  return session;
-}
-// DYNAMIC ROUTE HANDLER
-router.post('/', async (req, res) => {
-  try {
-    // create a new menu for each request
-    const menu = createMenu();
-    const session = getSessionInfo(req.body);
-    const ussdSess = await UssdModel.addSession(session.sessionId);
-    // construct questions and options object for a given flow
-    const newScreen = new BuildScreen(screen);
+  res.contentType('text/plain');
+  res.send(message, 200);
 
-    // format options to be sent to AfricasTalking API
-    const nextState = newScreen.options.reduce(
-      (obj, item) => ({
-        ...obj,
-        ...{ [item.number]: item.text },
-      }),
-      {}
-    );
-
-    // Format options to be displayed to clients
-    const screenOpts = newScreen.options;
-    const currentOption = Object.keys(screenOpts)
-      .map((obj, i) => `${screenOpts[obj].number}. ${screenOpts[obj].text}`)
-      .toString()
-      .split(',')
-      .join('\n');
-    //   Format questions to be sent to be displayed to clients
-    const currentQuestion = `${newScreen.question} \n${currentOption}`;
-
-    // The first menu shown to clients
-    menu.startState({
-      run: () => {
-        menu.con(currentQuestion);
-      },
-      next: nextState,
-    });
-    menu.state('Home', {
-      run: () => {
-        menu.con(currentQuestion);
-      },
-      next: nextState,
-    });
-    menu.state('Show Balance', {
-      run: () => {
-        const balance = '234,434,344';
-        menu.end(`Your balance is USD${balance}`);
-      },
-    });
-
-    menu.state('Buy Airtime', {
-      run: () => {
-        menu.con('Enter amount: \n1. Go Back');
-      },
-      next: {
-        '*\\d+': 'buyAirtime.amount',
-        '1': 'Home'
-      },
-    });
-    menu.state('buyAirtime.amount', {
-      run: () => {
-        menu.end('Airtime bought successfully!');
-      },
-    });
-
-    menu.run(req.body, msg => {
-      res.send(msg);
-    });
-  } catch (error) {
-    res.status(500).json(error);
+  console.log(orderDetails);
+  if (
+    orderDetails.name !== '' &&
+    orderDetails.address !== '' &&
+    orderDetails.description !== '' &&
+    orderDetails.telephone !== ''
+  ) {
+    pusher.trigger('orders', 'customerOrder', orderDetails);
+  }
+  if (orderDetails.telephone !== '') {
+    // reset data
+    orderDetails.name = '';
+    orderDetails.description = '';
+    orderDetails.address = '';
+    orderDetails.telephone = '';
   }
 });
 
-router.get('/', (req, res) => {
-  res.send('Welcome to the Sauti Ussd Portal');
-});
 module.exports = router;

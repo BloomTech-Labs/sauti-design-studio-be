@@ -41,7 +41,7 @@
 
 // app.post('/order', function(req, res){
 //     console.log(req.body);
-//     var message = 'Hello' 
+//     var message = 'Hello'
 
 //     var sessionId = req.body.sessionId
 //     var serviceCode = req.body.serviceCode
@@ -68,9 +68,9 @@
 //     }else{
 //         message = `END Thanks for your order
 //         Enjoy your meal in advance`
-//         orderDetails.telephone = lastData   
+//         orderDetails.telephone = lastData
 //     }
-    
+
 //     res.contentType('text/plain');
 //     res.send(message, 200);
 
@@ -87,7 +87,7 @@
 //     }
 
 // })
-// //listen on port 
+// //listen on port
 // app.listen(port, function(err, res){
 //     if(err) throw err
 //     console.log("Booming on the legendary port " + port)

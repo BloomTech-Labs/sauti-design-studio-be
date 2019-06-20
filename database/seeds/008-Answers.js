@@ -1,4 +1,4 @@
-exports.seed = function (knex, Promise) {
+exports.seed = function(knex, Promise) {
   // Inserts seed entries
   return knex('answers').insert([
     { answer_text: 'You are cool', answer_number: 1, question_id: 1 },

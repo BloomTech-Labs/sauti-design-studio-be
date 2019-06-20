@@ -1,9 +1,9 @@
-exports.up = function (knex, Promise) {
+exports.up = function(knex, Promise) {
   return knex.schema.createTable('answers', tbl => {
     tbl.increments();
     tbl.string('answer_text', 128).notNullable();
     tbl.integer('answer_number').unsigned();
-    tbl.integer('next')
+    tbl.integer('next');
     tbl
       .integer('question_id')
       .unsigned()
@@ -14,6 +14,6 @@ exports.up = function (knex, Promise) {
   });
 };
 
-exports.down = function (knex, Promise) {
+exports.down = function(knex, Promise) {
   return knex.schema.dropTableIfExists('answers');
 };

@@ -39,12 +39,12 @@ router.put('/:id', async (req, res) => {
     if (updateAnswer)
       res.status(200).json({
         message: `Client: ${updateClient}`,
-        updateClientInfo: req.body
+        updateClientInfo: req.body,
       });
   } catch (error) {
     res.status(500).json({
       message:
-        'Unable to update the client at this time.. please try again later'
+        'Unable to update the client at this time.. please try again later',
     });
   }
 });
@@ -52,9 +52,7 @@ router.put('/:id', async (req, res) => {
 // DELETE ANSWERS - WORKS
 router.delete('/:id', async (req, res) => {
   try {
-    res
-      .status(200)
-      .json(await Answers.removeAnswer(req.params.id));
+    res.status(200).json(await Answers.removeAnswer(req.params.id));
   } catch (error) {
     res.status(500).json({ message: 'Unable to delete this Answer.' });
   }
