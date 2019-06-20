@@ -18,6 +18,16 @@ const AuthRouter = require('../controllers/auth-router');
 const authCheck = require('../controllers/authCheck');
 const ProfileRouter = require('../controllers/profile-router');
 
+
+//USSD
+const Pusher = require('pusher')
+const credentials = require('./cred')
+const africastalking = require('africastalking')(credentials.AT)
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const express = require('express')
+const path = require('path')
+
 // middleware
 serverConfig(server);
 
@@ -61,4 +71,9 @@ server.get('/logout', (req, res) => {
   res.status(400).redirect(`${process.env.FRONTEND_URL}`);
 });
 
+
+//ENDPOINT FOR HOMEPAGE
+server.get('/', function(req, res){
+  res.sendFile(path.join(__dirname + "/index.html"))
+})
 module.exports = server;
