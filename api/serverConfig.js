@@ -11,8 +11,8 @@ const corsOptions = {
 module.exports = server => {
   server.use(helmet());
   server.use(express.json());
-  server.use(bodyParser.urlencoded({extended:false}))
-  server.use(bodyParser.json())
+  // server.use(bodyParser.urlencoded({extended:false}))
+  // server.use(bodyParser.json())
   server.use(cors(corsOptions));
   server.use(morgan('dev'));
 };

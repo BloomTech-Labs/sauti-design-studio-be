@@ -21,12 +21,13 @@ const ProfileRouter = require('../controllers/profile-router');
 
 //USSD
 const Pusher = require('pusher')
-const credentials = require('./cred')
+const credentials = require('../config/cred')
 const africastalking = require('africastalking')(credentials.AT)
-const cors = require('cors')
 const bodyParser = require('body-parser')
-const express = require('express')
 const path = require('path')
+
+
+const pusher = new Pusher(credentials.pusher)
 
 // middleware
 serverConfig(server);

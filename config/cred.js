@@ -24,7 +24,7 @@
 
     module.exports = {
         AT:{
-            apiKey: '3df078f60548ec5e6ab8771f574554920c620960aa46ca30808aef55ca4e92b2',         // use your sandbox app API key for development in the test environment
+            apiKey: '82793ca1a7f48edda028259ad56468368c6c6f0a6af1b4d610fab01913f608f8',         // use your sandbox app API key for development in the test environment
             username: 'sandbox',
             format: 'json'
         },
