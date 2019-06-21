@@ -25,12 +25,12 @@ router.get('/:workflow_id', async (req, res) => {
 
 router.post('/:workflow_id', async (req, res) => {
   const { workflow_id } = req.params;
-  const { question_text } = req.body;
+  const { question_text, order } = req.body;
   const { id: user_id } = req.user;
   try {
     res
       .status(200)
-      .json(await Questions.add(user_id, workflow_id, question_text));
+      .json(await Questions.add(workflow_id, question_text, order));
   } catch (e) {
     res.status(500).json(e);
   }
