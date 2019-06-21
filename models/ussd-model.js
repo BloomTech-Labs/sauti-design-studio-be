@@ -17,6 +17,23 @@ async function addSession(sess) {
   return id;
 }
 
+const getScreenQuestions = async (workflow_id, order) => {
+  const question = await db('questions')
+    .where({ workflow_id, order })
+    .first();
+  // console.log('TCL: getScreenQuestions -> question', question);
+
+  const answers = await db('answers')
+    .where({ question_id: question.id })
+    .orderBy('answer_number');
+  // console.log('TCL: getScreenQuestions -> answers', answers);
+
+  return {
+    questionText: question.question_text,
+    options: answers,
+  };
+};
 module.exports = {
   addSession,
+  getScreenQuestions,
 };

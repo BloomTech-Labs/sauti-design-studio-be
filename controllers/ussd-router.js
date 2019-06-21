@@ -11,8 +11,8 @@ const createMenu = () => {
 const screen = {
   questionText: 'Welcome to Sauti Studio!',
   options: [
-    { number: 1, text: 'Show Balance' },
-    { number: 2, text: 'Buy Airtime' },
+    { answer_number: 1, answer_text: 'Show Balance' },
+    { answer_number: 2, answer_text: 'Buy Airtime' },
   ],
 };
 
@@ -40,8 +40,11 @@ router.post('/', async (req, res) => {
     const menu = createMenu();
     const session = getSessionInfo(req.body);
     const workflow_id = await UssdModel.addSession(session);
+    const questions = await UssdModel.getScreenQuestions(workflow_id, 1);
+    console.log('TCL: questions', questions);
+
     // construct questions and options object for a given flow
-    const newScreen = new BuildScreen(screen);
+    const newScreen = new BuildScreen(questions);
 
     // format options to be sent to AfricasTalking API
     const nextState = newScreen.options.reduce(
@@ -55,7 +58,10 @@ router.post('/', async (req, res) => {
     // Format options to be displayed to clients
     const screenOpts = newScreen.options;
     const currentOption = Object.keys(screenOpts)
-      .map((obj, i) => `${screenOpts[obj].number}. ${screenOpts[obj].text}`)
+      .map(
+        (obj, i) =>
+          `${screenOpts[obj].answer_number}. ${screenOpts[obj].answer_text}`
+      )
       .toString()
       .split(',')
       .join('\n');
