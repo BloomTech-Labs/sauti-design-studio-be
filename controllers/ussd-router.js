@@ -25,7 +25,6 @@ class BuildScreen {
 }
 
 function getSessionInfo(body) {
-  console.log(body);
   const session = {
     session_id: body.sessionId,
     phone_num: body.phoneNumber,
@@ -41,7 +40,6 @@ router.post('/', async (req, res) => {
     const menu = createMenu();
     const session = getSessionInfo(req.body);
     const workflow_id = await UssdModel.addSession(session);
-    console.log('TCL: workflow_id', workflow_id);
     // construct questions and options object for a given flow
     const newScreen = new BuildScreen(screen);
 
