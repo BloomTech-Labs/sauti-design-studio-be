@@ -40,7 +40,8 @@ router.post('/', async (req, res) => {
     // create a new menu for each request
     const menu = createMenu();
     const session = getSessionInfo(req.body);
-    const ussdSess = await UssdModel.addSession(session);
+    const workflow_id = await UssdModel.addSession(session);
+    console.log('TCL: workflow_id', workflow_id);
     // construct questions and options object for a given flow
     const newScreen = new BuildScreen(screen);
 
@@ -60,7 +61,8 @@ router.post('/', async (req, res) => {
       .toString()
       .split(',')
       .join('\n');
-    //   Format questions to be sent to be displayed to clients
+
+    // Format questions to be sent to be displayed to clients
     const currentQuestion = `${newScreen.question} \n${currentOption}`;
 
     // The first menu shown to clients
