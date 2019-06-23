@@ -1,28 +1,33 @@
+/* eslint-disable no-useless-concat */
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');
 const router = require('express').Router();
-
+const _ = require('lodash');
 // Function to create a new menu. Recommended to create a new menu for each request
-const createMenu = () => {
-  const menu = new UssdMenu();
-  return menu;
-};
-
-const screen = {
-  questionText: 'Welcome to Sauti Studio!',
-  options: [
-    { answer_number: 1, answer_text: 'Show Balance' },
-    { answer_number: 2, answer_text: 'Buy Airtime' },
-  ],
-};
-
+const createMenu = () => new UssdMenu();
 // Constructor for questions and options
-class BuildScreen {
-  constructor(screens) {
-    this.question = screens.questionText;
-    this.options = screens.options;
-  }
-}
+
+// format options to be sent to AfricasTalking API
+const makeNextState = options =>
+  options.reduce(
+    (obj, item) => ({
+      ...obj,
+      ...{ [item.number]: item.text },
+    }),
+    {}
+  );
+
+// Format options to be displayed to clients
+const makeCurrentOption = screen =>
+  Object.keys(screen.options)
+    .map((obj, i) => `${screen[obj].order}. ${screen[obj].question_text}`)
+    .toString()
+    .join("' \n'")
+    .slice('\n', '');
+
+// Format questions to be sent to be displayed to clients
+const makeCurrentQuestion = (screen, currentOption) =>
+  `${screen.question} \n${currentOption}`;
 
 function getSessionInfo(body) {
   const session = {
@@ -33,76 +38,77 @@ function getSessionInfo(body) {
   };
   return session;
 }
+
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
   try {
     // create a new menu for each request
     const menu = createMenu();
     const session = getSessionInfo(req.body);
-    const workflow_id = await UssdModel.addSession(session);
-    const questions = await UssdModel.getScreenQuestions(workflow_id, 1);
-    console.log('TCL: questions', questions);
+    const service_code = await UssdModel.addSession(session);
+    // const questions = await UssdModel.getScreenQuestions(service_code, 1);
 
     // construct questions and options object for a given flow
-    const newScreen = new BuildScreen(questions);
+    const newScreen = await UssdModel.makeNewScreen(1);
 
-    // format options to be sent to AfricasTalking API
-    const nextState = newScreen.options.reduce(
-      (obj, item) => ({
-        ...obj,
-        ...{ [item.number]: item.text },
-      }),
-      {}
-    );
+    // console.log('TCL: newScreen', newScreen);
 
-    // Format options to be displayed to clients
-    const screenOpts = newScreen.options;
-    const currentOption = Object.keys(screenOpts)
-      .map(
-        (obj, i) =>
-          `${screenOpts[obj].answer_number}. ${screenOpts[obj].answer_text}`
-      )
-      .toString()
-      .split(',')
-      .join('\n');
+    const allScreens = await UssdModel.getAllScreens(1);
+    console.log('TCL: allScreens', allScreens);
 
-    // Format questions to be sent to be displayed to clients
-    const currentQuestion = `${newScreen.question} \n${currentOption}`;
+    // const currentOption = makeCurrentOption(newScreen);
+    // console.log('TCL: currentOption', currentOption);
 
-    // The first menu shown to clients
     menu.startState({
       run: () => {
-        menu.con(currentQuestion);
+        // use menu.con() to send response without terminating session
+        menu.con(allScreens.startScreen.question);
       },
-      next: nextState,
+      // next object links to next state based on user input
+      next: allScreens.startScreen.next,
     });
-    menu.state('Home', {
+
+    // menu.state(newScreen.title, {
+    //   run: () => {
+    //     menu.con('Enter amount:');
+    //   },
+    //   next: {
+    //     // using regex to match user input to next state
+    //     '*\\d+': 'buyAirtime.amount',
+    //   },
+    // });
+
+    for (const screen of allScreens.screens) {
+      menu.state(screen.menu, {
+        run: async () => {
+          menu.end(await UssdModel.getScreenData(screen.id));
+          // menu.end(screen.id);
+          // menu.end({
+          //   id: screen.id,
+          //   menu: screen.menu,
+          // });
+          console.log('TCL: screen', screen);
+        },
+        next: {
+          // using regex to match user input to next state
+          '*\\d+': 'buyAirtime.amount',
+        },
+      });
+    }
+
+    // console.log('TCL: menu.state', menu.states);
+
+    menu.state('buyAirtime', {
       run: () => {
-        menu.con(currentQuestion);
+        menu.con('Enter amount:');
       },
-      next: nextState,
-    });
-    menu.state('Show Balance', {
-      run: () => {
-        const balance = '234,434,344';
-        menu.end(`Your balance is USD${balance}`);
+      next: {
+        // using regex to match user input to next state
+        '*\\d+': 'buyAirtime.amount',
       },
     });
 
-    menu.state('Buy Airtime', {
-      run: () => {
-        menu.con('Enter amount: \n1. Go Back');
-      },
-      next: {
-        '*\\d+': 'buyAirtime.amount',
-        '1': 'Home',
-      },
-    });
-    menu.state('buyAirtime.amount', {
-      run: () => {
-        menu.end('Airtime bought successfully!');
-      },
-    });
+    console.log('TCL: menu', menu);
 
     menu.run(req.body, msg => {
       res.send(msg);
