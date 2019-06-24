@@ -4,22 +4,18 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const addSession = async session => {
-  const info = session.text.split('*');
-  const filter = { user_id: Number(info[0]), workflow: Number(info[1]) };
-  await db('sessions').insert({
-    session_id: session.session_id,
-    phone_num: session.phone_num,
-    service_code: session.service_code,
-    text: '',
-    workflow: filter.workflow,
-  });
+  const active = await db('sessions').where({ session_id: session.session_id });
 
-  return filter.workflow;
+  if (!active || active.length === 0)
+    return db('sessions').insert({ ...session });
+  return db('sessions')
+    .where({ session_id: session.session_id })
+    .update({ ...session });
 };
 
 const makeCurrentQuestion = (text, options) =>
-  `${text}: ${Object.keys(options)
-    .map(obj => `\n${options[obj].order}.${options[obj].question_text}`)
+  `${text} ${Object.keys(options)
+    .map(obj => `\n${options[obj].order}. ${options[obj].question_text}`)
     .toString()
     .split(`,`)}`;
 
@@ -29,11 +25,13 @@ const makeScreens = (name, questions) =>
     id: obj.id,
   }));
 
-const makeNextObj = (name, array) =>
-  array.map(obj => ({
-    menu: _.camelCase(obj.question_text),
-    id: obj.order,
-  }));
+const makeNextObj = (name, questions) => {
+  const obj = {};
+  questions.map(
+    (question, i) => (obj[i + 1] = _.camelCase(question.question_text))
+  );
+  return obj;
+};
 
 class Workflow {
   constructor(workflow, questions) {
