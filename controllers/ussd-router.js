@@ -45,10 +45,10 @@ router.post('/', async (req, res) => {
     // create a new menu for each request
     const menu = createMenu();
     const session = getSessionInfo(req.body);
-    //  filter { user_id: 1, workflow_id: 1 }
+    // Filter returns workflow id EX: 1
     const filter = await UssdModel.addSession(session);
-    const workflows = await UssdModel.getAllUserWorkflows(filter);
-    console.log('TCL: workflows', workflows);
+    // const workflows = await UssdModel.getAllUserWorkflows(filter);
+    // console.log('TCL: workflows', workflows);
     const workflow = await UssdModel.getUserWorkflow(filter);
     console.log('TCL: userWorkflow', workflow.startScreen.question);
 
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
     menu.startState({
       run: () => {
         // use menu.con() to send response without terminating session
-        menu.con(workflows.question);
+        menu.con(workflow.startScreen.question);
       },
       // next object links to next state based on user input
       next: workflow.startScreen.next,
@@ -92,7 +92,7 @@ router.post('/', async (req, res) => {
     for (const screen of workflow.screens) {
       menu.state(screen.menu, {
         run: async () => {
-          menu.end(await UssdModel.getScreenData(screen.id));
+          menu.con(await UssdModel.getScreenData(screen.id));
           // menu.end(screen.id);
           // menu.end({
           //   id: screen.id,

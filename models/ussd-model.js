@@ -4,11 +4,17 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const addSession = async session => {
-  const [text] = await db('sessions')
-    .insert({ ...session })
-    .returning('text');
-  const obj = text.split('*');
-  return { user_id: Number(obj[0]), id: Number(obj[1]) };
+  const info = session.text.split('*');
+  const filter = { user_id: Number(info[0]), workflow: Number(info[1]) };
+  await db('sessions').insert({
+    session_id: session.session_id,
+    phone_num: session.phone_num,
+    service_code: session.service_code,
+    text: '',
+    workflow: filter.workflow,
+  });
+
+  return filter.workflow;
 };
 
 const makeStartQuestion = (text, options) =>
@@ -19,13 +25,13 @@ const makeStartQuestion = (text, options) =>
 
 const makeCurrentQuestion = (text, options) =>
   `${text}: ${Object.keys(options)
-    .map(obj => `\n${options[obj].order}. ${options[obj].question_text}`)
+    .map(obj => `\n${options[obj].order}.${options[obj].question_text}`)
     .toString()
     .split(`,`)}`;
 
 const makeScreens = (name, questions) =>
   questions.map(obj => ({
-    menu: `${_.camelCase(name)}.${_.camelCase(obj.question_text)}`,
+    menu: _.camelCase(obj.question_text),
     id: obj.id,
   }));
 
@@ -58,13 +64,9 @@ class Workflow {
     this.screens = makeScreens(workflow.name, questions);
   }
 }
-const getAllUserWorkflows = async filter => {
-  const workflows = await db('workflows').where({ user_id: filter.user_id });
-  return new Workflows(workflows);
-};
 
-const getUserWorkflow = async filter => {
-  const [workflow] = await db('workflows').where(filter);
+const getUserWorkflow = async workflow_id => {
+  const [workflow] = await db('workflows').where({ id: workflow_id });
 
   const questions = await db('questions').where({ workflow_id: workflow.id });
 
@@ -89,6 +91,11 @@ const getUserWorkflow = async filter => {
 const makeResponseBreaks = arr => arr.map(item => `\n${item.answer_text} `);
 
 // Format options to be displayed to clients
+
+const getAllUserWorkflows = async filter => {
+  const workflows = await db('workflows').where({ user_id: filter.user_id });
+  return new Workflows(workflows);
+};
 
 const getAllScreens = async workflow_id => {
   const questions = await db('questions')
