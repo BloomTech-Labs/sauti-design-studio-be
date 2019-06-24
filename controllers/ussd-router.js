@@ -45,16 +45,12 @@ router.post('/', async (req, res) => {
     // create a new menu for each request
     const menu = createMenu();
     const session = getSessionInfo(req.body);
-    const service_code = await UssdModel.addSession(session);
-    // const questions = await UssdModel.getScreenQuestions(service_code, 1);
-
-    // construct questions and options object for a given flow
-    const newScreen = await UssdModel.makeNewScreen(1);
-
-    // console.log('TCL: newScreen', newScreen);
-
-    const allScreens = await UssdModel.getAllScreens(1);
-    console.log('TCL: allScreens', allScreens);
+    //  filter { user_id: 1, workflow_id: 1 }
+    const filter = await UssdModel.addSession(session);
+    const workflows = await UssdModel.getAllUserWorkflows(filter);
+    console.log('TCL: workflows', workflows);
+    const workflow = await UssdModel.getUserWorkflow(filter);
+    console.log('TCL: userWorkflow', workflow.startScreen.question);
 
     // const currentOption = makeCurrentOption(newScreen);
     // console.log('TCL: currentOption', currentOption);
@@ -62,13 +58,17 @@ router.post('/', async (req, res) => {
     menu.startState({
       run: () => {
         // use menu.con() to send response without terminating session
-        menu.con(allScreens.startScreen.question);
+        menu.con(workflows.question);
       },
       // next object links to next state based on user input
-      next: allScreens.startScreen.next,
+      next: workflow.startScreen.next,
     });
 
-    // menu.state(newScreen.title, {
+    console.log(
+      'TCL: userWorkflow.startScreen.next',
+      workflow.startScreen.next
+    );
+    // menu.state(userWorkflow.title, {
     //   run: () => {
     //     menu.con('Enter amount:');
     //   },
@@ -77,8 +77,19 @@ router.post('/', async (req, res) => {
     //     '*\\d+': 'buyAirtime.amount',
     //   },
     // });
+    menu.state(workflow.startScreen.menu, {
+      run: async () => {
+        menu.end(workflow.startScreen.question);
+        // menu.end(screen.id);
+        // menu.end({
+        //   id: screen.id,
+        //   menu: screen.menu,
+        // });
+      },
+      // next: menu.startScreen.next,
+    });
 
-    for (const screen of allScreens.screens) {
+    for (const screen of workflow.screens) {
       menu.state(screen.menu, {
         run: async () => {
           menu.end(await UssdModel.getScreenData(screen.id));
@@ -89,14 +100,10 @@ router.post('/', async (req, res) => {
           // });
           console.log('TCL: screen', screen);
         },
-        next: {
-          // using regex to match user input to next state
-          '*\\d+': 'buyAirtime.amount',
-        },
       });
     }
 
-    // console.log('TCL: menu.state', menu.states);
+    console.log('TCL: menu.state', menu.states);
 
     menu.state('buyAirtime', {
       run: () => {
@@ -104,11 +111,11 @@ router.post('/', async (req, res) => {
       },
       next: {
         // using regex to match user input to next state
-        '*\\d+': 'buyAirtime.amount',
+        1: 'melee',
       },
     });
 
-    console.log('TCL: menu', menu);
+    // console.log('TCL: menu', menu);
 
     menu.run(req.body, msg => {
       res.send(msg);
