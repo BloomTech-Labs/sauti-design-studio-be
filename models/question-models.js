@@ -8,24 +8,16 @@ module.exports = {
   removeQuestion,
 };
 
-function find(user_id, workflow_id) {
-  return db('questions_answers')
-    .join('questions', { 'questions_answers.question_id': 'questions.id' })
-    .where({
-      'questions_answers.workflow_id': workflow_id,
-    });
+function find(workflow_id) {
+  return db('questions').where({ workflow_id });
 }
 
-async function add(user_id, workflow_id, question_text) {
-  const [id] = await db('questions')
-    .insert({ question_text })
+async function add(workflow_id, question_text, order) {
+  await db('questions')
+    .insert({ workflow_id, question_text, order })
     .returning('id');
 
-  const question_id = id;
-
-  await db('questions_answers').insert({ workflow_id, question_id });
-
-  return await find(user_id, workflow_id);
+  return find(workflow_id);
 }
 
 function getBy(filter) {

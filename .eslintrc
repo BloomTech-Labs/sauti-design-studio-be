@@ -3,6 +3,11 @@
     "wesbos"
   ],
   "rules": {
-    "camelcase": "off"
+    "camelcase": "off",
+    "import/order": "off",
+    "prefer-destructuring": "off",
+    "no-undef": "warn",
+    "no-use-before-define": "off",
+    "no-unused-vars": "off"
   }
 }
