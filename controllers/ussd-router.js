@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-useless-concat */
 /* eslint-disable prefer-const */
 const UssdMenu = require('ussd-menu-builder');
@@ -9,45 +10,29 @@ const db = require('../database/dbConfig');
 // Constructor for questions and options
 
 // Format options to be displayed to clients
-const makeCurrentOption = screen =>
-  Object.keys(screen.options)
-    .map((obj, i) => `${screen[obj].order}. ${screen[obj].question_text}`)
-    .toString()
-    .join("' \n'")
-    .slice('\n', '');
 
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
   try {
     // create a new menu for each request
     const menu = new UssdMenu();
-    // const session = getSessionInfo(req.body);
-    // await UssdModel.addSession(session);
-    // console.log('TCL: session', session);
-
-    // sessions.session_id = req.body.sessionId;
-    // sessions.phone_num = req.body.phoneNumber;
-    // sessions.service_code = req.body.serviceCode;
-    // sessions.text = req.body.text;
-    // Filter returns workflow id EX: 1
 
     menu.sessionConfig({
-      start: async sessionId => {
-        await UssdModel.startSession({
+      start: sessionId =>
+        UssdModel.startSession({
           session_id: sessionId,
           phone_num: req.body.phoneNumber,
           service_code: req.body.serviceCode,
           text: req.body.text,
-        }).catch(err => new Error(err));
-      },
-      end: async sessionId =>
-        UssdModel.endSession(sessionId).catch(err => new Error(err)),
-      set: async (sessionId, key, value) =>
-        UssdModel.updateSession(sessionId, key, value).catch(
-          err => new Error(err)
-        ),
-      get: (sessionId, key) =>
-        UssdModel.getSession(sessionId, key).catch(err => new Error(err)),
+        }).catch(err => new Error(err)),
+
+      set: async (id, key, value) =>
+        UssdModel.updateSession(id, key, value).catch(err => new Error(err)),
+
+      get: (id, key) =>
+        UssdModel.getSession(id, key).catch(err => new Error(err)),
+
+      end: id => UssdModel.endSession(id).catch(err => new Error(err)),
     });
 
     menu.startState({
@@ -79,35 +64,85 @@ router.post('/', async (req, res) => {
       },
     });
 
+    function createDynamicScreens(workflowId) {
+      console.log('TCL: createDynamicScreens -> workflowId', workflowId);
+    }
+
+    class Workflow {
+      constructor(workflow) {
+        this._line = word => {
+          let line = '';
+          for (const chr of word) {
+            line = line.concat('=');
+          }
+          return line;
+        };
+
+        this._display = async filter =>
+          `${this._line(workflow.name)}\n${workflow.name}\n${this._line(
+            workflow.name
+          )}\n${await UssdModel.getQuestions({
+            workflow_id: workflow.id,
+            ...filter,
+          }).then(questions =>
+            Object.keys(questions)
+              .map(
+                (obj, i) =>
+                  `${questions[obj].order}. ${questions[obj].question_text}`
+              )
+              .toString()
+              .split(',')
+              .join('\n')
+          )} `;
+
+        this.home = {
+          name: workflow.name,
+          _name: _.camelCase(workflow.name),
+        };
+      }
+    }
+
     menu.state('activeWorkflow', {
       run: () => {
         menu.session.set('workflow', menu.val);
         menu.session
-          .get('workflow')
-          .then(({ workflow }) => UssdModel.getWorkflowInfo(workflow))
-          .then(data => menu.con(`Workflow: ${data.name}`));
+          .get('workflow') // Get wf from session
+          .then(({ workflow: id }) =>
+            UssdModel.getWorkflow(id)
+              .then(async data => {
+                const flow = new Workflow(data);
+                menu.con(await flow._display());
+              })
+              .catch(err => new Error(err))
+          );
       },
       next: {
-        [`*[0-9]+`]: 'selectWorkflow',
-        [`*[a-zA-Z]+`]: 'invalidCharacter',
+        [`*[0-9]+`]: 'selectedScreen',
+        // [`* [a - zA - Z] + `]: 'invalidCharacter',
       },
     });
 
+    menu.state('selectedScreen', {
+      run: async () => {
+        menu.session.set('option', menu.val);
+        const filter = {
+          ...(await menu.session.get('workflow')),
+          ...(await menu.session.get('option')),
+        };
+        console.log('TCL: filter', filter);
+        menu.con(menu.val);
+      },
+      // next: workflow.startScreen.next,
+    });
     // menu.session.set('workflow', 1);
     // const workflow = await UssdModel.getUserWorkflow(filter);
-
-    // menu.state(workflow.startScreen.menu, {
-    //   run() {
-    //     menu.con(workflow.startScreen.question);
-    //   },
-    //   next: workflow.startScreen.next,
-    // });
 
     // for (const screen of workflow.screens) {
     //   menu.state(screen.menu, {
     //     run: async () => {
     //       menu.con(await UssdModel.getScreenData(screen.id));
     //     },
+
     //     next: {
     //       '': 'melee',
     //     },

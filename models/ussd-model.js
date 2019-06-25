@@ -4,9 +4,13 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const startSession = async session => {
+  /* Check if there is an active session with that id
+  If there is no session create it
+  If there is then update it */
   const active = await db('sessions').where({ session_id: session.session_id });
   if (!active || active.length === 0)
     return db('sessions').insert({ ...session });
+
   return db('sessions')
     .where({ session_id: session.session_id })
     .update({ ...session });
@@ -18,22 +22,30 @@ const getSession = async (session_id, key) =>
     .where({ session_id })
     .first();
 
-const updateSession = (session_id, key, value) => {
-  console.log(
-    'TCL: updateSession -> session_id, key, value',
-    session_id,
-    key,
-    value
-  );
-  return db('sessions')
+const updateSession = (session_id, key, value) =>
+  db('sessions')
     .where({ session_id })
-    .update({ workflow: Number(value) });
-};
+    .update({ [key]: Number(value) });
 
 const endSession = session_id =>
   db('sessions')
     .where({ session_id })
     .delete();
+
+const getWorkflow = id =>
+  db('workflows')
+    .select('id', 'name')
+    .where({ id })
+    .first();
+
+const getQuestions = filter => db('questions').where(filter);
+
+const getScreenCount = filter =>
+  db('questions')
+    .where(filter)
+    .orderBy('order')
+    .countDistinct();
+/* ################################### */
 
 const makeCurrentQuestion = (text, options) =>
   `${text} ${Object.keys(options)
@@ -65,12 +77,6 @@ class Workflow {
     this.screens = makeScreens(workflow.name, questions);
   }
 }
-
-const getWorkflowInfo = id =>
-  db('workflows')
-    .select('id', 'name')
-    .where({ id })
-    .first();
 
 const getUserWorkflow = async workflow_id => {
   console.log('TCL: getUserWorkflow - workflow_id', workflow_id);
@@ -105,5 +111,7 @@ module.exports = {
   getSession,
   endSession,
   updateSession,
-  getWorkflowInfo,
+  getWorkflow,
+  getQuestions,
+  getScreenCount,
 };
