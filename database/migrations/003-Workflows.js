@@ -1,7 +1,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('workflows', tbl => {
     tbl.increments();
-
     tbl
       .integer('user_id')
       .unsigned()
@@ -10,26 +9,20 @@ exports.up = function(knex, Promise) {
       .inTable('users')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
-
     tbl.string('name', 128).notNullable();
-
     tbl.string('service_code');
-
-    tbl.string('category').notNullable();
-
+    tbl
+      .integer('category')
+      .unsigned()
+      .references('id')
+      .inTable('categories')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
     tbl
       .integer('client_id')
       .unsigned()
       .references('id')
       .inTable('clients')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
-
-    tbl
-      .integer('question_id')
-      .unsigned()
-      .references('id')
-      .inTable('questions')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
   });

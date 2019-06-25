@@ -6,9 +6,15 @@ exports.up = function(knex, Promise) {
     tbl.string('service_code');
     tbl.string('text');
     tbl
-      .integer('workflow_id')
+      .integer('workflow')
       .references('id')
       .inTable('workflows');
+    tbl.integer('response');
+    tbl
+      .integer('owner')
+      .references('id')
+      .inTable('responses');
+
     tbl.timestamps(true, true);
   });
 };
