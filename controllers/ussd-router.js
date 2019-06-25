@@ -64,12 +64,10 @@ router.post('/', async (req, res) => {
       },
     });
 
-    function createDynamicScreens(workflowId) {
-      console.log('TCL: createDynamicScreens -> workflowId', workflowId);
-    }
-
-    class Workflow {
+    class Response {
       constructor(workflow) {
+        /* Ex. Workflow._title: Melee
+                                ===== */
         this._line = word => {
           let line = '';
           for (const chr of word) {
@@ -78,27 +76,25 @@ router.post('/', async (req, res) => {
           return line;
         };
 
-        this._display = async filter =>
-          `${this._line(workflow.name)}\n${workflow.name}\n${this._line(
-            workflow.name
-          )}\n${await UssdModel.getQuestions({
-            workflow_id: workflow.id,
-            ...filter,
-          }).then(questions =>
-            Object.keys(questions)
-              .map(
-                (obj, i) =>
-                  `${questions[obj].order}. ${questions[obj].question_text}`
-              )
-              .toString()
-              .split(',')
-              .join('\n')
-          )} `;
+        this._title = `${workflow.name}\n${this._line(workflow.name)}\n`;
 
-        this.home = {
+        this.responses = filter =>
+          UssdModel.getResponses({
+            workflow: workflow.id,
+            ...filter,
+          });
+
+        this._options = responses =>
+          Object.keys(responses)
+            .map(obj => `${responses[obj].index}. ${responses[obj].text}`)
+            .toString()
+            .split(',')
+            .join('\n');
+
+        /* this.home = {
           name: workflow.name,
           _name: _.camelCase(workflow.name),
-        };
+        }; */
       }
     }
 
@@ -110,8 +106,15 @@ router.post('/', async (req, res) => {
           .then(({ workflow: id }) =>
             UssdModel.getWorkflow(id)
               .then(async data => {
-                const flow = new Workflow(data);
-                menu.con(await flow._display());
+                const screen = new Response(data);
+
+                menu.session.set('owner', null);
+                menu.session.get('owner').then(async filter =>
+                  menu.con(
+                    `${screen._title}
+                    ${screen._options(await screen.responses({ ...filter }))}`
+                  )
+                );
               })
               .catch(err => new Error(err))
           );
@@ -122,18 +125,26 @@ router.post('/', async (req, res) => {
       },
     });
 
+    const getIdFromLastInput = () => {};
+
     menu.state('selectedScreen', {
       run: async () => {
-        menu.session.set('option', menu.val);
-        const filter = {
-          ...(await menu.session.get('workflow')),
-          ...(await menu.session.get('option')),
-        };
-        console.log('TCL: filter', filter);
-        menu.con(menu.val);
+        menu.session.set('response', menu.val);
+        await menu.session.get('workflow').then(async ({ workflow: id }) =>
+          UssdModel.getWorkflow(id)
+            .then(async data => {
+              const screen = new Response(data);
+              menu.con(
+                `${screen._title}
+                ${screen._options(await screen.responses({ owner: 1 }))}`
+              );
+            })
+            .catch(err => new Error(err))
+        );
       },
       // next: workflow.startScreen.next,
     });
+
     // menu.session.set('workflow', 1);
     // const workflow = await UssdModel.getUserWorkflow(filter);
 

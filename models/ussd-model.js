@@ -38,13 +38,17 @@ const getWorkflow = id =>
     .where({ id })
     .first();
 
-const getQuestions = filter => db('questions').where(filter);
+const getResponses = filter =>
+  db('responses')
+    .where(filter)
+    .orderBy('index');
 
 const getScreenCount = filter =>
   db('questions')
     .where(filter)
     .orderBy('order')
     .countDistinct();
+
 /* ################################### */
 
 const makeCurrentQuestion = (text, options) =>
@@ -112,6 +116,6 @@ module.exports = {
   endSession,
   updateSession,
   getWorkflow,
-  getQuestions,
+  getResponses,
   getScreenCount,
 };
