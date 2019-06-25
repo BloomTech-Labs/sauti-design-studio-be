@@ -30,25 +30,11 @@ const update = values =>
     .returning('id')
     .then(([id]) => getById(id));
 
-// async function add(workflow_id, question_text, order) {
-//   await db('questions')
-//     .insert({ workflow_id, question_text, order })
-//     .returning('id');
-
-//   return find(workflow_id);
-// }
-
-function updateQuestion(id, changes) {
-  return db('questions')
-    .where({ id })
-    .update(changes);
-}
-
-async function removeQuestion(id) {
-  return db('questions')
-    .where('id', id)
-    .del();
-}
+const remove = id =>
+  getById(id).then(async response => {
+    await getById(id).del();
+    return response;
+  });
 
 module.exports = {
   find,
@@ -57,6 +43,5 @@ module.exports = {
   getChild,
   add,
   update,
-  updateQuestion,
-  removeQuestion,
+  remove,
 };

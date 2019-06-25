@@ -2,11 +2,9 @@
 const router = require('express').Router();
 
 // Models
-const Questions = require('../models/question-models');
 const Responses = require('../models/responses');
 
 // Middleware
-
 const restricted = require('../controllers/authCheck');
 
 router.get('/:workflow', async (req, res) => {
@@ -40,7 +38,7 @@ router.post('/:workflow', async (req, res) => {
   }
 });
 
-// UPDATES THE Questions
+// UPDATES THE RESPONSE
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { text, owner, workflow, index } = req.body;
@@ -54,14 +52,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE QUestions
+// DELETE RESPONSE
 router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const deleteQuestion = await Questions.removeQuestion(req.params.id);
-    if (deleteQuestion)
-      res
-        .status(200)
-        .json({ message: 'You have successfully deleted the Question' });
+    await Responses.remove(id).then(value => {
+      if (value)
+        res.status(200).json({ message: `Response ${id} deleted`, value });
+      res.status(404).json({ message: `Response ${id} not found` });
+    });
   } catch (error) {
     res.status(500).json({ message: 'Unable to delete this Answer.' });
   }
