@@ -31,10 +31,10 @@ router.get('/:workflow/:owner', async (req, res) => {
 
 router.post('/:workflow', async (req, res) => {
   const { workflow } = req.params;
-  const { text, owner, index } = req.body;
+  const { text, index } = req.body;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.add({ workflow, text, owner, index }));
+    res.status(200).json(await Responses.add({ workflow, text, index }));
   } catch (e) {
     res.status(500).json(e);
   }
@@ -42,20 +42,14 @@ router.post('/:workflow', async (req, res) => {
 
 // UPDATES THE Questions
 router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { text, owner, workflow, index } = req.body;
+  const values = { id, text, owner, workflow, index };
   try {
-    const updateQuestions = await Questions.updateQuestion(
-      req.params.id,
-      req.body
-    );
-    if (updateQuestions)
-      res.status(200).json({
-        message: `Client: ${updateQuestions}`,
-        updateQuestionInfo: req.body,
-      });
+    res.status(200).json(await Responses.update(values));
   } catch (error) {
     res.status(500).json({
-      message:
-        'Unable to update the question at this time.. please try again later',
+      message: `Unable to update the question ${id}`,
     });
   }
 });
