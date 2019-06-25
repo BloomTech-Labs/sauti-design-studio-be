@@ -2,6 +2,10 @@ const db = require('../database/dbConfig');
 
 const find = filter => db('responses').where(filter);
 
+const getBase = filter => db('responses').where({ owner: null, ...filter });
+
+const getChild = owner => db('responses').where({ owner });
+
 // async function add(workflow_id, question_text, order) {
 //   await db('questions')
 //     .insert({ workflow_id, question_text, order })
@@ -28,6 +32,8 @@ async function removeQuestion(id) {
 
 module.exports = {
   find,
+  getBase,
+  getChild,
   getBy,
   updateQuestion,
   removeQuestion,

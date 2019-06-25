@@ -9,14 +9,11 @@ const Responses = require('../models/responses');
 
 const restricted = require('../controllers/authCheck');
 
-// GETS ALL THE USER WORKFLOWS
-
-// GETS ALL THE USER WORKFLOWS
 router.get('/:workflow', async (req, res) => {
   const { workflow } = req.params;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.find({ workflow }));
+    res.status(200).json(await Responses.getBase({ workflow }));
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user responses' });
   }
@@ -24,7 +21,7 @@ router.get('/:workflow', async (req, res) => {
 
 router.get('/:workflow/:owner', async (req, res) => {
   const { workflow, owner } = req.params;
-  // const { id: user_id } = req.user;
+  const { id: user_id } = req.user;
   try {
     res.status(200).json(await Responses.find({ workflow, owner }));
   } catch (error) {
@@ -37,9 +34,7 @@ router.post('/:workflow', async (req, res) => {
   const { text, owner, index } = req.body;
   // const { id: user_id } = req.user;
   try {
-    res
-      .status(200)
-      .json(await Questions.add(workflow_id, question_text, order));
+    res.status(200).json(await Responses.add({ workflow, text, owner, index }));
   } catch (e) {
     res.status(500).json(e);
   }
