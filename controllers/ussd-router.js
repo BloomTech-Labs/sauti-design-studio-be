@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-concat */
+/* eslint-disable prefer-const */
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');
 const router = require('express').Router();
@@ -6,16 +7,6 @@ const _ = require('lodash');
 const db = require('../database/dbConfig');
 // Function to create a new menu. Recommended to create a new menu for each request
 // Constructor for questions and options
-
-// format options to be sent to AfricasTalking API
-const makeNextState = options =>
-  options.reduce(
-    (obj, item) => ({
-      ...obj,
-      ...{ [item.number]: item.text },
-    }),
-    {}
-  );
 
 // Format options to be displayed to clients
 const makeCurrentOption = screen =>
@@ -25,95 +16,84 @@ const makeCurrentOption = screen =>
     .join("' \n'")
     .slice('\n', '');
 
-// Format questions to be sent to be displayed to clients
-const makeCurrentQuestion = (screen, currentOption) =>
-  `${screen.question} \n${currentOption}`;
-
-function getSessionInfo(body) {
-  const session = {
-    session_id: body.sessionId,
-    phone_num: body.phoneNumber,
-    service_code: body.serviceCode,
-    text: body.text,
-  };
-  return session;
-}
-
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
   try {
     // create a new menu for each request
-    const sessions = {};
     const menu = new UssdMenu();
-    const session = getSessionInfo(req.body);
+    // const session = getSessionInfo(req.body);
+    // await UssdModel.addSession(session);
+    // console.log('TCL: session', session);
 
+    // sessions.session_id = req.body.sessionId;
+    // sessions.phone_num = req.body.phoneNumber;
+    // sessions.service_code = req.body.serviceCode;
+    // sessions.text = req.body.text;
     // Filter returns workflow id EX: 1
 
     menu.sessionConfig({
       start: async sessionId => {
-        await UssdModel.addSession(session);
-        sessions.session_id = req.body.sessionId;
-        sessions.phone_num = req.body.phoneNumber;
-        sessions.service_code = req.body.serviceCode;
-        sessions.text = req.body.text;
-        // initialize current session if it doesn't exist
-        // this is called by menu.run()
-        if (!(sessionId in sessions)) sessions[sessionId] = {};
+        await UssdModel.startSession({
+          session_id: sessionId,
+          phone_num: req.body.phoneNumber,
+          service_code: req.body.serviceCode,
+          text: req.body.text,
+        }).catch(err => new Error(err));
       },
-      end: async (sessionId, callback) => {
-        // clear current session
-        // this is called by menu.end()
-        delete sessions[sessionId];
-        callback();
-      },
-      set(sessionId, key) {
-        return new Promise((resolve, reject) => {
-          sessions[sessionId][key] = session;
-          resolve(session);
-        });
-      },
-      get: async (sessionId, key) => session[sessionId][key],
-      gett(sessionId, key) {
-        return new Promise((resolve, reject) => {
-          const value = sessions[sessionId][key];
-          resolve(value);
-        });
-      },
+      end: async sessionId =>
+        UssdModel.endSession(sessionId).catch(err => new Error(err)),
+      set: async (sessionId, key, value) =>
+        UssdModel.updateSession(sessionId, key, value).catch(
+          err => new Error(err)
+        ),
+      get: (sessionId, key) =>
+        UssdModel.getSession(sessionId, key).catch(err => new Error(err)),
     });
 
     menu.startState({
       next: {
-        '': function() {
-          if (true) {
-            return 'someState';
-          }
-          return 'otherState';
-        },
+        '': 'selectWorkflow',
+        [`*[0-9]+`]: 'activeWorkflow',
       },
     });
 
-    menu.state('someState', {
-      run: () => {
-        const firstName = menu.val;
-        menu.session.set('firstName', firstName).then(async () => {
-          menu.con('Enter your last name');
-          const name = await menu.session.get(req.body.sessionId, 'firstname');
-          console.log(name);
-        });
+    menu.state('selectWorkflow', {
+      run() {
+        menu.session.get('workflow');
+        menu.con('Enter workflow ID:');
+      },
+      next: {
+        [`*[0-9]+`]: 'activeWorkflow',
+
+        [`*[a-zA-Z]+`]: 'invalidCharacter',
       },
     });
 
-    menu.state('otherState', {
-      run: () => {
-        menu.session.get(session.session_id, 'firstName').then(firstName => {
-          // do something with the value
-          console.log(firstName);
-          menu.con('Next');
-        });
+    menu.state('invalidCharacter', {
+      run() {
+        menu.con('Numbers only:');
+      },
+      next: {
+        [`*[0-9]+`]: 'activeWorkflow',
+        [`*[a-zA-Z]+`]: 'invalidCharacter',
       },
     });
+
+    menu.state('activeWorkflow', {
+      run: () => {
+        menu.session.set('workflow', menu.val);
+        menu.session
+          .get('workflow')
+          .then(({ workflow }) => UssdModel.getWorkflowInfo(workflow))
+          .then(data => menu.con(`Workflow: ${data.name}`));
+      },
+      next: {
+        [`*[0-9]+`]: 'selectWorkflow',
+        [`*[a-zA-Z]+`]: 'invalidCharacter',
+      },
+    });
+
     // menu.session.set('workflow', 1);
-    // console.log('TCL: menu.session', menu.session);
     // const workflow = await UssdModel.getUserWorkflow(filter);
 
     // menu.state(workflow.startScreen.menu, {

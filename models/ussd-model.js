@@ -3,15 +3,37 @@ const db = require('../database/dbConfig');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
-const addSession = async session => {
+const startSession = async session => {
   const active = await db('sessions').where({ session_id: session.session_id });
-
   if (!active || active.length === 0)
     return db('sessions').insert({ ...session });
   return db('sessions')
     .where({ session_id: session.session_id })
     .update({ ...session });
 };
+
+const getSession = async (session_id, key) =>
+  db('sessions')
+    .select(key)
+    .where({ session_id })
+    .first();
+
+const updateSession = (session_id, key, value) => {
+  console.log(
+    'TCL: updateSession -> session_id, key, value',
+    session_id,
+    key,
+    value
+  );
+  return db('sessions')
+    .where({ session_id })
+    .update({ workflow: Number(value) });
+};
+
+const endSession = session_id =>
+  db('sessions')
+    .where({ session_id })
+    .delete();
 
 const makeCurrentQuestion = (text, options) =>
   `${text} ${Object.keys(options)
@@ -44,7 +66,15 @@ class Workflow {
   }
 }
 
+const getWorkflowInfo = id =>
+  db('workflows')
+    .select('id', 'name')
+    .where({ id })
+    .first();
+
 const getUserWorkflow = async workflow_id => {
+  console.log('TCL: getUserWorkflow - workflow_id', workflow_id);
+
   const [workflow] = await db('workflows').where({ id: workflow_id });
 
   const questions = await db('questions').where({ workflow_id: workflow.id });
@@ -71,7 +101,9 @@ const getScreenData = async id => {
 };
 
 module.exports = {
-  getUserWorkflow,
-  getScreenData,
-  addSession,
+  startSession,
+  getSession,
+  endSession,
+  updateSession,
+  getWorkflowInfo,
 };
