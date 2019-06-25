@@ -6,6 +6,12 @@ const getBase = filter => db('responses').where({ owner: null, ...filter });
 
 const getChild = owner => db('responses').where({ owner });
 
+const add = values =>
+  db('responses')
+    .insert(values)
+    .returning('id')
+    .then(val => find({ id: val[0] }).first());
+
 // async function add(workflow_id, question_text, order) {
 //   await db('questions')
 //     .insert({ workflow_id, question_text, order })
@@ -34,6 +40,7 @@ module.exports = {
   find,
   getBase,
   getChild,
+  add,
   getBy,
   updateQuestion,
   removeQuestion,
