@@ -2,14 +2,14 @@ exports.seed = function(knex, Promise) {
   // Inserts seed entries
   return knex('users').insert([
     {
-      company_name: 'Bad Ass Company',
+      company_name: 'Sauti Studio Designs',
       country: 'USA',
-      display_name: 'Billy BadAss',
-      email: 'billy@billybadass.com',
+      display_name: 'Sauti Studio',
+      email: 'sauti.design.studio@gmail.com',
       phone_num: '235556969',
       pic: 'hi',
       password: null,
-      google_id: null,
+      google_id: '103512929668160621184',
       facebook_id: null,
     },
   ]);
