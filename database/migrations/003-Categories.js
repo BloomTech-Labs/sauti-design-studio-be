@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
-    tbl.string('category');
+    tbl.string('text');
   });
 };
 

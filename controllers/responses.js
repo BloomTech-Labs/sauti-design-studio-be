@@ -11,7 +11,7 @@ router.get('/:workflow', async (req, res) => {
   const { workflow } = req.params;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.getBase({ workflow }));
+    res.status(200).json(await Responses.find({ workflow }));
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user responses' });
   }

@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
     tbl
       .integer('workflow')
       .unsigned()
-      .notNullable()
+      // .notNullable()
       .references('id')
       .inTable('workflows');
     tbl.integer('index');
