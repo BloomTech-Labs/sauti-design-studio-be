@@ -3,7 +3,11 @@ exports.seed = function(knex, Promise) {
   return knex('categories').insert([
     {
       user_id: 1,
-      text: 'Productivity',
+      text: 'Fun',
+    },
+    {
+      user_id: 1,
+      text: 'Info',
     },
   ]);
 };

@@ -4,10 +4,12 @@ exports.seed = function(knex, Promise) {
     {
       user_id: 1,
       name: 'Melee',
+      category: 1,
     },
     {
       user_id: 1,
       name: 'Tools',
+      category: 2,
     },
   ]);
 };
