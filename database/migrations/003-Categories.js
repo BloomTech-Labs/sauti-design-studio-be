@@ -4,14 +4,14 @@ exports.up = function(knex, Promise) {
 
     tbl
       .integer('user_id')
-      .unsigned()
-      .notNullable()
       .references('id')
       .inTable('users')
+      .unsigned()
+      .notNullable()
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
 
-    tbl.string('category');
+    tbl.string('text');
   });
 };
 

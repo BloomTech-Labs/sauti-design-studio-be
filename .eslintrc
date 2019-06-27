@@ -8,6 +8,7 @@
     "prefer-destructuring": "off",
     "no-undef": "warn",
     "no-use-before-define": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "prefer-const": "off"
   }
 }

@@ -21,6 +21,7 @@ const UsersWorkflows = require('./controllers/userworkflows-router');
 const ClientsRouter = require('./controllers/clients-router');
 const AnswersRouter = require('./controllers/answers-router');
 const QuestionsRouter = require('./controllers/questions-router');
+const ResponsesRouter = require('./controllers/responses');
 const UssdRouter = require('./controllers/ussd-router');
 const AuthRouter = require('./controllers/auth-router');
 const authCheck = require('./controllers/authCheck');
@@ -63,6 +64,7 @@ server.use('/workflows', WorkflowsRouter);
 server.use('/clients', ClientsRouter);
 server.use('/answers', AnswersRouter);
 server.use('/questions', QuestionsRouter);
+server.use('/responses', ResponsesRouter);
 server.use('/ussd', UssdRouter);
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);

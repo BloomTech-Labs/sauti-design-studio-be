@@ -1,27 +1,16 @@
-const faker = require('faker');
-
-function createUser() {
-  return {
-    company_name: faker.company.companyName(),
-    country: faker.address.country(),
-    display_name: faker.name.firstName(),
-    email: faker.internet.email(),
-    phone_num: faker.phone.phoneNumber(),
-    password: 'randomPassword',
-    google_id: faker.random.number({ min: 1, max: 10 }),
-    facebook_id: faker.random.number({ min: 1, max: 10 }),
-  };
-}
-
-const userList = [];
-
-for (let i = 0; i < 100; i++) {
-  userList.push(createUser());
-}
-
 exports.seed = function(knex, Promise) {
-  return knex('users').then(function() {
-    // Inserts seed entries
-    return knex('users').insert(userList);
-  });
+  // Inserts seed entries
+  return knex('users').insert([
+    {
+      company_name: 'Sauti Studio Designs',
+      country: 'USA',
+      display_name: 'Sauti Studio',
+      email: 'sauti.design.studio@gmail.com',
+      phone_num: '235556969',
+      pic: 'hi',
+      password: null,
+      google_id: '103512929668160621184',
+      facebook_id: null,
+    },
+  ]);
 };

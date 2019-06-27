@@ -1,7 +1,6 @@
 exports.up = function(knex, Promise) {
-  return (
+  return knex.schema.dropTableIfExists('users').then(() =>
     knex.schema
-
       // USERS TABLE
       .createTable('users', tbl => {
         tbl.increments();
