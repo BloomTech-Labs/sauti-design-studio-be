@@ -81,10 +81,9 @@ const update = values =>
     .then(([id]) => getById(id));
 
 const remove = id =>
-  getById(id).then(async response => {
-    await getById(id).del();
-    return response;
-  });
+  db('responses')
+    .where({ id })
+    .del();
 
 module.exports = {
   find,
