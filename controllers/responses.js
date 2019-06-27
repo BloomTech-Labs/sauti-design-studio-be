@@ -17,11 +17,11 @@ router.get('/:workflow', async (req, res) => {
   }
 });
 
-router.get('/:workflow/:owner', async (req, res) => {
-  const { workflow, owner } = req.params;
-  const { id: user_id } = req.user;
+router.get('/:workflow/:id', async (req, res) => {
+  const { workflow, id } = req.params;
+  // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.find({ workflow, owner }));
+    res.status(200).json(await Responses.find({ id, workflow }));
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user responses' });
   }
@@ -29,10 +29,10 @@ router.get('/:workflow/:owner', async (req, res) => {
 
 router.post('/:workflow', async (req, res) => {
   const { workflow } = req.params;
-  const { text, index } = req.body;
+  const { text, index, owner } = req.body;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.add({ workflow, text, index }));
+    res.status(200).json(await Responses.add({ text, owner, workflow }));
   } catch (e) {
     res.status(500).json(e);
   }

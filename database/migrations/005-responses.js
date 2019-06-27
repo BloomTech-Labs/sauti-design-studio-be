@@ -4,13 +4,15 @@ exports.up = function(knex, Promise) {
     tbl.string('text');
     tbl
       .integer('owner')
-      .unsigned()
       .references('id')
-      .inTable('responses');
+      .inTable('responses')
+      .unsigned()
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
     tbl
       .integer('workflow')
       .unsigned()
-      // .notNullable()
+      .notNullable()
       .references('id')
       .inTable('workflows');
     tbl.integer('index');
