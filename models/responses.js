@@ -80,10 +80,18 @@ const update = values =>
     .returning('id')
     .then(([id]) => getById(id));
 
-const remove = id =>
-  db('responses')
+const remove = async id => {
+  const [workflow] = await db('responses')
+    .select('workflow')
+    .where({ id });
+
+  const items = await db('responses')
     .where({ id })
-    .del();
+    .del()
+    .then(() => tree(workflow));
+
+  return items;
+};
 
 module.exports = {
   find,

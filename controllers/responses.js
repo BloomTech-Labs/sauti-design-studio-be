@@ -64,9 +64,10 @@ router.delete('/:id', async (req, res) => {
   try {
     const deleteRes = await Responses.remove(req.params.id);
     if (deleteRes)
-      res
-        .status(200)
-        .json({ message: 'You have successfully deleted the Question' });
+      res.status(200).json({
+        message: 'You have successfully deleted the Question',
+        current: deleteRes,
+      });
   } catch (error) {
     res.status(500).json({ message: 'Unable to delete this Answer.' });
   }
