@@ -10,8 +10,15 @@ const restricted = require('../controllers/authCheck');
 router.get('/:workflow', async (req, res) => {
   const { workflow } = req.params;
   // const { id: user_id } = req.user;
+
   try {
-    res.status(200).json(await Responses.find({ workflow }));
+    res
+      .status(200)
+      .json(
+        req.query.tree
+          ? await Responses.tree({ workflow })
+          : await Responses.find({ workflow })
+      );
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user responses' });
   }
@@ -54,13 +61,13 @@ router.put('/:id', async (req, res) => {
 
 // DELETE RESPONSE
 router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
   try {
-    await Responses.remove(id).then(value => {
-      if (value)
-        res.status(200).json({ message: `Response ${id} deleted`, value });
-      res.status(404).json({ message: `Response ${id} not found` });
-    });
+    const deleteRes = await Responses.remove(req.params.id);
+    if (deleteRes)
+      res.status(200).json({
+        message: 'You have successfully deleted the Question',
+        current: deleteRes,
+      });
   } catch (error) {
     res.status(500).json({ message: 'Unable to delete this Answer.' });
   }

@@ -20,8 +20,6 @@ const makeTree = items => {
 
     findChildren(children);
 
-    delete parent.owner;
-
     familyTree[i] = { ...parent, children };
   });
 
@@ -46,12 +44,17 @@ const getIndex = async ({ parent, workflow }) => {
   return index;
 };
 
-const find = async filter =>
+const tree = async filter =>
   makeTree(
     await db('responses')
       .where(filter)
       .select('id', 'text', 'owner', 'index')
   );
+
+const find = filter =>
+  db('responses')
+    .where(filter)
+    .select('id', 'text', 'owner', 'index');
 
 const getById = ({ id, workflow }) =>
   db('responses')
@@ -77,14 +80,22 @@ const update = values =>
     .returning('id')
     .then(([id]) => getById(id));
 
-const remove = id =>
-  getById(id).then(async response => {
-    await getById(id).del();
-    return response;
-  });
+const remove = async id => {
+  const [workflow] = await db('responses')
+    .select('workflow')
+    .where({ id });
+
+  const items = await db('responses')
+    .where({ id })
+    .del()
+    .then(() => tree(workflow));
+
+  return items;
+};
 
 module.exports = {
   find,
+  tree,
   getById,
   add,
   update,
