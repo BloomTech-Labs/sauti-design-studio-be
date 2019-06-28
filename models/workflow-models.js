@@ -10,8 +10,8 @@ module.exports = {
   removeWorkflow,
 };
 
-function find() {
-  return db('workflows');
+function find(filter) {
+  return db('workflows').where(filter);
 }
 
 function userFlows(userId) {
@@ -29,9 +29,11 @@ function getById(id) {
 }
 
 function add(workflow) {
+  console.log('TCL: add -> workflow', workflow);
   return db('workflows')
     .insert(workflow, 'id')
-    .then(id => find(id));
+    .then(() => db('workflows').where({ user_id: workflow.user_id }))
+    .catch(err => console.error(err));
 }
 
 function updateWorkflow(id, changes) {

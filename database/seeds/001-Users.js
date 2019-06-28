@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
       display_name: 'Sauti Studio',
       email: 'sauti.design.studio@gmail.com',
       phone_num: '235556969',
-      pic: 'hi',
+      pic: 'https://avatars0.githubusercontent.com/u/51124353?s=200&v=4',
       password: null,
       google_id: '103512929668160621184',
       facebook_id: null,
