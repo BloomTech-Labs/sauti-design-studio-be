@@ -15,7 +15,10 @@ router.get(
 
 // google login redirect
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.status(200).redirect(`${process.env.FRONTEND_URL}/workflows`);
+  res
+    .status(200)
+    .cookie('token', res.req.authInfo)
+    .redirect(`${process.env.FRONTEND_URL}/workflows`);
 });
 
 // Login with facebook

@@ -33,13 +33,16 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
     (accessToken, refreshToken, profile, done) => {
-      verifyGoogleUser(profile, done);
+      verifyGoogleUser({ profile, token: accessToken }, done);
     }
   )
 );
 
-const verifyGoogleUser = async (profile, done) => {
-  const user = await Users.getByEmail(profile.emails[0].value);
+const verifyGoogleUser = async (obj, done) => {
+  const { profile, token } = obj;
+  const user = await Users.getByEmail(profile.emails[0].value).catch(err =>
+    console.error(err)
+  );
 
   try {
     if (!user) {
@@ -49,34 +52,34 @@ const verifyGoogleUser = async (profile, done) => {
         google_id: profile.id,
         pic: profile._json.picture,
       });
-      done(null, await Users.getById(id));
+      done(null, await Users.getById(id), token);
     } else {
-      done(null, user);
+      done(null, user, token);
     }
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error(err);
   }
 };
 
 const verifyFacebookUser = async (profile, done) => {
-  const fbookUser = await Users.getByEmail(profile.emails[0].value);
+  const facebookUser = await Users.getByEmail(profile.emails[0].value);
 
   console.log(profile);
 
   try {
-    if (!fbookUser) {
-      const newFbookUser = await Users.add({
+    if (!facebookUser) {
+      const newFacebookUser = await Users.add({
         display_name: profile.displayName,
         email: profile.emails[0].value,
         facebook_id: profile.id,
         pic: profile._pic,
       });
 
-      done(null, newFbookUser);
+      done(null, newFacebookUser);
     } else {
-      done(null, fbookUser);
+      done(null, facebookUser);
     }
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error(err);
   }
 };
