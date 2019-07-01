@@ -47,23 +47,20 @@ const getIndex = async ({ parent: filter, workflow }) => {
 
 const tree = async filter => makeTree(await db('responses').where(filter));
 
-const find = filter => db('responses').where(filter);
-
-const getById = ({ id, workflow }) =>
+const find = filter =>
   db('responses')
-    .where({ id, workflow })
-    .distinct()
-    .first();
+    .select('id', 'title', 'parent', 'workflow')
+    .where(filter);
+
+const getById = id => find({ id }).first();
 
 // Add new value
-const add = async ({ title, parent, workflow }) => {
-  getIndex({ parent, workflow }).then(index => {
-    console.log('TCL: count', index);
-    return db('responses')
-      .insert({ title, parent, workflow, index })
-      .returning('id')
-      .then(([id]) => getById(id));
-  });
+const add = async values => {
+  const [id] = await db('responses')
+    .insert(values)
+    .returning('id');
+
+  return getById(id);
 };
 
 const update = values =>
@@ -86,7 +83,7 @@ const remove = async id => {
   const items = await db('responses')
     .where({ id })
     .del()
-    .then(() => tree(workflow));
+    .then(() => find(workflow));
 
   return items;
 };

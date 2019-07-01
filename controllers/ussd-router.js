@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
           session_id: sessionId,
           phone_num: req.body.phoneNumber,
           service_code: req.body.serviceCode,
-          title: req.body.title,
+          text: req.body.text,
         }).catch(err => new Error(err)),
 
       set: async (id, key, value) =>

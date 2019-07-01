@@ -1,6 +1,5 @@
 // Dependencies
 const router = require('express').Router();
-const Promise = require('bluebird');
 
 // Models
 const Responses = require('../models/responses');
@@ -13,13 +12,7 @@ router.get('/:workflow', async (req, res) => {
   // const { id: user_id } = req.user;
 
   try {
-    res
-      .status(200)
-      .json(
-        req.query.tree
-          ? await Responses.tree({ workflow })
-          : await Responses.find({ workflow })
-      );
+    res.status(200).json(await Responses.find({ workflow }));
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve the user responses' });
   }
@@ -41,14 +34,16 @@ router.post('/:workflow', async (req, res) => {
   // const { id: user_id } = req.user;
   try {
     res.status(200).json(await Responses.add({ title, parent, workflow }));
-  } catch (e) {
-    res.status(500).json(e);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
+
 router.post('/:workflow/save', async (req, res) => {
   const { workflow } = req.params;
-  const { added } = req.body;
-  // const { id: user_id } = req.user;
+  const added = req.body;
+  const base = added.filter(item => item.parent === null);
+  console.log(base);
   try {
     await added.map(async value =>
       Responses.add({ title: value.title, parent: value.parent, workflow })
@@ -73,19 +68,21 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// SAVE NEW RESPONSES
 router.put('/:workflow/save', async (req, res) => {
   const { workflow } = req.params;
-  const { changed } = req.body;
+  const changed = req.body;
 
-  const status = changed.map(async value => Responses.save(value));
-  // const inserted = await added.map(async value =>
-  //   Responses.add({ ...value, workflow })
-  // );
   try {
+    await changed.map(async value =>
+      Responses.save({ ...value, workflow }).catch(err => console.error(err))
+    );
+
     res.status(200).json({ message: 'Success' });
   } catch (error) {
     res.status(500).json({
-      message: `Unable to update the question ${workflow}`,
+      message: `Unable to update the responses.`,
+      error: error.message,
     });
   }
 });
