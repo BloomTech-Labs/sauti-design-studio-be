@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
           session_id: sessionId,
           phone_num: req.body.phoneNumber,
           service_code: req.body.serviceCode,
-          text: req.body.text,
+          title: req.body.title,
         }).catch(err => new Error(err)),
 
       set: async (id, key, value) =>
@@ -86,7 +86,7 @@ router.post('/', async (req, res) => {
 
         this._options = responses =>
           Object.keys(responses)
-            .map(obj => `${responses[obj].index}. ${responses[obj].text}`)
+            .map(obj => `${responses[obj].index}. ${responses[obj].title}`)
             .toString()
             .split(',')
             .join('\n');
@@ -108,8 +108,8 @@ router.post('/', async (req, res) => {
               .then(async data => {
                 const screen = new Response(data);
 
-                menu.session.set('owner', null);
-                menu.session.get('owner').then(async filter =>
+                menu.session.set('parent', null);
+                menu.session.get('parent').then(async filter =>
                   menu.con(
                     `${screen._title}
                     ${screen._options(await screen.responses({ ...filter }))}`
@@ -136,7 +136,7 @@ router.post('/', async (req, res) => {
               const screen = new Response(data);
               menu.con(
                 `${screen._title}
-                ${screen._options(await screen.responses({ owner: 1 }))}`
+                ${screen._options(await screen.responses({ parent: 1 }))}`
               );
             })
             .catch(err => new Error(err))

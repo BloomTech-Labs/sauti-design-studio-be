@@ -51,22 +51,22 @@ const getScreenCount = filter =>
 
 /* ################################### */
 
-const makeCurrentQuestion = (text, options) =>
-  `${text} ${Object.keys(options)
-    .map(obj => `\n${options[obj].order}. ${options[obj].question_text}`)
+const makeCurrentQuestion = (title, options) =>
+  `${title} ${Object.keys(options)
+    .map(obj => `\n${options[obj].order}. ${options[obj].question_title}`)
     .toString()
     .split(`,`)}`;
 
 const makeScreens = (name, questions) =>
   questions.map(obj => ({
-    menu: _.camelCase(obj.question_text),
+    menu: _.camelCase(obj.question_title),
     id: obj.id,
   }));
 
 const makeNextObj = (name, questions) => {
   const obj = {};
   questions.map(
-    (question, i) => (obj[i + 1] = _.camelCase(question.question_text))
+    (question, i) => (obj[i + 1] = _.camelCase(question.question_title))
   );
   return obj;
 };
@@ -102,7 +102,7 @@ const getUserWorkflow = async workflow_id => {
   return new Workflow(workflow, await questionsAndAnswers);
 };
 
-const makeResponseBreaks = arr => arr.map(item => `\n${item.answer_text} `);
+const makeResponseBreaks = arr => arr.map(item => `\n${item.answer_title} `);
 
 const getScreenData = async id => {
   const answers = await db('answers').where({ question: id });

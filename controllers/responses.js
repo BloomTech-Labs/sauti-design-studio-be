@@ -1,5 +1,6 @@
 // Dependencies
 const router = require('express').Router();
+const Promise = require('bluebird');
 
 // Models
 const Responses = require('../models/responses');
@@ -36,10 +37,23 @@ router.get('/:workflow/:id', async (req, res) => {
 
 router.post('/:workflow', async (req, res) => {
   const { workflow } = req.params;
-  const { text, index, owner } = req.body;
+  const { title, index, parent } = req.body;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.add({ text, owner, workflow }));
+    res.status(200).json(await Responses.add({ title, parent, workflow }));
+  } catch (e) {
+    res.status(500).json(e);
+  }
+});
+router.post('/:workflow/save', async (req, res) => {
+  const { workflow } = req.params;
+  const { added } = req.body;
+  // const { id: user_id } = req.user;
+  try {
+    await added.map(async value =>
+      Responses.add({ title: value.title, parent: value.parent, workflow })
+    );
+    res.status(200).json({ message: 'success' });
   } catch (e) {
     res.status(500).json(e);
   }
@@ -48,9 +62,9 @@ router.post('/:workflow', async (req, res) => {
 // UPDATES THE RESPONSE
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { text, owner, workflow, index } = req.body;
-  const values = { id, text, owner, workflow, index };
+  const { title, parent, workflow, index } = req.body;
   try {
+    const values = { id, title, parent, workflow, index };
     res.status(200).json(await Responses.update(values));
   } catch (error) {
     res.status(500).json({
@@ -59,8 +73,38 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.put('/:workflow/save', async (req, res) => {
+  const { workflow } = req.params;
+  const { changed } = req.body;
+
+  const status = changed.map(async value => Responses.save(value));
+  // const inserted = await added.map(async value =>
+  //   Responses.add({ ...value, workflow })
+  // );
+  try {
+    res.status(200).json({ message: 'Success' });
+  } catch (error) {
+    res.status(500).json({
+      message: `Unable to update the question ${workflow}`,
+    });
+  }
+});
+
 // DELETE RESPONSE
 router.delete('/:id', async (req, res) => {
+  try {
+    const deleteRes = await Responses.remove(req.params.id);
+    if (deleteRes)
+      res.status(200).json({
+        message: 'You have successfully deleted the Question',
+        current: deleteRes,
+      });
+  } catch (error) {
+    res.status(500).json({ message: 'Unable to delete this Answer.' });
+  }
+});
+
+router.delete('/:workflow/id', async (req, res) => {
   try {
     const deleteRes = await Responses.remove(req.params.id);
     if (deleteRes)
