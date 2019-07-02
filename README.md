@@ -33,8 +33,6 @@ Why did you choose this framework?
 
 # Data Model
 
-🚫This is just an example. Replace this with your data model
-
 #### ORGANIZATIONS
 
 ---
