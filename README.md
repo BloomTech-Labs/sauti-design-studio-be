@@ -18,24 +18,18 @@ Why did you choose this framework?
 - Express is the most matured framework for Node.js with 5+ years of use.
 - Express offers a quick and simple way to get a server up and running.
 
-#### Organization Routes
-
-| Method | Endpoint                | Access Control | Description                                  |
-| ------ | ----------------------- | -------------- | -------------------------------------------- |
-| GET    | `/organizations/:orgId` | all users      | Returns the information for an organization. |
-| PUT    | `/organizatoins/:orgId` | owners         | Modify an existing organization.             |
-| DELETE | `/organizations/:orgId` | owners         | Delete an organization.                      |
-
 #### User Routes
 
 | Method | Endpoint                | Access Control      | Description                                        |
 | ------ | ----------------------- | ------------------- | -------------------------------------------------- |
-| GET    | `/users/current`        | all users           | Returns info for the logged in user.               |
-| GET    | `/users/org/:userId`    | owners, supervisors | Returns all users for an organization.             |
-| GET    | `/users/:userId`        | owners, supervisors | Returns info for a single user.                    |
-| POST   | `/users/register/owner` | none                | Creates a new user as owner of a new organization. |
-| PUT    | `/users/:userId`        | owners, supervisors |                                                    |
-| DELETE | `/users/:userId`        | owners, supervisors |                                                    |
+| GET    | `/profile`        | users           | Returns profile info for the logged in user.               |
+| GET    | `/workflows`    | users | Returns all workflows made under that user.             |
+| GET    | `/workflows/:id`        | owners, supervisors | Returns info for a workflow under user. 
+| GET    | `/responses/:id`        | owners, supervisors | Returns responses info corresponding to the workflow.                    |
+| POST   | `/workflows` | users                | Creates a new workflow which is tied to the users account. |
+| POST   | `/auth` | none                | Creates a new user by logging in with either facebook or google. |
+| PUT    | `/profile`        | users |    Edit your profile                                                |
+| DELETE | `/users/:id`        | owners, business owner | Delete specefied user                                                  |
 
 # Data Model
 
