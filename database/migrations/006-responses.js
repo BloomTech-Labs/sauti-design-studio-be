@@ -1,9 +1,9 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('responses', tbl => {
     tbl.increments();
-    tbl.string('text');
+    tbl.string('title');
     tbl
-      .integer('owner')
+      .integer('parent')
       .references('id')
       .inTable('responses')
       .unsigned()

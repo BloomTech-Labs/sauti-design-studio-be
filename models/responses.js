@@ -1,16 +1,17 @@
 const db = require('../database/dbConfig');
+const Promise = require('bluebird');
 /* Example of object
-{ id: 1, text: 'example', owner: null, workflow: 1, index: 1 } */
+{ id: 1, title: 'example', parent: null, workflow: 1, index: 1 } */
 const makeTree = items => {
   let familyTree = [];
-  const parents = items.filter(item => !item.owner);
+  const parents = items.filter(item => !item.parent);
 
   parents.forEach((parent, i) => {
-    let children = items.filter(child => child.owner === parent.id);
+    let children = items.filter(child => child.parent === parent.id);
 
     const findChildren = array =>
       array.forEach(child => {
-        let temp = items.filter(item => item.owner === child.id);
+        let temp = items.filter(item => item.parent === child.id);
         if (temp.length > 0) {
           findChildren(temp);
           child.children = temp;
@@ -33,44 +34,33 @@ const makeTree = items => {
   return familyTree;
 };
 
-const getIndex = async ({ parent, workflow }) => {
-  let owner = parent;
-  if (!owner) owner = null;
+const getIndex = async ({ parent: filter, workflow }) => {
+  let parent = filter;
+  if (!parent) parent = null;
   const { count: index } = await db('responses')
-    .where({ owner, workflow })
+    .where({ parent, workflow })
     .count()
     .first()
     .catch(err => err);
   return index;
 };
 
-const tree = async filter =>
-  makeTree(
-    await db('responses')
-      .where(filter)
-      .select('id', 'text', 'owner', 'index')
-  );
+const tree = async filter => makeTree(await db('responses').where(filter));
 
 const find = filter =>
   db('responses')
-    .where(filter)
-    .select('id', 'text', 'owner', 'index');
+    .select('id', 'title', 'parent', 'workflow')
+    .where(filter);
 
-const getById = ({ id, workflow }) =>
-  db('responses')
-    .where({ id, workflow })
-    .distinct()
-    .first();
+const getById = id => find({ id }).first();
 
 // Add new value
-const add = async ({ text, owner, workflow }) => {
-  getIndex({ owner, workflow }).then(index => {
-    console.log('TCL: count', index);
-    return db('responses')
-      .insert({ text, owner, workflow, index })
-      .returning('id')
-      .then(([id]) => getById(id));
-  });
+const add = async values => {
+  const [id] = await db('responses')
+    .insert(values)
+    .returning('id');
+
+  return getById(id);
 };
 
 const update = values =>
@@ -80,6 +70,11 @@ const update = values =>
     .returning('id')
     .then(([id]) => getById(id));
 
+const save = values =>
+  db('responses')
+    .where({ id: values.id })
+    .update(values);
+
 const remove = async id => {
   const [workflow] = await db('responses')
     .select('workflow')
@@ -88,7 +83,7 @@ const remove = async id => {
   const items = await db('responses')
     .where({ id })
     .del()
-    .then(() => tree(workflow));
+    .then(() => find(workflow));
 
   return items;
 };
@@ -100,4 +95,5 @@ module.exports = {
   add,
   update,
   remove,
+  save,
 };

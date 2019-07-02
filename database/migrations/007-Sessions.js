@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
       .inTable('workflows');
     tbl.integer('response');
     tbl
-      .integer('owner')
+      .integer('parent')
       .references('id')
       .inTable('responses');
 
