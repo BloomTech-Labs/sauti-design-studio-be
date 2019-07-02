@@ -1,61 +1,39 @@
-🚫 Note: All lines that start with 🚫 are instructions and should be deleted before this is posted to your portfolio. This is intended to be a guideline. Feel free to add your own flare to it.
-
-🚫 The numbers 1️⃣ through 3️⃣ next to each item represent the week that part of the docs needs to be comepleted by.  Make sure to delete the numbers by the end of Labs.
-
-🚫 Each student has a required minimum number of meaningful PRs each week per the rubric.  Contributing to docs does NOT count as a PR to meet your weekly requirements.
-
 # API Documentation
 
-#### 1️⃣ Backend delpoyed at [🚫name service here](🚫add URL here) <br>
+#### Backend delpoyed at [Heroku](https://sauti-studio.herokuapp.com/) <br>
 
-## 1️⃣ Getting started
+## Getting started
 
 To get the server running locally:
-
-🚫 adjust these scripts to match your project
 
 - Clone this repo
 - **yarn install** to install all required dependencies
 - **yarn server** to start the local server
 - **yarn test** to start server using testing environment
 
-### Backend framework goes here
+#### Express JS
 
-🚫 Why did you choose this framework?
-
--    Point One
--    Point Two
--    Point Three
--    Point Four
-
-## 2️⃣ Endpoints
-
-🚫This is a placeholder, replace the endpoints, access controll, and descriptioin to match your project
-
-#### Organization Routes
-
-| Method | Endpoint                | Access Control | Description                                  |
-| ------ | ----------------------- | -------------- | -------------------------------------------- |
-| GET    | `/organizations/:orgId` | all users      | Returns the information for an organization. |
-| PUT    | `/organizatoins/:orgId` | owners         | Modify an existing organization.             |
-| DELETE | `/organizations/:orgId` | owners         | Delete an organization.                      |
+Why did you choose this framework?
+- Express has a large community of users.
+- Express is the most matured framework for Node.js with 5+ years of use.
+- Express offers a quick and simple way to get a server up and running.
 
 #### User Routes
 
 | Method | Endpoint                | Access Control      | Description                                        |
 | ------ | ----------------------- | ------------------- | -------------------------------------------------- |
-| GET    | `/users/current`        | all users           | Returns info for the logged in user.               |
-| GET    | `/users/org/:userId`    | owners, supervisors | Returns all users for an organization.             |
-| GET    | `/users/:userId`        | owners, supervisors | Returns info for a single user.                    |
-| POST   | `/users/register/owner` | none                | Creates a new user as owner of a new organization. |
-| PUT    | `/users/:userId`        | owners, supervisors |                                                    |
-| DELETE | `/users/:userId`        | owners, supervisors |                                                    |
+| GET    | `/profile`        | users           | Returns profile info for the logged in user.               |
+| GET    | `/workflows`    | users | Returns all workflows made under that user.             |
+| GET    | `/workflows/:id`        | owners, supervisors | Returns info for a workflow under user. 
+| GET    | `/responses/:id`        | owners, supervisors | Returns responses info corresponding to the workflow.                    |
+| POST   | `/workflows` | users                | Creates a new workflow which is tied to the users account. |
+| POST   | `/auth` | none                | Creates a new user by logging in with either facebook or google. |
+| PUT    | `/profile`        | users |    Edit your profile                                                |
+| DELETE | `/users/:id`        | owners, business owner | Delete specefied user                                                  |
 
 # Data Model
 
-🚫This is just an example. Replace this with your data model
-
-#### 2️⃣ ORGANIZATIONS
+#### ORGANIZATIONS
 
 ---
 
@@ -90,7 +68,7 @@ To get the server running locally:
 }
 ```
 
-## 2️⃣ Actions
+## Actions
 
 🚫 This is an example, replace this with the actions that pertain to your backend
 
@@ -116,19 +94,26 @@ To get the server running locally:
 
 `deleteUser(userId)` -> deletes everything dependent on the user
 
-## 3️⃣ Environment Variables
+## Environment Variables
 
 In order for the app to function correctly, the user must set up their own environment variables.
 
 create a .env file that includes the following:
-
-🚫 These are just examples, replace them with the specifics for your app
     
-    *  STAGING_DB - optional development db for using functionality not available in SQLite
-    *  NODE_ENV - set to "development" until ready for "production"
-    *  JWT_SECRET - you can generate this by using a python shell and running import random''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&amp;*(-*=+)') for i in range(50)])
-    *  SENDGRID_API_KEY - this is generated in your Sendgrid account
-    *  stripe_secret - this is generated in the Stripe dashboard
+    *  GOOGLE_CLIENT_ID=
+    *  GOOGLE_CLIENT_SECRET=
+    *  JWT_SECRET=
+    *  SESSION_COOKIE=
+    *  FRONTEND_URL=
+    *  DATABASE_URL=
+    *  REDIRECT_URL=
+    *  FACEBOOK_CLIENT_ID=
+    *  FACEBOOK_CLIENT_SECRET=
+    *  AT_API_KEY=
+    *  PUSHER_APP_ID=
+    *  PUSHER_KEY=
+    *  PUSHER_SECRET=
+    *  POSTGRES_URL=
     
 ## Contributing
 
@@ -168,5 +153,4 @@ These contribution guidelines have been adapted from [this good-Contributing.md-
 
 ## Documentation
 
-See [Frontend Documentation](🚫link to your frontend readme here) for details on the fronend of our project.
-🚫 Add DS iOS and/or Andriod links here if applicable.
+See [Frontend Documentation](https://github.com/labs13-sauti-studio/labs13-sauti-studio-FE/edit/master/README.md) for details on the fronend of our project.
