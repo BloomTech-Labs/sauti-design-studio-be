@@ -4,7 +4,8 @@ const ProfileModel = require('../models/profile-model');
 router.get('/', async (req, res) => {
   try {
     const { id } = req.user;
-    res.status(200).json(await ProfileModel.getById(id).first());
+    const info = await ProfileModel.getById(id);
+    res.status(200).json(info);
   } catch (e) {
     res.status(500).json({ message: 'Could not get user' });
   }

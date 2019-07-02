@@ -9,7 +9,8 @@ exports.up = function(knex, Promise) {
         sessions,
         users,
         categories,
-        workflows CASCADE;`);
+        workflows,
+        settings CASCADE;`);
 };
 exports.down = function(knex, Promise) {
   // return cleaner.clean(knex); // cleans all tables and resets the primary keys

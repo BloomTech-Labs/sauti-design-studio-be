@@ -54,7 +54,7 @@ server.use(passport.session());
 server.use('/auth', AuthRouter);
 
 // endpoints
-server.use('/profile', authCheck, ProfileRouter);
+server.use('/profile', ProfileRouter);
 server.use('/users', authCheck, UsersRouter);
 server.use('/workflows', WorkflowsRouter);
 server.use('/clients', ClientsRouter);
