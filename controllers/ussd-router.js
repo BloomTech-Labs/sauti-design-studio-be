@@ -4,12 +4,6 @@
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');
 const router = require('express').Router();
-const _ = require('lodash');
-const db = require('../database/dbConfig');
-// Function to create a new menu. Recommended to create a new menu for each request
-// Constructor for questions and options
-
-// Format options to be displayed to clients
 
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
@@ -24,15 +18,18 @@ router.post('/', async (req, res) => {
           phone_num: req.body.phoneNumber,
           service_code: req.body.serviceCode,
           text: req.body.text,
-        }).catch(err => new Error(err)),
+        }).catch(err => console.log(err)),
 
-      set: async (id, key, value) =>
-        UssdModel.updateSession(id, key, value).catch(err => new Error(err)),
+      set: (id, key, value) =>
+        UssdModel.updateSession(id, key, value).catch(err =>
+          console.error(err.message)
+        ),
 
       get: (id, key) =>
-        UssdModel.getSession(id, key).catch(err => new Error(err)),
+        UssdModel.getSession(id, key).catch(err => console.error(err.message)),
 
-      end: id => UssdModel.endSession(id).catch(err => new Error(err)),
+      end: id =>
+        UssdModel.endSession(id).catch(err => console.error(err.message)),
     });
 
     menu.startState({
@@ -44,12 +41,11 @@ router.post('/', async (req, res) => {
 
     menu.state('selectWorkflow', {
       run() {
-        menu.session.get('workflow');
+        // menu.session.get('workflow');
         menu.con('Enter workflow ID:');
       },
       next: {
         [`*[0-9]+`]: 'nullParent',
-
         [`*[a-zA-Z]+`]: 'invalidCharacter',
       },
     });
@@ -64,27 +60,37 @@ router.post('/', async (req, res) => {
       },
     });
 
+    const lineMaker = (word, char = '=') => {
+      let line = '';
+      for (const chr of word) {
+        line = line.concat('=');
+      }
+      return line;
+    };
+
+    const optionify = options =>
+      Object.keys(options)
+        .map(obj => `${options[obj].id}. ${options[obj].title}`)
+        .toString()
+        .split(',')
+        .join('\n');
+
+    const screenify = (title, subtitle, options) =>
+      subtitle
+        ? `${title}\n${lineMaker(title, '=')}\n${subtitle}:\n${optionify(
+            options
+          )}`
+        : `${title}\n${lineMaker(title, '=')}\n${optionify(options)}`;
+
     menu.state('nullParent', {
       run: () => {
-        menu.session.set('workflow', menu.val);
-        menu.session
-          .get('workflow') // Get wf from session
-          .then(({ workflow: id }) =>
-            UssdModel.getWorkflow(id)
-              .then(async data => {
-                const screen = new Response(data);
-
-                menu.session.set('parent', null);
-                menu.session.get('parent').then(async filter => {
-                  console.log('TCL: filter', filter);
-                  menu.con(
-                    `${screen._title}
-                    ${screen._options(await screen.responses({ ...filter }))}`
-                  );
-                });
-              })
-              .catch(err => new Error(err))
-          );
+        const workflow = Number(menu.val);
+        menu.session.set('workflow', workflow);
+        UssdModel.getScreenData(workflow)
+          .then(([title, subtitle, options]) => {
+            menu.con(screenify(title, subtitle, options));
+          })
+          .catch(err => menu.end(err.message));
       },
       next: {
         [`*[0-9]+`]: 'selectedScreen',
@@ -94,75 +100,22 @@ router.post('/', async (req, res) => {
 
     menu.state('selectedScreen', {
       run: async () => {
-        menu.session.set('response', menu.val);
-        await menu.session.get('workflow').then(async ({ workflow: id }) =>
-          UssdModel.getWorkflow(id)
-            .then(async data => {
-              const screen = new Response(data);
-              menu.con(
-                `${screen._title}
-            ${screen._options(await screen.responses({ parent: 1 }))}`
-              );
-            })
-            .catch(err => new Error(err))
-        );
+        await menu.session.set('response', Number(menu.val));
+        const rawWorkflow = await menu.session.get('workflow');
+        console.log(await rawWorkflow);
+        const workflow = Number(rawWorkflow.workflow);
+        const input = Number(menu.val);
+
+        UssdModel.getScreenData(workflow, input)
+          .then(([title, subtitle, options]) => {
+            menu.con(screenify(title, subtitle, options));
+          })
+          .catch(err => menu.end(err.message));
       },
       next: {
-        [`*[0-9]+`]: 'selectedResponse',
         [`* [a-zA-Z]+`]: 'invalidCharacter',
       },
     });
-
-    menu.state('selectedResponse', {
-      run: async () => {
-        menu.session.set('response', menu.val);
-        await menu.session.get('workflow').then(async ({ workflow }) =>
-          UssdModel.getWorkflow(workflow)
-            .then(async data => {
-              const screen = new Response(data);
-              menu.con(
-                `${screen._title}
-            ${screen._options(await screen.responses({ parent: menu.val }))}`
-              );
-            })
-            .catch(err => new Error(err))
-        );
-      },
-      next: {
-        [`*[0-9]+`]: 'selectedResponse',
-        [`* [a-zA-Z]+`]: 'invalidCharacter',
-      },
-    });
-
-    class Response {
-      constructor(workflow) {
-        /* Ex. Workflow._title:
-         Melee
-        ===== */
-        this._line = word => {
-          let line = '';
-          for (const chr of word) {
-            line = line.concat('=');
-          }
-          return line;
-        };
-
-        this._title = `${workflow.name}\n${this._line(workflow.name)}\n`;
-
-        this.responses = filter =>
-          UssdModel.getResponses({
-            workflow: workflow.id,
-            ...filter,
-          });
-
-        this._options = responses =>
-          Object.keys(responses)
-            .map(obj => `${responses[obj].id}. ${responses[obj].title}`)
-            .toString()
-            .split(',')
-            .join('\n');
-      }
-    }
 
     menu.run(req.body, msg => {
       res.send(msg);

@@ -8,12 +8,17 @@ exports.up = function(knex, Promise) {
     tbl
       .integer('workflow')
       .references('id')
-      .inTable('workflows');
-    tbl.integer('response');
+      .inTable('workflows')
+      .unsigned()
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
     tbl
-      .integer('parent')
+      .integer('response')
       .references('id')
-      .inTable('responses');
+      .inTable('responses')
+      .unsigned()
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
 
     tbl.timestamps(true, true);
   });

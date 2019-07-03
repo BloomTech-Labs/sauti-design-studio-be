@@ -4,28 +4,33 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const startSession = async session => {
-  /* Check if there is an active session with that id
-  If there is no session create it
-  If there is then update it */
-  const active = await db('sessions').where({ session_id: session.session_id });
+  const active = await db('sessions')
+    .where({ session_id: session.session_id })
+    .catch(error => error.message);
+
   if (!active || active.length === 0)
-    return db('sessions').insert({ ...session });
+    return db('sessions')
+      .insert({ ...session })
+      .catch(error => error.message);
 
   return db('sessions')
     .where({ session_id: session.session_id })
-    .update({ ...session });
+    .update({ ...session })
+    .catch(error => error.message);
 };
 
-const getSession = async (session_id, key) =>
+const getSession = (session_id, key) =>
   db('sessions')
     .select(key)
     .where({ session_id })
-    .first();
+    .first()
+    .catch(error => error.message);
 
 const updateSession = (session_id, key, value) =>
   db('sessions')
     .where({ session_id })
-    .update({ [key]: Number(value) });
+    .update({ [key]: Number(value) })
+    .catch(error => error.message);
 
 const endSession = session_id =>
   db('sessions')
@@ -41,73 +46,29 @@ const getWorkflow = id =>
 const getResponses = filter =>
   db('responses')
     .where(filter)
-    .orderBy('index');
+    .orderBy('index')
+    .catch(error => error.message);
 
-const getScreenCount = filter =>
-  db('questions')
-    .where(filter)
-    .orderBy('order')
-    .countDistinct();
+const getScreenData = async (workflow, input = null) => {
+  const workflowData = db('workflows')
+    .select('name')
+    .where({ id: workflow })
+    .first()
+    .then(({ name }) => name);
 
-/* ################################### */
+  const subtitle = input
+    ? db('responses')
+        .select('title')
+        .where({ workflow, id: input })
+        .first()
+        .then(({ title }) => title)
+    : null;
 
-const makeCurrentQuestion = (title, options) =>
-  `${title} ${Object.keys(options)
-    .map(obj => `\n${options[obj].order}. ${options[obj].question_title}`)
-    .toString()
-    .split(`,`)}`;
+  const options = db('responses')
+    .select('id', 'title')
+    .where({ workflow, parent: input });
 
-const makeScreens = (name, questions) =>
-  questions.map(obj => ({
-    menu: _.camelCase(obj.question_title),
-    id: obj.id,
-  }));
-
-const makeNextObj = (name, questions) => {
-  const obj = {};
-  questions.map(
-    (question, i) => (obj[i + 1] = _.camelCase(question.question_title))
-  );
-  return obj;
-};
-
-class Workflow {
-  constructor(workflow, questions) {
-    this.startScreen = {
-      menu: _.camelCase(workflow.name),
-      question: makeCurrentQuestion(workflow.name, questions),
-      next: makeNextObj(workflow.name, questions),
-    };
-    this.screens = makeScreens(workflow.name, questions);
-  }
-}
-
-const getUserWorkflow = async workflow_id => {
-  console.log('TCL: getUserWorkflow - workflow_id', workflow_id);
-
-  const [workflow] = await db('workflows').where({ id: workflow_id });
-
-  const questions = await db('questions').where({ workflow_id: workflow.id });
-
-  const questionsAndAnswers = await Promise.all(
-    questions.map(async question => {
-      const obj = {
-        ...question,
-        answers: await db('answers').where({ question: question.id }),
-      };
-      return obj;
-    })
-  );
-
-  return new Workflow(workflow, await questionsAndAnswers);
-};
-
-const makeResponseBreaks = arr => arr.map(item => `\n${item.answer_title} `);
-
-const getScreenData = async id => {
-  const answers = await db('answers').where({ question: id });
-
-  return makeResponseBreaks(answers);
+  return Promise.join(workflowData, subtitle, options);
 };
 
 module.exports = {
@@ -117,5 +78,5 @@ module.exports = {
   updateSession,
   getWorkflow,
   getResponses,
-  getScreenCount,
+  getScreenData,
 };
