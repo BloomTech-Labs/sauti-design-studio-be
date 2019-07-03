@@ -7,7 +7,14 @@ const Promise = require('bluebird');
 const getById = async id => {
   try {
     const user = db('users')
-      .select('display_name', 'company_name', 'phone_num', 'country', 'pic')
+      .select(
+        'id',
+        'display_name',
+        'company_name',
+        'phone_num',
+        'country',
+        'pic'
+      )
       .where({ id })
       .first();
 

@@ -168,9 +168,7 @@ router.post('/', async (req, res) => {
       res.send(msg);
     });
   } catch (error) {
-    console.log('TCL: error', error);
-
-    res.status(500).json(error);
+    res.status(500).json({ message: error.message });
   }
 });
 

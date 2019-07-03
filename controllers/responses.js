@@ -33,24 +33,11 @@ router.post('/:workflow', async (req, res) => {
   const { title, index, parent } = req.body;
   // const { id: user_id } = req.user;
   try {
-    res.status(200).json(await Responses.add({ title, parent, workflow }));
+    res
+      .status(200)
+      .json(await Responses.add({ title, parent, workflow, index }));
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-});
-
-router.post('/:workflow/save', async (req, res) => {
-  const { workflow } = req.params;
-  const added = req.body;
-  const base = added.filter(item => item.parent === null);
-  console.log(base);
-  try {
-    await added.map(async value =>
-      Responses.add({ title: value.title, parent: value.parent, workflow })
-    );
-    res.status(200).json({ message: 'success' });
-  } catch (e) {
-    res.status(500).json(e);
   }
 });
 
