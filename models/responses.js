@@ -42,7 +42,7 @@ const getIndex = async ({ parent: filter, workflow }) => {
     .count()
     .first()
     .catch(err => err);
-  return index;
+  return Number(index) + 1;
 };
 
 const tree = async filter => makeTree(await db('responses').where(filter));
@@ -57,10 +57,13 @@ const getById = id => find({ id }).first();
 // Add new value
 const add = async values => {
   const [id] = await db('responses')
-    .insert(values)
+    .insert({ ...values, index: await getIndex(values) })
     .returning('id');
 
-  return getById(id);
+  return {
+    added: await getById(id),
+    total: await find({ workflow: values.workflow }),
+  };
 };
 
 const update = values =>

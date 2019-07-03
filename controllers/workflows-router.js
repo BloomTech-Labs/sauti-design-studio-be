@@ -60,7 +60,10 @@ router.get('/:id', async (req, res) => {
         .status(404)
         .json({ message: `Workflow ${req.params.id} does not exist.` });
     } else {
-      res.status(200).json(workflow);
+      res.status(200).json({
+        ...workflow,
+        code: `${process.env.SERVICE_CODE}*${req.params.id}#`,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: 'Problem retrieving the workflow' });
