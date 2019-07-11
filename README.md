@@ -154,3 +154,12 @@ These contribution guidelines have been adapted from [this good-Contributing.md-
 ## Documentation
 
 See [Frontend Documentation](https://github.com/labs13-sauti-studio/labs13-sauti-studio-FE/edit/master/README.md) for details on the fronend of our project.
+
+## Notes
+
+#### Heroku Migration CLI Command: 
+heroku run knex --knexfile=./knexfile.js migrate:latest -a sauti-studio-main-server
+#### Heroku Seed:Run CLI Command: 
+heroku run knex --knexfile=./knexfile.js seed:run -a sauti-studio-main-server
+#### Heroku CLI Log Command: 
+heroku logs --tail -a sauti-studio-main-server

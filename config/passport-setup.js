@@ -11,19 +11,20 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: process.env.REDIRECT_URL,
-      profileFields: ['id', 'displayName', 'photos', 'email'],
-    },
-    (accessToken, refreshToken, profile, done) => {
-      verifyFacebookUser(profile, done);
-    }
-  )
-);
+// Need to set up facebook account
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       clientID: process.env.FACEBOOK_CLIENT_ID,
+//       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+//       callbackURL: process.env.REDIRECT_URL,
+//       profileFields: ['id', 'displayName', 'photos', 'email'],
+//     },
+//     (accessToken, refreshToken, profile, done) => {
+//       verifyFacebookUser(profile, done);
+//     }
+//   )
+// );
 
 passport.use(
   new GoogleStrategy(

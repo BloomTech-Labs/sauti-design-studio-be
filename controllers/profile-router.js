@@ -3,6 +3,7 @@ const ProfileModel = require('../models/profile-model');
 
 router.get('/', async (req, res) => {
   try {
+    // console.log("req",req);
     const { id } = req.user;
     const info = await ProfileModel.getById(id);
     res.status(200).json(info);
