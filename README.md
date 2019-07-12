@@ -159,7 +159,10 @@ See [Frontend Documentation](https://github.com/labs13-sauti-studio/labs13-sauti
 
 #### Heroku Migration CLI Command: 
 heroku run knex --knexfile=./knexfile.js migrate:latest -a sauti-studio-main-server
+heroku run knex --knexfile=./knexfile.js migrate:latest -a sauti-studio-dev-server
 #### Heroku Seed:Run CLI Command: 
 heroku run knex --knexfile=./knexfile.js seed:run -a sauti-studio-main-server
+heroku run knex --knexfile=./knexfile.js seed:run -a sauti-studio-dev-server
 #### Heroku CLI Log Command: 
 heroku logs --tail -a sauti-studio-main-server
+heroku logs --tail -a sauti-studio-dev-server
