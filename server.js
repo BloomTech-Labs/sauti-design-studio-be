@@ -27,6 +27,7 @@ const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 
 const TestIntake = require('./controllers/testintake');
+const TestOutput = require('./controllers/testrouter');
 
 const pusher = new Pusher(credentials.pusher);
 
@@ -63,7 +64,13 @@ server.use('/clients', ClientsRouter);
 server.use('/responses', ResponsesRouter);
 server.use('/ussd', UssdRouter);
 
+
+
 server.use('/testintake', TestIntake)
+server.use('/testoutput', TestOutput)
+
+
+
 
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);

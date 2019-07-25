@@ -1,6 +1,7 @@
 
 exports.up = function(knex, Promise) {
-    return knex.schema.createTable('graphTable', table => {
+    return knex.schema.dropTableIfExists('graphTable').then(() =>   
+    knex.schema.createTable('graphTable', table => {
         table.increments();
         
         table.string('name', 256).notNullable();
@@ -13,7 +14,7 @@ exports.up = function(knex, Promise) {
 
         table.string('previous');
     })
-  
+    );
 };
 
 exports.down = function(knex, Promise) {
