@@ -26,6 +26,8 @@ const ProfileRouter = require('./controllers/profile-router');
 const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 
+const TestIntake = require('./controllers/testintake');
+
 const pusher = new Pusher(credentials.pusher);
 
 // middleware
@@ -60,6 +62,9 @@ server.use('/workflows', WorkflowsRouter);
 server.use('/clients', ClientsRouter);
 server.use('/responses', ResponsesRouter);
 server.use('/ussd', UssdRouter);
+
+server.use('/testintake', TestIntake)
+
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);
 });
