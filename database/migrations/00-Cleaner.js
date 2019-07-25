@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
   return knex.raw(`
         DROP TABLE IF EXISTS
         responses,
+        graphTable,
         clients,
         sessions,
         users,

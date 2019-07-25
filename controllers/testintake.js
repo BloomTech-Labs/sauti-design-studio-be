@@ -7,7 +7,11 @@ const router = require('express').Router();
 
 // Middleware
 
-
+function getNodes(data) {
+    for (i = 0; i > data.length; i++) {
+        print(data.nodes.id)
+    }
+}
 
 // Get Workflow JSON into DB
 
@@ -17,7 +21,17 @@ router.get('/', async (req,res) => {
 
 
 router.post('/', async (req, res) => {
-    res.send('Hey, you tried to send something')
+    
+    let content = req.body;
+
+    console.log(req.body);
+    console.log(content.id);
+
+    res.send(content);
+
+
+    //res.send('Hey, you tried to send something')
+
 });
 
 
