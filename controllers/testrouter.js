@@ -16,7 +16,7 @@ router.get('/', async(req, res) =>{
     
     let homeText = await homesesh();
 
-    page = "pogo";
+    page = "string";
 
     console.log(homeText[0]["text"]);
     console.log('page ', page);
@@ -43,14 +43,23 @@ const curscreen = async(current, request) => {
 
     let newscreen = "blank";
 
-    if (page == "string" || "pogo") {
+    if (page == "string") {
         newscreen = await homesesh();
 
         return newscreen;
     }
     else {
-        // newscreen = await newpage();
+        if (request == "") {
+            newscreen = page;
+            return newscreen;
+        }
+        else if (request = "1") {
+            const choice = await db('graphTable').where({name:current});
+            
+            console.log('choice ',choice)
 
+            return choice;
+        }
 
     }
  
@@ -61,9 +70,10 @@ router.post('/', async (req, res) => {
 
     let textnum = req.body.text;
 
-    let screen = curscreen(page, textnum);
+    let screen = await curscreen(page, textnum);
 
-    console.log(textnum.text);
+    console.log(textnum);
+    console.log(screen);
     console.log('page ', page);
 
     res.send(`testoutput for a new screen with input ${textnum}`)
