@@ -9,7 +9,8 @@ const homesesh = () => {
     return db('graphTable').where({id:1});
 }
 
-let page = "string";
+
+let page = db('graphTable').select('name').where({id:1});
 
 
 router.get('/', async(req, res) =>{
@@ -39,26 +40,39 @@ const newpagehold = async(request, current) => {
     console.log('newpagehold');
 }
 
-const curscreen = async(current, request) => {
+const newscreen = async(current, request) => {
 
     let newscreen = "blank";
 
-    if (page == "string") {
-        newscreen = await homesesh();
+    if (request == "") {
+
+        console.log('Page on no text entry POST req: ', page);
+
+        newscreen = page;
 
         return newscreen;
     }
     else {
-        if (request == "") {
-            newscreen = page;
-            return newscreen;
-        }
-        else if (request = "1") {
+        if (request == "1") {
             const choice = await db('graphTable').where({name:current});
             
-            console.log('choice ',choice)
+            console.log('choice: ',choice[0]['Con1'])
 
-            return choice;
+            newscreen = choice[0]['Con1'];
+
+            page = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "2") {
+            const choice = await db('graphTable').where({name:current});
+            
+            console.log('choice: ',choice[0]['Con2'])
+
+            newscreen = choice[0]['Con2'];
+
+            page = newscreen;
+            return newscreen;
         }
 
     }
@@ -70,9 +84,10 @@ router.post('/', async (req, res) => {
 
     let textnum = req.body.text;
 
-    let screen = await curscreen(page, textnum);
+    console.log("texted number ", textnum);
+    
+    let screen = await newscreen(page, textnum);
 
-    console.log(textnum);
     console.log(screen);
     console.log('page ', page);
 
