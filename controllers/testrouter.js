@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-
+const UssdModel = require('../models/ussd-model');
 
 
 const db = require('../database/dbConfig');
@@ -9,16 +9,19 @@ const homesesh = () => {
     return db('graphTable').where({id:1});
 }
 
+
 let page = db('graphTable').select('name').where({id:1});
 
-
 function getSessionInfo(body) {
+
+    //let page = await db('graphTable').select('name').where({id:1});
+
     const session = {
       session_id: body.sessionId,
       phone_num: body.phoneNumber,
       service_code: body.serviceCode,
       text: body.text,
-      page: db('graphTable').select('name').where({id:1}),
+      //page: page, 
     };
     return session;
   }
@@ -57,11 +60,11 @@ const newpagehold = async(request, current) => {
 
 const newscreen = async(current, request) => {
 
-    let newscreen =  page;
+    let newscreen =  current;
 
     if (request == "") {
 
-        console.log('Page on no text entry POST req: ', page);
+        console.log('Page on no text entry POST req: ', current);
 
         newscreen = page;
 
@@ -75,7 +78,7 @@ const newscreen = async(current, request) => {
 
             newscreen = choice[0]['Con1'];
 
-            page = newscreen;
+            current = newscreen;
             return newscreen;
         }
 
@@ -86,7 +89,7 @@ const newscreen = async(current, request) => {
 
             newscreen = choice[0]['Con2'];
 
-            page = newscreen;
+            current = newscreen;
             return newscreen;
         }
 
@@ -99,16 +102,26 @@ router.post('/', async (req, res) => {
 
     const session = getSessionInfo(req.body);
 
-    let textnum = req.body.text;
-
-    console.log("texted number ", textnum);
+    console.log('session info: ', session);
     
-    let screen = await newscreen(page, textnum);
+    // if (!session.session_id) {
+    //     console.log('NO EXISTING ID...')
+    //     session = getSessionInfo(req.body);
+    // }
+    
+    const service_code = await UssdModel.startSession(session);
 
-    console.log(screen);
+    console.log("texted number ", session.text);
+    console.log("service code", service_code);
+    
+    let screen = await newscreen(page, session.text);
+
+    page = screen
+
+    console.log('current screen ', screen);
     console.log('page ', page);
 
-    res.send(`testoutput for a new screen with input ${textnum}`)
+    res.send(`testoutput for a new screen with input ${session.text}`)
 })
 
 

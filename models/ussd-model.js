@@ -4,10 +4,17 @@ const db = require('../database/dbConfig');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
+
+
 const startSession = async session => {
-  const active = await db('sessions')
+
+  console.log('session.session_id: ', session.session_id);
+
+  const [active] = await db('sessions')
     .where({ session_id: session.session_id })
     .catch(error => error.message);
+
+  console.log(active);
 
   if (!active || active.length === 0)
     return db('sessions')
@@ -19,6 +26,10 @@ const startSession = async session => {
     .update({ ...session })
     .catch(error => error.message);
 };
+
+
+
+
 
 const getSession = (session_id, key) =>
   db('sessions')
