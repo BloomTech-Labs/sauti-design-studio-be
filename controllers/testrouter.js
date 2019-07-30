@@ -9,15 +9,30 @@ const homesesh = () => {
     return db('graphTable').where({id:1});
 }
 
-
 let page = db('graphTable').select('name').where({id:1});
 
 
+function getSessionInfo(body) {
+    const session = {
+      session_id: body.sessionId,
+      phone_num: body.phoneNumber,
+      service_code: body.serviceCode,
+      text: body.text,
+      page: db('graphTable').select('name').where({id:1}),
+    };
+    return session;
+  }
+
+
+
+
 router.get('/', async(req, res) =>{
+
+    const session = getSessionInfo(req.body);
     
     let homeText = await homesesh();
 
-    page = "string";
+    // page = "string";
 
     console.log(homeText[0]["text"]);
     console.log('page ', page);
@@ -42,7 +57,7 @@ const newpagehold = async(request, current) => {
 
 const newscreen = async(current, request) => {
 
-    let newscreen = "blank";
+    let newscreen =  page;
 
     if (request == "") {
 
@@ -81,6 +96,8 @@ const newscreen = async(current, request) => {
 
 
 router.post('/', async (req, res) => {
+
+    const session = getSessionInfo(req.body);
 
     let textnum = req.body.text;
 
