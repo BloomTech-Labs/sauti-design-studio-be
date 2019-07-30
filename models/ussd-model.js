@@ -1,23 +1,43 @@
+
 /* eslint-disable no-shadow */
 const db = require('../database/dbConfig');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
+
+
 const startSession = async session => {
-  const active = await db('sessions')
+
+  console.log('session.session_id: ', session.session_id);
+
+  const [active] = await db('sessions')
     .where({ session_id: session.session_id })
     .catch(error => error.message);
+
+  console.log(active);
 
   if (!active || active.length === 0)
     return db('sessions')
       .insert({ ...session })
       .catch(error => error.message);
 
+  // might have errors updating here, testing to find out...
   return db('sessions')
     .where({ session_id: session.session_id })
     .update({ ...session })
     .catch(error => error.message);
 };
+
+
+const updateSession = (session_id, key, value) =>
+  db('sessions')
+    .where({ session_id })
+    .update({ [key]: Number(value) })
+    .catch(error => error.message);
+
+
+
+
 
 const getSession = (session_id, key) =>
   db('sessions')
@@ -26,11 +46,10 @@ const getSession = (session_id, key) =>
     .first()
     .catch(error => error.message);
 
-const updateSession = (session_id, key, value) =>
-  db('sessions')
-    .where({ session_id })
-    .update({ [key]: Number(value) })
-    .catch(error => error.message);
+
+
+
+
 
 const endSession = session_id =>
   db('sessions')
