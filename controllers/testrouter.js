@@ -10,7 +10,8 @@ const homesesh = () => {
 }
 
 
-let page = db('graphTable').select('name').where({id:1});
+// let page = db('graphTable').select('name').where({id:1});
+let page = "";
 
 function getSessionInfo(body) {
 
@@ -21,7 +22,7 @@ function getSessionInfo(body) {
       phone_num: body.phoneNumber,
       service_code: body.serviceCode,
       text: body.text,
-      //page: page, 
+      page: "", 
     };
     return session;
   }
@@ -58,17 +59,47 @@ const newpagehold = async(request, current) => {
     console.log('newpagehold');
 }
 
-const newscreen = async(current, request) => {
+const newscreen = async(curSession, request) => {
 
-    let newscreen =  current;
+    const newSessionInfo = {
+        session_id: curSession.session_id,
+        phone_num: curSession.phone_num,
+        service_code: curSession.service_code,
+        text: curSession.text,
+        page: curSession.page, 
+      };    
+
+    let newscreen = "";
 
     if (request == "") {
 
-        console.log('Page on no text entry POST req: ', current);
+        console.log('Page on no text entry POST req: ', curSession.page);
 
-        newscreen = page;
+        if (curSession.page == ""){
+            let respo = await homesesh();
 
-        return newscreen;
+            let newscreen = respo[0]["name"];
+
+            console.log('newscreen ', newscreen );
+
+            newSessionInfo.page = respo[0]["name"];
+
+            console.log('newSessionInfo to update: ', newSessionInfo);
+
+            // NOW CURRENT THING - update function from modal to update the actual
+            //session table with the new 'page' data before returning and displaying
+
+            return newscreen;
+        }
+        else {
+            newscreen = curSession.page;
+
+            console.log('newscreen ', newscreen );
+
+            return newscreen;
+        }
+        
+        
     }
     else {
         if (request == "1") {
@@ -114,12 +145,12 @@ router.post('/', async (req, res) => {
     console.log("texted number ", session.text);
     console.log("service code", service_code);
     
-    let screen = await newscreen(page, session.text);
+    let screen = await newscreen(session, session.text);
 
-    page = screen
+    //page = screen;
 
     console.log('current screen ', screen);
-    console.log('page ', page);
+    //console.log('page ', page);
 
     res.send(`testoutput for a new screen with input ${session.text}`)
 })

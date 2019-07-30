@@ -21,11 +21,19 @@ const startSession = async session => {
       .insert({ ...session })
       .catch(error => error.message);
 
+  // might have errors updating here, testing to find out...
   return db('sessions')
     .where({ session_id: session.session_id })
     .update({ ...session })
     .catch(error => error.message);
 };
+
+
+const updateSession = (session_id, key, value) =>
+  db('sessions')
+    .where({ session_id })
+    .update({ [key]: Number(value) })
+    .catch(error => error.message);
 
 
 
@@ -38,11 +46,10 @@ const getSession = (session_id, key) =>
     .first()
     .catch(error => error.message);
 
-const updateSession = (session_id, key, value) =>
-  db('sessions')
-    .where({ session_id })
-    .update({ [key]: Number(value) })
-    .catch(error => error.message);
+
+
+
+
 
 const endSession = session_id =>
   db('sessions')
