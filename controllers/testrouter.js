@@ -86,8 +86,9 @@ const newscreen = async(curSession, request) => {
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
-            // NOW CURRENT THING - update function from modal to update the actual
-            //session table with the new 'page' data before returning and displaying
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
 
             return newscreen;
         }
@@ -103,13 +104,20 @@ const newscreen = async(curSession, request) => {
     }
     else {
         if (request == "1") {
-            const choice = await db('graphTable').where({name:current});
+            
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
             
             console.log('choice: ',choice[0]['Con1'])
 
             newscreen = choice[0]['Con1'];
 
-            current = newscreen;
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
             return newscreen;
         }
 
