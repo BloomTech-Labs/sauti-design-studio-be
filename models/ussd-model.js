@@ -23,8 +23,8 @@ const startSession = async session => {
 
   // might have errors updating here, testing to find out...
   return db('sessions')
-    .where({ session_id: session.session_id })
-    .update({ ...session })
+    .where({ session_id: session.session_id }).first()
+    // .update({ ...session })
     .catch(error => error.message);
 };
 

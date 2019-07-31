@@ -22,8 +22,13 @@ function getSessionInfo(body) {
       phone_num: body.phoneNumber,
       service_code: body.serviceCode,
       text: body.text,
-      page: "", 
+    //   page: body.page, 
     };
+
+    // if (!body.page) {
+    //     session.page = "";
+    // }
+
     return session;
   }
 
@@ -75,7 +80,7 @@ const newscreen = async(curSession, request) => {
 
         console.log('Page on no text entry POST req: ', curSession.page);
 
-        if (curSession.page == ""){
+        if (curSession.page == null){
             let respo = await homesesh();
 
             let newscreen = respo[0]["name"];
@@ -122,13 +127,19 @@ const newscreen = async(curSession, request) => {
         }
 
         else if (request == "2") {
-            const choice = await db('graphTable').where({name:current});
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
             
             console.log('choice: ',choice[0]['Con2'])
 
             newscreen = choice[0]['Con2'];
 
-            current = newscreen;
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
             return newscreen;
         }
 
@@ -148,12 +159,12 @@ router.post('/', async (req, res) => {
     //     session = getSessionInfo(req.body);
     // }
     
-    const service_code = await UssdModel.startSession(session);
+    const service = await UssdModel.startSession(session);
 
     console.log("texted number ", session.text);
-    console.log("service code", service_code);
+    console.log("service ", service);
     
-    let screen = await newscreen(session, session.text);
+    let screen = await newscreen(service, session.text);
 
     //page = screen;
 
