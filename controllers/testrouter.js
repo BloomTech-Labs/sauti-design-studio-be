@@ -162,9 +162,9 @@ router.post('/', async (req, res) => {
     const service = await UssdModel.startSession(session);
 
     console.log("texted number ", session.text);
-    console.log("service ", service);
+    console.log("service ", service[0]);
     
-    let screen = await newscreen(service, session.text);
+    let screen = await newscreen(service[0], session.text);
 
     //page = screen;
 

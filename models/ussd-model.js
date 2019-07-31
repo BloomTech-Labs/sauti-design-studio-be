@@ -16,16 +16,13 @@ const startSession = async session => {
 
   console.log(active);
 
-  if (!active || active.length === 0)
-    return db('sessions')
+  if (!active || active.length === 0) 
+    return db('sessions').returning("*")
       .insert({ ...session })
       .catch(error => error.message);
 
   // might have errors updating here, testing to find out...
-  return db('sessions')
-    .where({ session_id: session.session_id }).first()
-    // .update({ ...session })
-    .catch(error => error.message);
+  return [active];
 };
 
 
