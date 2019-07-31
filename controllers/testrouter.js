@@ -143,6 +143,7 @@ const newscreen = async(curSession, request) => {
             return newscreen;
         }
 
+        // GO BACK REQUEST //
         else if (request == "99") {
             console.log('curSession.page contents: ', curSession.page)
             const choice = await db('graphTable').where({name : curSession.page});
@@ -154,7 +155,25 @@ const newscreen = async(curSession, request) => {
 
             console.log('updated session info: ', update);
 
-            // current = newscreen;
+            return newscreen;
+        }
+
+        // GO HOME REQUEST //
+        else if (request == "00") {
+            let respo = await homesesh();
+
+            let newscreen = respo[0]["name"];
+
+            console.log('newscreen ', newscreen );
+
+            newSessionInfo.page = respo[0]["name"];
+
+            console.log('newSessionInfo to update: ', newSessionInfo);
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
             return newscreen;
         }
 
@@ -191,3 +210,7 @@ router.post('/', async (req, res) => {
 
 
 module.exports = router;
+
+
+// need to account for connections (Con1, etc) not existing...
+// 
