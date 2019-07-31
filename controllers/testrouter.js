@@ -143,6 +143,21 @@ const newscreen = async(curSession, request) => {
             return newscreen;
         }
 
+        else if (request == "99") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            console.log('choice: ',choice[0]['previous'])
+            newscreen = choice[0]['previous'];
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
     }
  
 }
