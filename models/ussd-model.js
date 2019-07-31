@@ -16,18 +16,21 @@ const startSession = async session => {
 
   console.log(active);
 
-  if (!active || active.length === 0)
-    return db('sessions')
+  if (!active || active.length === 0) 
+    return db('sessions').returning("*")
       .insert({ ...session })
       .catch(error => error.message);
 
   // might have errors updating here, testing to find out...
-  return db('sessions')
-    .where({ session_id: session.session_id })
-    .update({ ...session })
-    .catch(error => error.message);
+  return [active];
 };
 
+
+const updateSessionPage = (session_id, value) =>
+  db('sessions')
+    .where({ session_id })
+    .update({ page : value })
+    .catch(error => error.message);
 
 const updateSession = (session_id, key, value) =>
   db('sessions')
@@ -98,4 +101,5 @@ module.exports = {
   getWorkflow,
   getResponses,
   getScreenData,
+  updateSessionPage,
 };

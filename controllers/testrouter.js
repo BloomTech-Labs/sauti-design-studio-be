@@ -22,8 +22,13 @@ function getSessionInfo(body) {
       phone_num: body.phoneNumber,
       service_code: body.serviceCode,
       text: body.text,
-      page: "", 
+    //   page: body.page, 
     };
+
+    // if (!body.page) {
+    //     session.page = "";
+    // }
+
     return session;
   }
 
@@ -75,7 +80,7 @@ const newscreen = async(curSession, request) => {
 
         console.log('Page on no text entry POST req: ', curSession.page);
 
-        if (curSession.page == ""){
+        if (curSession.page == null){
             let respo = await homesesh();
 
             let newscreen = respo[0]["name"];
@@ -86,8 +91,9 @@ const newscreen = async(curSession, request) => {
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
-            // NOW CURRENT THING - update function from modal to update the actual
-            //session table with the new 'page' data before returning and displaying
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
 
             return newscreen;
         }
@@ -103,24 +109,71 @@ const newscreen = async(curSession, request) => {
     }
     else {
         if (request == "1") {
-            const choice = await db('graphTable').where({name:current});
+            
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
             
             console.log('choice: ',choice[0]['Con1'])
 
             newscreen = choice[0]['Con1'];
 
-            current = newscreen;
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
             return newscreen;
         }
 
         else if (request == "2") {
-            const choice = await db('graphTable').where({name:current});
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
             
             console.log('choice: ',choice[0]['Con2'])
 
             newscreen = choice[0]['Con2'];
 
-            current = newscreen;
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        // GO BACK REQUEST //
+        else if (request == "99") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            console.log('choice: ',choice[0]['previous'])
+            newscreen = choice[0]['previous'];
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            return newscreen;
+        }
+
+        // GO HOME REQUEST //
+        else if (request == "00") {
+            let respo = await homesesh();
+
+            let newscreen = respo[0]["name"];
+
+            console.log('newscreen ', newscreen );
+
+            newSessionInfo.page = respo[0]["name"];
+
+            console.log('newSessionInfo to update: ', newSessionInfo);
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
             return newscreen;
         }
 
@@ -140,12 +193,12 @@ router.post('/', async (req, res) => {
     //     session = getSessionInfo(req.body);
     // }
     
-    const service_code = await UssdModel.startSession(session);
+    const service = await UssdModel.startSession(session);
 
     console.log("texted number ", session.text);
-    console.log("service code", service_code);
+    console.log("service ", service[0]);
     
-    let screen = await newscreen(session, session.text);
+    let screen = await newscreen(service[0], session.text);
 
     //page = screen;
 
@@ -157,3 +210,7 @@ router.post('/', async (req, res) => {
 
 
 module.exports = router;
+
+
+// need to account for connections (Con1, etc) not existing...
+// 
