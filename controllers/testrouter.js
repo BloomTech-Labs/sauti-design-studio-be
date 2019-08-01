@@ -314,7 +314,12 @@ const newscreen = async(curSession, request) => {
             const choice = await db('graphTable').where({name : curSession.page});
             
             console.log('choice: ',choice[0]['previous'])
-            newscreen = choice[0]['previous'];
+            if (choice[0]['previous'] == "" || !choice[0]['previous']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['previous'];
+            }
 
             let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
 
