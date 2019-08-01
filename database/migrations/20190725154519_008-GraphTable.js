@@ -11,6 +11,12 @@ exports.up = function(knex, Promise) {
         table.string('Con1');
         table.string('Con2');
         table.string('Con3');
+        table.string('Con4');
+        table.string('Con5');
+        table.string('Con6');
+        table.string('Con7');
+        table.string('Con8');
+        table.string('Con9');
 
         table.string('previous');
     })
