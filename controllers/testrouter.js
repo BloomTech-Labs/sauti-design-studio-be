@@ -116,7 +116,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con1'])
 
-            if (choice[0]['Con1'] == "" || null) {
+            if (choice[0]['Con1'] == "" || !choice[0]['Con1']) {
                 newscreen = curSession.page;
             }
             else {
@@ -138,7 +138,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con2'])
 
-            if (choice[0]['Con2'] == "" || null) {
+            if (choice[0]['Con2'] == "" || !choice[0]['Con2']) {
                 newscreen = curSession.page;
             }
             else {
@@ -160,7 +160,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con3'])
 
-            if (choice[0]['Con3'] == "" || null) {
+            if (choice[0]['Con3'] == "" || !choice[0]['Con3']) {
                 newscreen = curSession.page;
             }
             else {
@@ -182,14 +182,15 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con4'])
 
-            if (choice[0]['Con4'] == "" || undefined) {
+            if (choice[0]['Con4'] == "" || !choice[0]['Con4']) {
                 newscreen = curSession.page;
             }
             else {
                 newscreen = choice[0]['Con4'];
+                
             }
 
-            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen);
 
             console.log('updated session info: ', update);
 
@@ -204,7 +205,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con5'])
 
-            if (choice[0]['Con5'] == "" || null) {
+            if (choice[0]['Con5'] == "" || !choice[0]['Con5']) {
                 newscreen = curSession.page;
             }
             else {
@@ -226,7 +227,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con6'])
 
-            if (choice[0]['Con6'] == "" || null) {
+            if (choice[0]['Con6'] == "" || !choice[0]['Con6']) {
                 newscreen = curSession.page;
             }
             else {
@@ -248,7 +249,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con7'])
 
-            if (choice[0]['Con7'] == "" || null) {
+            if (choice[0]['Con7'] == "" || !choice[0]['Con7']) {
                 newscreen = curSession.page;
             }
             else {
@@ -270,7 +271,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con8'])
 
-            if (choice[0]['Con8'] == "" || null) {
+            if (choice[0]['Con8'] == "" || !choice[0]['Con8']) {
                 newscreen = curSession.page;
             }
             else {
@@ -292,7 +293,7 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con9'])
 
-            if (choice[0]['Con9'] == "" || null) {
+            if (choice[0]['Con9'] == "" || !choice[0]['Con9']) {
                 newscreen = curSession.page;
             }
             else {
