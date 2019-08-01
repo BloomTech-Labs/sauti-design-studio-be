@@ -26,11 +26,17 @@ const startSession = async session => {
 };
 
 
+
+
+
 const updateSessionPage = (session_id, value) =>
   db('sessions')
     .where({ session_id })
     .update({ page : value })
     .catch(error => error.message);
+
+
+
 
 const updateSession = (session_id, key, value) =>
   db('sessions')
@@ -102,4 +108,5 @@ module.exports = {
   getResponses,
   getScreenData,
   updateSessionPage,
+  
 };

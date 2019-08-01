@@ -116,7 +116,12 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con1'])
 
-            newscreen = choice[0]['Con1'];
+            if (choice[0]['Con1'] == "" || !choice[0]['Con1']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con1'];
+            }
 
             let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
 
@@ -133,7 +138,167 @@ const newscreen = async(curSession, request) => {
             
             console.log('choice: ',choice[0]['Con2'])
 
-            newscreen = choice[0]['Con2'];
+            if (choice[0]['Con2'] == "" || !choice[0]['Con2']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con2'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "3") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con3'])
+
+            if (choice[0]['Con3'] == "" || !choice[0]['Con3']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con3'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "4") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con4'])
+
+            if (choice[0]['Con4'] == "" || !choice[0]['Con4']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con4'];
+                
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen);
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "5") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con5'])
+
+            if (choice[0]['Con5'] == "" || !choice[0]['Con5']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con5'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "6") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con6'])
+
+            if (choice[0]['Con6'] == "" || !choice[0]['Con6']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con6'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "7") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con7'])
+
+            if (choice[0]['Con7'] == "" || !choice[0]['Con7']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con7'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "8") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con8'])
+
+            if (choice[0]['Con8'] == "" || !choice[0]['Con8']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con8'];
+            }
+
+            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+
+            console.log('updated session info: ', update);
+
+            // current = newscreen;
+            return newscreen;
+        }
+
+        else if (request == "9") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('graphTable').where({name : curSession.page});
+            
+            
+            console.log('choice: ',choice[0]['Con9'])
+
+            if (choice[0]['Con9'] == "" || !choice[0]['Con9']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['Con9'];
+            }
 
             let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
 
@@ -149,7 +314,12 @@ const newscreen = async(curSession, request) => {
             const choice = await db('graphTable').where({name : curSession.page});
             
             console.log('choice: ',choice[0]['previous'])
-            newscreen = choice[0]['previous'];
+            if (choice[0]['previous'] == "" || !choice[0]['previous']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['previous'];
+            }
 
             let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
 
@@ -184,6 +354,8 @@ const newscreen = async(curSession, request) => {
 
 router.post('/', async (req, res) => {
 
+    // const clean = cleanSessions();
+
     const session = getSessionInfo(req.body);
 
     console.log('session info: ', session);
@@ -213,4 +385,6 @@ module.exports = router;
 
 
 // need to account for connections (Con1, etc) not existing...
-// 
+// need to add options for Con1-Con9
+// need to rework migrations and seeds for sessions, and for graphtable
+// work out how to delete session data every X amount of minutes
