@@ -20,16 +20,47 @@ router.get('/', async (req,res) => {
 });
 
 
+function dataSet(info) {
+
+    let nodes = info.nodes;
+    let links = info.links;
+
+    let newPage = {
+        name: '',
+        text: '',
+        Con1: '',
+        Con2: '',
+        Con3: '',
+        Con3: '',
+        Con3: '',
+        Con4: '',
+        Con6: '',
+        Con7: '',
+        Con8: '',
+        Con9: '',
+        previous: '',
+    }
+
+    console.log('node length ', nodes.length);
+
+    for (i=0; i<nodes.length; i++) {
+        console.log('working with node: ', nodes[i].id )
+    }
+}
+
 router.post('/', async (req, res) => {
     
     let content = req.body;
 
     let overId = content.id;
-    console.log('Overall ID ', overId);
+    // console.log('Overall ID ', overId);
 
     let nodes = content.nodes;
-    console.log('Nodes : ', nodes);
+    // console.log('Nodes : ', nodes);
 
+    await dataSet(content);
+
+    console.log('node 0 id check : ',nodes[0].id)
     res.send(overId);
 
 
