@@ -25,33 +25,36 @@ function dataSet(info) {
     let nodes = info.nodes;
     let links = info.links;
 
-    let newPage = {
-        name: '',
-        text: '',
-        Con1: '',
-        Con2: '',
-        Con3: '',
-        Con3: '',
-        Con3: '',
-        Con4: '',
-        Con6: '',
-        Con7: '',
-        Con8: '',
-        Con9: '',
-        previous: '',
-    }
+    
 
     console.log('node length ', nodes.length);
 
     for (i=0; i<nodes.length; i++) {
+    
+        let newPage = {
+            name: '',
+            text: '',
+            
+            Cons: [],
+        }
+    
         console.log('working with node: ', nodes[i].id );
 
         newPage.name = nodes[i].id;
         newPage.text = nodes[i].description;
 
         for (j=0; j<links.length; j++){
-            console.log('working with link: ',links[i].id, 'which starts at ', links[i].source);
+            // console.log('working with link: ',links[i].id, 'which starts at ', links[i].source);
+
+            let ins = 1;
+
+            if (nodes[i].id == links[j].source) {
+                newPage.Cons.push(links[j].target);
+            }
         }
+
+        console.log('newPage obj: ', newPage);
+
     }
 }
 
