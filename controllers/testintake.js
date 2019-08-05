@@ -24,10 +24,13 @@ router.post('/', async (req, res) => {
     
     let content = req.body;
 
-    console.log(req.body);
-    console.log(content.id);
+    let overId = content.id;
+    console.log('Overall ID ', overId);
 
-    res.send(content);
+    let nodes = content.nodes;
+    console.log('Nodes : ', nodes);
+
+    res.send(overId);
 
 
     //res.send('Hey, you tried to send something')
