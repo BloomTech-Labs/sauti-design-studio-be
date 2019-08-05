@@ -3,7 +3,7 @@ const router = require('express').Router();
 
 // Models
 // const Users = require('../models/user-models');
-// const Workflows = require('../models/workflow-models');
+const Workflows = require('../models/workflow-models');
 
 // Middleware
 
@@ -44,7 +44,14 @@ function dataSet(info) {
     console.log('node length ', nodes.length);
 
     for (i=0; i<nodes.length; i++) {
-        console.log('working with node: ', nodes[i].id )
+        console.log('working with node: ', nodes[i].id );
+
+        newPage.name = nodes[i].id;
+        newPage.text = nodes[i].description;
+
+        for (j=0; j<links.length; j++){
+            console.log('working with link: ',links[i].id, 'which starts at ', links[i].source);
+        }
     }
 }
 
