@@ -37,6 +37,8 @@ function dataSet(info) {
             
             Cons: [],
         }
+
+        // need to add PORT label data to intake data to be displayed
     
         console.log('working with node: ', nodes[i].id );
 

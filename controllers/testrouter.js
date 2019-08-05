@@ -212,8 +212,8 @@ router.post('/', async (req, res) => {
 
 module.exports = router;
 
+// need to work out function to account for TEXT INPUT coming in a concat
+// string like " 0*1*2*99*5*2 "
 
-// need to account for connections (Con1, etc) not existing...
-// need to add options for Con1-Con9
 // need to rework migrations and seeds for sessions, and for graphtable
 // work out how to delete session data every X amount of minutes
