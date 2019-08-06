@@ -4,6 +4,7 @@ const router = require('express').Router();
 // Models
 // const Users = require('../models/user-models');
 const Workflows = require('../models/workflow-models');
+const GraphInsert = require('../models/graphTable-model');
 
 // Middleware
 
@@ -20,7 +21,7 @@ router.get('/', async (req,res) => {
 });
 
 
-function dataSet(info) {
+async function dataSet(info) {
 
     let nodes = info.nodes;
     let links = info.links;
@@ -49,7 +50,7 @@ function dataSet(info) {
 
         for (k=1; k<options.length; k++) {
             //
-            console.log(options[k].label);
+            // console.log(options[k].label);
             newPage.Options.push(options[k].label)
         }
 
@@ -65,7 +66,9 @@ function dataSet(info) {
 
         console.log('newPage obj: ', newPage);
 
+        await GraphInsert.insert(newPage);
     }
+
 }
 
 router.post('/', async (req, res) => {

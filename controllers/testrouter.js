@@ -2,6 +2,8 @@ const router = require('express').Router();
 
 const UssdModel = require('../models/ussd-model');
 
+// const GraphInsert = require('../models/graphTable-model');
+
 
 const db = require('../database/dbConfig');
 
