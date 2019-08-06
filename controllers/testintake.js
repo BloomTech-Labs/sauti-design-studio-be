@@ -34,7 +34,7 @@ function dataSet(info) {
         let newPage = {
             name: '',
             text: '',
-            
+            Options: [],
             Cons: [],
         }
 
@@ -44,6 +44,14 @@ function dataSet(info) {
 
         newPage.name = nodes[i].id;
         newPage.text = nodes[i].description;
+
+        let options = nodes[i].ports;
+
+        for (k=1; k<options.length; k++) {
+            //
+            console.log(options[k].label);
+            newPage.Options.push(options[k].label)
+        }
 
         for (j=0; j<links.length; j++){
             // console.log('working with link: ',links[i].id, 'which starts at ', links[i].source);
