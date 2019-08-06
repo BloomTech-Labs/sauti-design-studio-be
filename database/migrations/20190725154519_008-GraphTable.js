@@ -8,6 +8,11 @@ exports.up = function(knex, Promise) {
 
         table.string('text', 256).notNullable();
 
+        // table.enu('Options', []);
+        table.specificType('Options', 'text ARRAY');
+        // table.enu('Cons', []);
+        table.specificType('Cons', 'text ARRAY');
+
         table.string('Con1');
         table.string('Con2');
         table.string('Con3');
