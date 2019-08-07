@@ -158,13 +158,14 @@ const newscreen = async(curSession, request) => {
                     console.log('curSession.page contents: ', curSession.page)
                     const choice = await db('graphTable').where({name : curSession.page});
                     
-                    console.log('choice: ',choice[0][`Con${i}`])
+                    // console.log('choice: ',choice[0]);
+                    console.log('choice: ',choice[0]['Cons'][`${i-1}`]);
 
-                    if (choice[0][`Con${i}`] == "" || !choice[0][`Con${i}`]) {
+                    if (choice[0]['Cons'][`${i-1}`] == "" || !choice[0]['Cons'][`${i-1}`]) {
                         newscreen = curSession.page;
                     }
                     else {
-                        newscreen = choice[0][`Con${i}`];
+                        newscreen = choice[0]['Cons'][`${i-1}`];
                     }
 
                     let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
@@ -199,7 +200,7 @@ router.post('/', async (req, res) => {
     const service = await UssdModel.startSession(session);
 
     console.log("texted number ", session.text);
-    console.log("service ", service[0]);
+    console.log("session in DB ", service[0]);
     
     let screen = await newscreen(service[0], session.text);
 
