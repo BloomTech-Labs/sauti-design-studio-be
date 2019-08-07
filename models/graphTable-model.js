@@ -13,7 +13,10 @@ function insert(rowData) {
     console.log('TCL: add -> workflow', rowData);
     return db('graphTable')
         .insert(rowData)
-        .then(() => db('graphTable').where({ id: id }))
+        .then((id) => {
+            console.log('name ', rowData.name);
+            db('graphTable').where({ name: rowData.name })
+        })
         .catch(err => console.error(err));
 }
 
