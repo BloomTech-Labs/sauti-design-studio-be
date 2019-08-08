@@ -209,7 +209,14 @@ router.post('/', async (req, res) => {
     console.log('current screen ', screen);
     //console.log('page ', page);
 
-    res.send(`testoutput for a new screen with input ${session.text}`)
+    let display = await UssdModel.getScreen(screen);
+    console.log('display: ', display);
+
+    res.send(`
+        ${display[0].text}
+        ${display[0].Options} 
+        
+        `)
 })
 
 

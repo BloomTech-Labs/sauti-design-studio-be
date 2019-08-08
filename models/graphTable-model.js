@@ -10,7 +10,7 @@ function find(filter) {
 }
 
 function insert(rowData) {
-    console.log('TCL: add -> workflow', rowData);
+    console.log('TCL: add -> graphTable Data Row ', rowData);
     return db('graphTable')
         .insert(rowData)
         .then((id) => {
