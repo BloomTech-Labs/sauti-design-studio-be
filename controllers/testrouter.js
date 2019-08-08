@@ -210,19 +210,56 @@ router.post('/', async (req, res) => {
     //console.log('page ', page);
 
     let display = await UssdModel.getScreen(screen);
+
+
+
+
+    // let options = await display.map(ops => {
+    //     console.log('options', ops.Options);
+    // })
+
+    let opsy = [];
+
+    let options = await display.map(ops => {
+        console.log('options', ops.Options);
+        // opsy.push(ops.Options);
+        // console.log('new options: ', opsy);
+        for (l=0; l < ops.Options.length; l++) {
+            opsy.push(ops.Options[l]);
+        }
+
+    })
+
+    let opsyNew = await opsy.forEach(function(oppy) {
+        console.log('oppy:',oppy);
+        let popsicle = "";
+        popsicle = oppy;
+        return `${popsicle}`;
+    })
+
+    let opsyNew2 = await opsy.map(thing =>{
+        console.log(thing);
+        return (`${thing}\n`);
+    }).join('')
+
+    
+
+
     console.log('display: ', display);
 
     res.send(`
         ${display[0].text}
-        ${display[0].Options} 
-        
+
+        ${opsyNew2}        
         `)
 })
 
 
 module.exports = router;
 
-
+// ${display[0].Options.map(thing =>{
+//     console.log('thing',thing);
+// })}
 
 
 // need to work out function to account for TEXT INPUT coming in a concat
