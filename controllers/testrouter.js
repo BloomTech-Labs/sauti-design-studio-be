@@ -93,7 +93,7 @@ const newscreen = async(curSession, request) => {
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
-            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+            let update = await UssdModel.updateSessionPage(curSession, newscreen)
 
             console.log('updated session info: ', update);
 
@@ -110,7 +110,7 @@ const newscreen = async(curSession, request) => {
         
     }
     else {
-        // GO BACK REQUEST //
+        // PREVIOUS/GO BACK REQUEST //
         if (request == "99") {
             console.log('curSession.page contents: ', curSession.page)
             const choice = await db('graphTable').where({name : curSession.page});
@@ -123,7 +123,7 @@ const newscreen = async(curSession, request) => {
                 newscreen = choice[0]['previous'];
             }
 
-            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+            let update = await UssdModel.updateSessionPage(curSession, newscreen)
 
             console.log('updated session info: ', update);
 
@@ -142,7 +142,7 @@ const newscreen = async(curSession, request) => {
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
-            let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+            let update = await UssdModel.updateSessionPage(curSession, newscreen)
 
             console.log('updated session info: ', update);
 
@@ -168,7 +168,7 @@ const newscreen = async(curSession, request) => {
                         newscreen = choice[0]['Cons'][`${i-1}`];
                     }
 
-                    let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
+                    let update = await UssdModel.updateSessionPage(curSession, newscreen)
 
                     console.log('updated session info: ', update);
 
@@ -221,7 +221,7 @@ router.post('/', async (req, res) => {
     let opsy = [];
 
     let options = await display.map(ops => {
-        console.log('options', ops.Options);
+        // console.log('options', ops.Options);
         // opsy.push(ops.Options);
         // console.log('new options: ', opsy);
         for (l=0; l < ops.Options.length; l++) {
@@ -238,7 +238,7 @@ router.post('/', async (req, res) => {
     })
 
     let opsyNew2 = await opsy.map(thing =>{
-        console.log(thing);
+        // console.log(thing);
         return (`${thing}\n`);
     }).join('')
 
@@ -257,11 +257,20 @@ router.post('/', async (req, res) => {
 
 module.exports = router;
 
-// ${display[0].Options.map(thing =>{
-//     console.log('thing',thing);
-// })}
+
+
+// Previous, and thus the '99' option no longer function correctly after
+// the array conversion of the backend.  Previous data IS BEING UPDATED to
+// new data with every page view. Function of the previous command needs
+// the work
 
 // need to work out function to account for TEXT INPUT coming in a concat
-// string like " 0*1*2*99*5*2 "
+// string like " 0*1*2*99*5*2 "  MAYBE... that's how AT api says it comes in
+// don't know if that's how Sauti's is or not yet...
 
 
+<<<<<<< HEAD
+// work out how to delete session data every X amount of minutes/hours
+=======
+
+>>>>>>> fa4bd1487d10ca0a09d4ca3cdad9555a82768072
