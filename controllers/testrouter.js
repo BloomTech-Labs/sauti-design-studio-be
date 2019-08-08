@@ -264,10 +264,13 @@ module.exports = router;
 // new data with every page view. Function of the previous command needs
 // the work
 
-
 // need to work out function to account for TEXT INPUT coming in a concat
 // string like " 0*1*2*99*5*2 "  MAYBE... that's how AT api says it comes in
 // don't know if that's how Sauti's is or not yet...
 
 
+<<<<<<< HEAD
 // work out how to delete session data every X amount of minutes/hours
+=======
+
+>>>>>>> fa4bd1487d10ca0a09d4ca3cdad9555a82768072
