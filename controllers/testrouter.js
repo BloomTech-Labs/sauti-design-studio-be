@@ -158,13 +158,14 @@ const newscreen = async(curSession, request) => {
                     console.log('curSession.page contents: ', curSession.page)
                     const choice = await db('graphTable').where({name : curSession.page});
                     
-                    console.log('choice: ',choice[0][`Con${i}`])
+                    // console.log('choice: ',choice[0]);
+                    console.log('choice: ',choice[0]['Cons'][`${i-1}`]);
 
-                    if (choice[0][`Con${i}`] == "" || !choice[0][`Con${i}`]) {
+                    if (choice[0]['Cons'][`${i-1}`] == "" || !choice[0]['Cons'][`${i-1}`]) {
                         newscreen = curSession.page;
                     }
                     else {
-                        newscreen = choice[0][`Con${i}`];
+                        newscreen = choice[0]['Cons'][`${i-1}`];
                     }
 
                     let update = await UssdModel.updateSessionPage(curSession.session_id, newscreen)
@@ -199,7 +200,7 @@ router.post('/', async (req, res) => {
     const service = await UssdModel.startSession(session);
 
     console.log("texted number ", session.text);
-    console.log("service ", service[0]);
+    console.log("session in DB ", service[0]);
     
     let screen = await newscreen(service[0], session.text);
 
@@ -208,17 +209,59 @@ router.post('/', async (req, res) => {
     console.log('current screen ', screen);
     //console.log('page ', page);
 
-    res.send(`testoutput for a new screen with input ${session.text}`)
+    let display = await UssdModel.getScreen(screen);
+
+
+
+
+    // let options = await display.map(ops => {
+    //     console.log('options', ops.Options);
+    // })
+
+    let opsy = [];
+
+    let options = await display.map(ops => {
+        console.log('options', ops.Options);
+        // opsy.push(ops.Options);
+        // console.log('new options: ', opsy);
+        for (l=0; l < ops.Options.length; l++) {
+            opsy.push(ops.Options[l]);
+        }
+
+    })
+
+    let opsyNew = await opsy.forEach(function(oppy) {
+        console.log('oppy:',oppy);
+        let popsicle = "";
+        popsicle = oppy;
+        return `${popsicle}`;
+    })
+
+    let opsyNew2 = await opsy.map(thing =>{
+        console.log(thing);
+        return (`${thing}\n`);
+    }).join('')
+
+    
+
+
+    console.log('display: ', display);
+
+    res.send(`
+        ${display[0].text}
+
+        ${opsyNew2}        
+        `)
 })
 
 
 module.exports = router;
 
-
-
+// ${display[0].Options.map(thing =>{
+//     console.log('thing',thing);
+// })}
 
 // need to work out function to account for TEXT INPUT coming in a concat
 // string like " 0*1*2*99*5*2 "
 
-// need to rework migrations and seeds for sessions, and for graphtable
-// work out how to delete session data every X amount of minutes
+
