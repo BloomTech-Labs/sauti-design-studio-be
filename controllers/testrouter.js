@@ -261,9 +261,7 @@ module.exports = router;
 //     console.log('thing',thing);
 // })}
 
-
 // need to work out function to account for TEXT INPUT coming in a concat
 // string like " 0*1*2*99*5*2 "
 
-// need to rework migrations and seeds for sessions, and for graphtable
-// work out how to delete session data every X amount of minutes
+
