@@ -384,7 +384,24 @@ router.post('/', async (req, res) => {
 module.exports = router;
 
 
+
 // need to account for connections (Con1, etc) not existing...
 // need to add options for Con1-Con9
 // need to rework migrations and seeds for sessions, and for graphtable
 // work out how to delete session data every X amount of minutes
+
+
+// Previous, and thus the '99' option no longer function correctly after
+// the array conversion of the backend.  Previous data IS BEING UPDATED to
+// new data with every page view. Function of the previous command needs
+// the work
+
+// need to work out function to account for TEXT INPUT coming in a concat
+// string like " 0*1*2*99*5*2 "  MAYBE... that's how AT api says it comes in
+// don't know if that's how Sauti's is or not yet...
+
+
+
+// work out how to delete session data every X amount of minutes/hours
+
+

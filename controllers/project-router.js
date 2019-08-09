@@ -28,6 +28,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/user/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const project = await Projects.getByUserId(id);
+    if (project) {
+      res.status(200).json(project);
+    } else {
+      res
+        .status(404)
+        .json({ message: 'Project with specified user Id does not exist.' });
+    }
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: `The reason you're getting an error: ${error}` });
+  }
+});
+
 router.post('/', async (req, res) => {
     console.log("req.body", req.body);
     const { project_title, graph_json, user_id } = req.body;

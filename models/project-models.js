@@ -5,7 +5,7 @@ module.exports = {
   getBy,
   getById,
   add,
-  getByEmail,
+  getByUserId,
   update,
   remove,
 };
@@ -18,10 +18,9 @@ function getBy(filter) {
   return db('projects').where(filter);
 }
 
-function getByEmail(filter) {
+function getByUserId(id) {
   return db('projects')
-    .where('email', '=', filter)
-    .first();
+    .where('user_id', '=', id);
 }
 function getById(id) {
   return db('projects')
