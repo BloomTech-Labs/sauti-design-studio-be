@@ -98,4 +98,20 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.delete('/user/:id', async (req, res) => {
+  let { id } = req.params;
+  id = Number(id);
+  try {
+    const deleteRes = await Projects.removeAll(id);
+    console.log(deleteRes);
+    if (deleteRes)
+      res.status(200).json({
+        message: 'You have successfully deleted the Projects',
+        current: deleteRes,
+      });
+  } catch (error) {
+    res.status(500).json({ message: 'Unable to delete these Projects.' });
+  }
+});
+
 module.exports = router;
