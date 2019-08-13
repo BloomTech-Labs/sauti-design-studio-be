@@ -259,6 +259,7 @@ module.exports = router;
 
 
 
+
 // Previous, and thus the '99' option no longer function correctly after
 // the array conversion of the backend.  Previous data IS BEING UPDATED to
 // new data with every page view. Function of the previous command needs
@@ -269,8 +270,4 @@ module.exports = router;
 // don't know if that's how Sauti's is or not yet...
 
 
-<<<<<<< HEAD
 // work out how to delete session data every X amount of minutes/hours
-=======
-
->>>>>>> fa4bd1487d10ca0a09d4ca3cdad9555a82768072

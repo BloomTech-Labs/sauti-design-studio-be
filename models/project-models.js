@@ -5,9 +5,10 @@ module.exports = {
   getBy,
   getById,
   add,
-  getByEmail,
+  getByUserId,
   update,
   remove,
+  removeAll,
 };
 
 function find() {
@@ -18,10 +19,9 @@ function getBy(filter) {
   return db('projects').where(filter);
 }
 
-function getByEmail(filter) {
+function getByUserId(id) {
   return db('projects')
-    .where('email', '=', filter)
-    .first();
+    .where('user_id', '=', id);
 }
 function getById(id) {
   return db('projects')
@@ -43,5 +43,11 @@ function update(values) {
 function remove(id) {
   return db('projects')
     .where({ id })
+    .del();
+}
+
+function removeAll(id) {
+  return db('projects')
+    .where('user_id', '=', id)
     .del();
 }
