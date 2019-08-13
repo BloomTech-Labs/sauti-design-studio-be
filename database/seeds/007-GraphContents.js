@@ -9,6 +9,10 @@ exports.seed = function(knex, Promise) {
           name: '64e80533',
           text: 'blah blah 1',
 
+          Options: ['things', 'thing2'],
+          
+          Cons: ['Con1', 'Con2'],
+
           Con1: '8d8ba75a',
           Con2: '0bO43e36',
           Con3: '',

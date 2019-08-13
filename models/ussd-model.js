@@ -26,13 +26,21 @@ const startSession = async session => {
 };
 
 
+const getScreen = async page => {
+    return db('graphTable')
+    .where({ name : page})
+}
 
 
 
-const updateSessionPage = (session_id, value) =>
+const updateSessionPage = (session, value) =>
   db('sessions')
-    .where({ session_id })
-    .update({ page : value })
+    .where({ session_id : session.session_id })
+    .update({ 
+      previous : session.page,
+      page : value
+      
+     })
     .catch(error => error.message);
 
 
@@ -108,5 +116,6 @@ module.exports = {
   getResponses,
   getScreenData,
   updateSessionPage,
+  getScreen,
   
 };
