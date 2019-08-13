@@ -61,7 +61,7 @@ server.use('/auth', AuthRouter);
 // endpoints
 server.use('/profile', ProfileRouter);
 // projects endpoint
-server.use('/users', authCheck, UsersRouter);
+server.use('/users', /*authCheck,*/ UsersRouter);
 server.use('/projects', ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
 server.use('/clients', ClientsRouter);
