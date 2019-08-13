@@ -48,11 +48,12 @@ router.get('/user/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     console.log("req.body", req.body);
-    const { project_title, graph_json, user_id } = req.body;
+    const { project_title, graph_json, user_id, initial_node_id } = req.body;
     const obj = {
       project_title,
       graph_json,
-      user_id
+      user_id,
+      initial_node_id
     };
     try {
       res
@@ -66,12 +67,13 @@ router.post('/', async (req, res) => {
 // UPDATES THE RESPONSE
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { project_title, graph_json, user_id } = req.body;
+  const { project_title, graph_json, user_id, initial_node_id } = req.body;
     const obj = {
       id,
       project_title,
       graph_json,
-      user_id
+      user_id,
+      initial_node_id
     };
   try {
     res.status(200).json(await Projects.update(obj));

@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
       .createTable('projects', tbl => {
         tbl.increments();
         tbl.string('project_title', 128);
+        tbl.string('initial_node_id');
         tbl.json('graph_json');
         tbl
           .integer('user_id')
