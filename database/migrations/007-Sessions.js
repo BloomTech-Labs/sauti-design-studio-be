@@ -10,6 +10,8 @@ exports.up = function(knex, Promise) {
       
     tbl.string('page');
 
+    tbl.string('previous');
+
     tbl.timestamps(true, true);
 
     // tbl.string('created');

@@ -3,7 +3,8 @@ const router = require('express').Router();
 
 // Models
 // const Users = require('../models/user-models');
-// const Workflows = require('../models/workflow-models');
+const Workflows = require('../models/workflow-models');
+const GraphInsert = require('../models/graphTable-model');
 
 // Middleware
 
@@ -20,14 +21,70 @@ router.get('/', async (req,res) => {
 });
 
 
+async function dataSet(info) {
+
+    let nodes = info.nodes;
+    let links = info.links;
+
+    
+
+    console.log('node length ', nodes.length);
+
+    for (i=0; i<nodes.length; i++) {
+    
+        let newPage = {
+            name: '',
+            text: '',
+            Options: [],
+            Cons: [],
+        }
+
+        // need to add PORT label data to intake data to be displayed
+    
+        console.log('working with node: ', nodes[i].id );
+
+        newPage.name = nodes[i].id;
+        newPage.text = nodes[i].description;
+
+        let options = nodes[i].ports;
+
+        for (k=1; k<options.length; k++) {
+            //
+            // console.log(options[k].label);
+            newPage.Options.push(options[k].label)
+        }
+
+        for (j=0; j<links.length; j++){
+            // console.log('working with link: ',links[i].id, 'which starts at ', links[i].source);
+
+            let ins = 1;
+
+            if (nodes[i].id == links[j].source) {
+                newPage.Cons.push(links[j].target);
+            }
+        }
+
+        console.log('newPage obj: ', newPage);
+
+        await GraphInsert.insert(newPage);
+    }
+
+}
+
 router.post('/', async (req, res) => {
     
     let content = req.body;
 
-    console.log(req.body);
-    console.log(content.id);
+    let overId = content.id;
+    // console.log('Overall ID ', overId);
 
-    res.send(content);
+    let nodes = content.nodes;
+    // console.log('Nodes : ', nodes);
+
+    await dataSet(content);
+
+    console.log('node 0 id check : ',nodes[0].id)
+    res.send(overId);
 
 
     //res.send('Hey, you tried to send something')
