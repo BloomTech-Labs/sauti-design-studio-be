@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Projects = require('../models/project-models');
+const parseGraph = require('./graph-parser')
 
 router.get('/', async (req, res) => {
   try {
@@ -55,12 +56,16 @@ router.post('/', async (req, res) => {
       user_id,
       initial_node_id
     };
+
+    parseGraph(graph_json);
+    
     try {
       res
         .status(201)
         .json(await Projects.add(obj));
     } catch (err) {
       res.status(500).json({ error: err.message });
+      console.log(err);
     }
 });
 
@@ -75,6 +80,8 @@ router.put('/:id', async (req, res) => {
       user_id,
       initial_node_id
     };
+    
+    parseGraph(graph_json)
   try {
     res.status(200).json(await Projects.update(obj));
   } catch (error) {

@@ -1,14 +1,14 @@
-{
-  "extends": [
-    "wesbos"
-  ],
-  "rules": {
-    "camelcase": "off",
-    "import/order": "off",
-    "prefer-destructuring": "off",
-    "no-undef": "warn",
-    "no-use-before-define": "off",
-    "no-unused-vars": "off",
-    "prefer-const": "off"
-  }
-}
+// {
+//   "extends": [
+//     "wesbos"
+//   ],
+//   "rules": {
+//     "camelcase": "off",
+//     "import/order": "off",
+//     "prefer-destructuring": "off",
+//     "no-undef": "warn",
+//     "no-use-before-define": "off",
+//     "no-unused-vars": "off",
+//     "prefer-const": "off"
+//   }
+// }
