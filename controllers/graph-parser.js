@@ -45,7 +45,7 @@
 
         console.log('newPage obj: ', newPage);
 
-        await GraphInsert.insert(newPage);
+        await graphTable.insert(newPage);
     }
 
 }

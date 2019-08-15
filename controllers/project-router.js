@@ -56,8 +56,6 @@ router.post('/', async (req, res) => {
       user_id,
       initial_node_id
     };
-
-    parseGraph(graph_json);
     
     try {
       res
@@ -81,8 +79,9 @@ router.put('/:id', async (req, res) => {
       initial_node_id
     };
     
-    parseGraph(graph_json)
+    
   try {
+    parseGraph(graph_json)
     res.status(200).json(await Projects.update(obj));
   } catch (error) {
     res.status(500).json({
