@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
 
         table.string('text', 256).notNullable();
         table.specificType('options', 'text ARRAY');
-        table.specificType('Cons', 'text ARRAY');
+        table.specificType('connections', 'text ARRAY');
         table
           .integer('project_id')
           .unsigned()

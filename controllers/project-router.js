@@ -81,7 +81,7 @@ router.put('/:id', async (req, res) => {
     
     
   try {
-    parseGraph(graph_json)
+    parseGraph(obj)
     res.status(200).json(await Projects.update(obj));
   } catch (error) {
     res.status(500).json({
