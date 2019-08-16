@@ -9,6 +9,10 @@ function find(filter) {
 	return db('nodes').where(filter);
 }
 
+function getNode(node_id){
+    return db('nodes').where(node_id);
+}
+
 async function insert(rowData) {
 	const { node_id } = rowData;
     const [alreadyNode] = await db('nodes').where({ node_id });

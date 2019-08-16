@@ -8,7 +8,7 @@ const UssdModel = require('../models/ussd-model');
 const db = require('../database/dbConfig');
 
 const homesesh = () => {
-    return db('graphTable').where({id:1});
+    return db('nodes').where({id:13});
 }
 
 
@@ -84,12 +84,12 @@ const newscreen = async(curSession, request) => {
 
         if (curSession.page == null){
             let respo = await homesesh();
-
-            let newscreen = respo[0]["name"];
+            console.log(respo)
+            let newscreen = respo[0]["node_id"];
 
             console.log('newscreen ', newscreen );
 
-            newSessionInfo.page = respo[0]["name"];
+            newSessionInfo.page = respo[0]["node_id"];
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
@@ -113,7 +113,7 @@ const newscreen = async(curSession, request) => {
         // PREVIOUS/GO BACK REQUEST //
         if (request == "99") {
             console.log('curSession.page contents: ', curSession.page)
-            const choice = await db('graphTable').where({name : curSession.page});
+            const choice = await db('nodes').where({node_id : curSession.page});
             
             console.log('choice: ',choice[0]['previous'])
             if (choice[0]['previous'] == "" || !choice[0]['previous']) {
@@ -134,11 +134,11 @@ const newscreen = async(curSession, request) => {
         else if (request == "00") {
             let respo = await homesesh();
 
-            let newscreen = respo[0]["name"];
+            let newscreen = respo[0]["node_id"];
 
             console.log('newscreen ', newscreen );
 
-            newSessionInfo.page = respo[0]["name"];
+            newSessionInfo.page = respo[0]["node_id"];
 
             console.log('newSessionInfo to update: ', newSessionInfo);
 
@@ -156,16 +156,16 @@ const newscreen = async(curSession, request) => {
                 
                 if (request === numby) {
                     console.log('curSession.page contents: ', curSession.page)
-                    const choice = await db('graphTable').where({name : curSession.page});
+                    const choice = await db('nodes').where({node_id : curSession.page});
                     
                     // console.log('choice: ',choice[0]);
-                    console.log('choice: ',choice[0]['Cons'][`${i-1}`]);
+                    console.log('choice: ',choice[0]['connections'][`${i-1}`]);
 
-                    if (choice[0]['Cons'][`${i-1}`] == "" || !choice[0]['Cons'][`${i-1}`]) {
+                    if (choice[0]['connections'][`${i-1}`] == "" || !choice[0]['connections'][`${i-1}`]) {
                         newscreen = curSession.page;
                     }
                     else {
-                        newscreen = choice[0]['Cons'][`${i-1}`];
+                        newscreen = choice[0]['connections'][`${i-1}`];
                     }
 
                     let update = await UssdModel.updateSessionPage(curSession, newscreen)
@@ -187,6 +187,7 @@ const newscreen = async(curSession, request) => {
 router.post('/', async (req, res) => {
 
     // const clean = cleanSessions();
+    console.log(req.body);
 
     const session = getSessionInfo(req.body);
 

@@ -28,6 +28,13 @@ function getById(id) {
     .where({ id })
     .first();
 }
+function getParentNode(id){
+  return db('projects')
+        .where({id})
+        .select('initial_node_id')
+        .first();
+}
+
 function add(user) {
   return db('projects').insert(user);
 }
