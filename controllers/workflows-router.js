@@ -1,126 +1,172 @@
-// Dependencies
 const router = require('express').Router();
 
-// Models
-const Users = require('../models/user-models');
-const Workflows = require('../models/workflow-models');
+const ussdModel = require('../models/ussd-model');
+const nodeModel = require('../models/nodes-models')
+const projectModel = require('../models/project-models')
 
-// Middleware
+const db = require('../database/dbConfig');
 
-const restricted = require('../controllers/authCheck');
+router.post('/:id', async (req, res) => {
+    const project_id = req.params.id
+    const parent_node = await projectModel.getParentNode(project_id)
+    console.log(parent_node)//remove
 
-// GETS ALL THE WORKFLOWS
-router.get('/all', async (req, res) => {
-  try {
-    const workflows = await Workflows.find(req.params.id);
-    res.status(200).json(workflows);
-  } catch (error) {
-    res.status(500).json({ error: 'Could not retrieve the workflows' });
-  }
-});
-
-router.get('/', restricted, async (req, res) => {
-  try {
-    const workflows = await Workflows.userFlows(req.user.id);
-    res.status(200).json(workflows);
-  } catch (error) {
-    res.status(500).json({ error: 'Could not retrieve the workflows' });
-  }
-});
-
-// GET SPECEFIC ID OF WORKFLOW
-// router.get('/:id', async (req, res) => {
-//   const workflows = await Workflows.getBy({
-//     id: req.params.id,
-//     user_id: req.user.id,
-//   });
-//   try {
-//     if (workflows) {
-//       res.status(200).json(workflows);
-//     } else {
-//       res
-//         .status(404)
-//         .json({ message: 'workflow with taht ID does not exist.' });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: ' Error retrieving that workflow' });
-//   }
-// });
-
-router.get('/:id', async (req, res) => {
-  const { user } = req;
-  const workflow = await Workflows.getBy({
-    id: req.params.id,
-    user_id: user.id,
-  }).first();
-
-  try {
-    if (!workflow) {
-      res
-        .status(404)
-        .json({ message: `Workflow ${req.params.id} does not exist.` });
-    } else {
-      res.status(200).json({
-        ...workflow,
-        code: `${process.env.SERVICE_CODE}*${req.params.id}#`,
-      });
+    const session = {
+        session_id: req.body.session_id,
+        phone_num: req.body.phone_num,
+        service_code: req.body.service_code,
+        text: req.body.text
     }
-  } catch (error) {
-    res.status(500).json({ message: 'Problem retrieving the workflow' });
-  }
-});
 
-// POSTS THE WORKFLOW
-router.post('/', (req, res) => {
-  const { name, area_code, category, client_id, question_id } = req.body;
+    //This code begins the session with all the appropriate session to
+    //keep track of who the user is and where they are accessing from.
+    const service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
 
-  if (!req.user)
-    res.status(400).json({ message: 'You must be logged in to do that' });
+    let screen = await newscreen(service[0], session.text, parent_node);
 
-  const user_id = req.user.id;
+    let display = await ussdModel.getScreen(screen);
+    console.log(display);
+    let options1 = [];
+    let options2 = await display.map(ops => {
+        for(i = 0; i < ops.options.length; i++){
+            options1.push(ops.options[i]);
+        }
+    })
 
-  const workflow = {
-    user_id,
-    name,
-    category,
-  };
+    let opsyNew = await options1.forEach(function(oppy) {
+        console.log('oppy:',oppy);
+        let popsicle = "";
+        popsicle = oppy;
+        return `${popsicle}`;
+    })
+    let counter = 0;
+    let opsyNew2 = await options1.map(thing =>{
+        // console.log(thing);
+        counter++
+        return (`${counter})${thing}\n`);
+    }).join('')
+    
+    res.send(`${display[0].text}\n${opsyNew2}\n`)
 
-  if (!name)
-    res.status(400).json({ message: 'Please provide the missing information' });
+})
 
-  Workflows.add(workflow)
-    .then(workflows => res.status(200).json(workflows))
-    .catch(err => res.status(500).json({ message: err }));
-});
 
-// UPDATES THE WORKFLOW -- BUG?
-router.put('/:id', async (req, res) => {
-  try {
-    const updateWorkflow = await Workflows.update(req.params.id, req.body);
-    if (updateWorkflow)
-      res.status(200).json({
-        message: `workflow: ${updateWorkflow}`,
-        updateWorkflowInfo: req.body,
-      });
-  } catch (error) {
-    res.status(500).json({
-      message:
-        'Unable to update this workflow at this time.. please try again later',
-    });
-  }
-});
+const newscreen = async(curSession, request, initial_node) => {
 
-// DELETE WORKFLOW -- BUG?
-router.delete('/:id', async (req, res) => {
-  try {
-    const deleteWorkflow = await Workflows.removeWorkflow(req.params.id);
-    if (deleteWorkflow)
-      res
-        .status(200)
-        .json({ message: 'You have successfully deleted the workflow' });
-  } catch (error) {
-    res.status(500).json({ message: 'Unable to delete this workflow.' });
-  }
-});
+    const newSessionInfo = {
+        session_id: curSession.session_id,
+        phone_num: curSession.phone_num,
+        service_code: curSession.service_code,
+        text: curSession.text,
+        page: curSession.page, 
+      };    
+
+    let newscreen = "";
+
+    if (request == "") {
+
+        console.log('Page on no text entry POST req: ', curSession.page);
+
+        if (curSession.page == null){
+            let respo = await nodeModel.getNode(initial_node);
+            console.log(respo)
+            let newscreen = respo[0]["node_id"];
+
+            console.log('newscreen ', newscreen );
+
+            newSessionInfo.page = respo[0]["node_id"];
+
+            console.log('newSessionInfo to update: ', newSessionInfo);
+
+            let update = await ussdModel.updateSessionPage(curSession, newscreen)
+
+            console.log('updated session info: ', update);
+
+            return newscreen;
+        }
+        else {
+            newscreen = curSession.page;
+
+            console.log('newscreen ', newscreen );
+
+            return newscreen;
+        }
+        
+        
+    }
+    else {
+        // PREVIOUS/GO BACK REQUEST //
+        if (request == "99") {
+            console.log('curSession.page contents: ', curSession.page)
+            const choice = await db('nodes').where({node_id : curSession.page});
+            
+            console.log('choice: ',choice[0]['previous'])
+            if (choice[0]['previous'] == "" || !choice[0]['previous']) {
+                newscreen = curSession.page;
+            }
+            else {
+                newscreen = choice[0]['previous'];
+            }
+
+            let update = await ussdModel.updateSessionPage(curSession, newscreen)
+
+            console.log('updated session info: ', update);
+
+            return newscreen;
+        }
+
+        // GO HOME REQUEST //
+        else if (request == "00") {
+            let respo = await nodeModel.getNode(initial_node);
+
+            let newscreen = respo[0]["node_id"];
+
+            console.log('newscreen ', newscreen );
+
+            newSessionInfo.page = respo[0]["node_id"];
+
+            console.log('newSessionInfo to update: ', newSessionInfo);
+
+            let update = await ussdModel.updateSessionPage(curSession, newscreen)
+
+            console.log('updated session info: ', update);
+
+            return newscreen;
+        }
+
+        else if (request) {
+            console.log('request to number options');
+            for (i = 1; i < 10; i ++) {
+                let numby = i.toString();
+                
+                if (request === numby) {
+                    console.log('curSession.page contents: ', curSession.page)
+                    const choice = await db('nodes').where({node_id : curSession.page});
+                    
+                    // console.log('choice: ',choice[0]);
+                    console.log('choice: ',choice[0]['connections'][`${i-1}`]);
+
+                    if (choice[0]['connections'][`${i-1}`] == "" || !choice[0]['connections'][`${i-1}`]) {
+                        newscreen = curSession.page;
+                    }
+                    else {
+                        newscreen = choice[0]['connections'][`${i-1}`];
+                    }
+
+                    let update = await ussdModel.updateSessionPage(curSession, newscreen)
+
+                    console.log('updated session info: ', update);
+
+                    // current = newscreen;
+                    return newscreen;
+                }
+            }
+
+        }
+
+    }
+ 
+}
+
 
 module.exports = router;

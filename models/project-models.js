@@ -9,6 +9,7 @@ module.exports = {
   update,
   remove,
   removeAll,
+  getParentNode
 };
 
 function find() {
@@ -28,6 +29,14 @@ function getById(id) {
     .where({ id })
     .first();
 }
+async function getParentNode(id){
+  const project = await db('projects')
+		.where({ id })
+		.select('initial_node_id')
+		.first();
+  return project.initial_node_id
+}
+
 function add(user) {
   return db('projects').insert(user);
 }

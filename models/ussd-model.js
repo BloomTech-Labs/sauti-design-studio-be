@@ -27,8 +27,8 @@ const startSession = async session => {
 
 
 const getScreen = async page => {
-    return db('graphTable')
-    .where({ name : page})
+    return db('nodes')
+    .where({ node_id : page})
 }
 
 
