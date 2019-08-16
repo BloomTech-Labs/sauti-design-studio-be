@@ -2,7 +2,8 @@ const db = require('../database/dbConfig');
 
 module.exports = {
 	find,
-	insert
+    insert,
+    getNode
 };
 
 function find(filter) {
@@ -10,7 +11,8 @@ function find(filter) {
 }
 
 function getNode(node_id){
-    return db('nodes').where(node_id);
+    console.log(node_id)
+    return db('nodes').where({node_id}).catch(error => error.message);
 }
 
 async function insert(rowData) {
