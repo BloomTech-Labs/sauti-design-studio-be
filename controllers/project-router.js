@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Projects = require('../models/project-models');
 const parseGraph = require('./graph-parser')
+const testJSON = require('./testjson2');
 
 router.get('/', async (req, res) => {
   try {
@@ -79,6 +80,7 @@ router.put('/:id', async (req, res) => {
       initial_node_id
     };
     
+    console.log(graph_json);
     
   try {
     parseGraph(obj)
@@ -121,5 +123,11 @@ router.delete('/user/:id', async (req, res) => {
     res.status(500).json({ message: 'Unable to delete these Projects.' });
   }
 });
+
+router.post('/test', async (req,res) => {
+  parseGraph(testJSON);
+  console.long(testJSON);
+
+})
 
 module.exports = router;

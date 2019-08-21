@@ -47,7 +47,7 @@
 
         console.log('newPage obj: ', newPage);
 
-        await nodesTable.insert(newPage);
+        //await nodesTable.insert(newPage);
     }
 
 }
