@@ -71,7 +71,12 @@ router.post('/', async (req, res) => {
 // UPDATES THE RESPONSE
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { project_title, graph_json, user_id, initial_node_id } = req.body;
+  const { project_title, graph_json, user_id} = req.body;
+  let initial_node_id = ''
+
+  if(graph_json)
+     initial_node_id = Object.keys(graph_json.layers[1].models)[0]
+     
     const obj = {
       id,
       project_title,
@@ -80,10 +85,10 @@ router.put('/:id', async (req, res) => {
       initial_node_id
     };
     
-    console.log(graph_json);
     
   try {
-    parseGraph(obj)
+    if(graph_json)
+      parseGraph(obj)
     res.status(200).json(await Projects.update(obj));
   } catch (error) {
     res.status(500).json({
