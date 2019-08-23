@@ -25,13 +25,9 @@ async function insert(rowData) {
             .update(rowData);
 		return updatedNode;
 	}
+	
+	const inserted = await db('nodes').insert(rowData)
 
-	console.log('TCL: add -> graphTable Data Row ', rowData);
-	return db('nodes')
-		.insert(rowData)
-		.then(id => {
-			console.log('node_id:', rowData.node_id);
-			db('nodes').where({ node_id: rowData.node_id });
-		})
-		.catch(err => console.error(err));
+	return inserted
+
 }

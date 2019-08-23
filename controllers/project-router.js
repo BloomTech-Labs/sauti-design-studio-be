@@ -125,9 +125,21 @@ router.delete('/user/:id', async (req, res) => {
 });
 
 router.post('/test', async (req,res) => {
-  parseGraph(testJSON);
-  console.long(testJSON);
-
-})
+  let graph_json = testJSON
+  let id = 12
+  let user_id = 1
+  const obj = {
+    graph_json,
+    user_id,
+    id
+  }
+try{
+ const successful = await parseGraph(obj);
+ // console.log(testJSON);
+  return res.status(200).json({message: 'Parsing successful!', successful})
+} catch(error) {
+  console.log(error);
+  res.status(500).json({message: 'Something broke along the way parsing the graph', error})
+}})
 
 module.exports = router;

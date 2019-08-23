@@ -8,6 +8,7 @@ const db = require('../database/dbConfig');
 
 router.post('/:id', async (req, res) => {
     const project_id = req.params.id
+    console.log(project_id)
     const parent_node = await projectModel.getParentNode(project_id)
     console.log(parent_node)//remove
 
@@ -45,7 +46,7 @@ router.post('/:id', async (req, res) => {
         counter++
         return (`${counter})${thing}\n`);
     }).join('')
-    
+
     res.send(`${display[0].text}\n${opsyNew2}\n`)
 
 })
