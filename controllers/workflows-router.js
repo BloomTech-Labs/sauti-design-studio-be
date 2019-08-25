@@ -8,9 +8,8 @@ const db = require('../database/dbConfig');
 
 router.post('/:id', async (req, res) => {
     const project_id = req.params.id
-    console.log(project_id)
     const parent_node = await projectModel.getParentNode(project_id)
-    console.log(parent_node)//remove
+  
 
     const session = {
         session_id: req.body.session_id,
@@ -19,35 +18,29 @@ router.post('/:id', async (req, res) => {
         text: req.body.text
     }
 
+    console.log("SESSSIONNNN######################", session)
+
     //This code begins the session with all the appropriate session to
     //keep track of who the user is and where they are accessing from.
-    const service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
+    let service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
+    if(service.text)
+        service = service[0]
+    console.log('SERVICEEEEEEEEEEEE###############', service)
+    
+    //Checks the text of incoming request to see what screen should be presented and returns the appropriate node id
+    let screen = await newscreen(service, session.text, parent_node);
 
-    let screen = await newscreen(service[0], session.text, parent_node);
-
+    //Returns the node object using the node ID from the previous function
     let display = await ussdModel.getScreen(screen);
-    console.log(display);
-    let options1 = [];
-    let options2 = await display.map(ops => {
-        for(i = 0; i < ops.options.length; i++){
-            options1.push(ops.options[i]);
-        }
-    })
 
-    let opsyNew = await options1.forEach(function(oppy) {
-        console.log('oppy:',oppy);
-        let popsicle = "";
-        popsicle = oppy;
-        return `${popsicle}`;
-    })
+    //Converts each option into the text format for USSD usage
     let counter = 0;
-    let opsyNew2 = await options1.map(thing =>{
-        // console.log(thing);
-        counter++
-        return (`${counter})${thing}\n`);
+    let convertedTextOptions = await display.options.map(item =>{
+        counter++;
+        return (`${counter})${item}\n`);
     }).join('')
 
-    res.send(`${display[0].text}\n${opsyNew2}\n`)
+    res.send(`${display.text}\n${convertedTextOptions}\n`)
 
 })
 
@@ -142,6 +135,8 @@ const newscreen = async(curSession, request, initial_node) => {
                 
                 if (request === numby) {
                     console.log('curSession.page contents: ', curSession.page)
+                    if(!curSession.page)
+                        curSession.page = initial_node
                     const choice = await db('nodes').where({node_id : curSession.page});
                     
                     // console.log('choice: ',choice[0]);
