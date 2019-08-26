@@ -12,7 +12,7 @@ const startSession = async session => {
     .where({ session_id: session.session_id })
     .catch(error => error.message);
 
-  if(active.workflow != session.workflow){
+  if(active && active.workflow != session.workflow){
     await db('session')
           .update({workflow: session.workflow, page: null})
           .catch(error => error.message)
