@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Projects = require('../models/project-models');
 const parseGraph = require('./graph-parser')
+const testJSON = require('./testjson2');
 
 router.get('/', async (req, res) => {
   try {
@@ -70,7 +71,12 @@ router.post('/', async (req, res) => {
 // UPDATES THE RESPONSE
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { project_title, graph_json, user_id, initial_node_id } = req.body;
+  const { project_title, graph_json, user_id} = req.body;
+  let initial_node_id = ''
+
+  if(graph_json)
+     initial_node_id = Object.keys(graph_json.layers[1].models)[0]
+     
     const obj = {
       id,
       project_title,
@@ -81,7 +87,8 @@ router.put('/:id', async (req, res) => {
     
     
   try {
-    parseGraph(obj)
+    if(graph_json)
+      parseGraph(obj)
     res.status(200).json(await Projects.update(obj));
   } catch (error) {
     res.status(500).json({
@@ -121,5 +128,23 @@ router.delete('/user/:id', async (req, res) => {
     res.status(500).json({ message: 'Unable to delete these Projects.' });
   }
 });
+
+router.post('/test', async (req,res) => {
+  let graph_json = testJSON
+  let id = 12
+  let user_id = 1
+  const obj = {
+    graph_json,
+    user_id,
+    id
+  }
+try{
+ const successful = await parseGraph(obj);
+ // console.log(testJSON);
+  return res.status(200).json({message: 'Parsing successful!', successful})
+} catch(error) {
+  console.log(error);
+  res.status(500).json({message: 'Something broke along the way parsing the graph', error})
+}})
 
 module.exports = router;

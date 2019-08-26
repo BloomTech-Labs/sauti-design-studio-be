@@ -8,27 +8,33 @@ const Promise = require('bluebird');
 
 const startSession = async session => {
 
-  console.log('session.session_id: ', session.session_id);
-
   const [active] = await db('sessions')
     .where({ session_id: session.session_id })
     .catch(error => error.message);
 
-  console.log(active);
+  if(active.workflow != session.workflow){
+    await db('session')
+          .update({workflow: session.workflow, page: null})
+          .catch(error => error.message)
+     active.workflow = session.workflow
+     active.page = null     
+  }
 
-  if (!active || active.length === 0) 
-    return db('sessions').returning("*")
+  if (!active || active.length === 0) {
+    const [newSession] = await db('sessions').returning("*")
       .insert({ ...session })
       .catch(error => error.message);
-
+      return newSession
+  }
   // might have errors updating here, testing to find out...
-  return [active];
+  return active;
 };
 
 
 const getScreen = async page => {
-    return db('nodes')
-    .where({ node_id : page})
+  const [screen] = await db('nodes')
+  .where({ node_id : page})
+    return screen
 }
 
 

@@ -6,57 +6,103 @@ const projectModel = require('../models/project-models')
 
 const db = require('../database/dbConfig');
 
-router.post('/:id', async (req, res) => {
+router.post('/ussd/:id', async (req, res) => {    
     const project_id = req.params.id
+
     const parent_node = await projectModel.getParentNode(project_id)
-    console.log(parent_node)//remove
+
+    const splitText = req.body.text.split['*'][req.body.text.length-1]
+
+    /*Africa Talks API parameters
+    sessionId - A unique value generated when the session starts and sent every time a mobile subscriber response has been received.
+    phoneNumber - The number of the mobile subscriber interacting with your ussd application.
+    networkCode - The telco of the phoneNumber interacting with your ussd application.
+    serviceCode - This is your USSD code. Please note that it doesn’t show your channel on shared USSD codes.
+    text - This shows the user input. It is an empty string in the first notification of a session. After that, it concatenates all the user input within the session with a * until the session ends. */
 
     const session = {
-        session_id: req.body.session_id,
-        phone_num: req.body.phone_num,
-        service_code: req.body.service_code,
-        text: req.body.text
+        session_id: req.body.sessionId,
+        phone_num: req.body.phoneNumber,
+        network_code: req.body.networkCode,
+        service_code: req.body.serviceCode,
+        text: splitText
+    }
+
+    
+
+    //This code begins the session with all the appropriate session to
+    //keep track of who the user is and where they are accessing from.
+    let service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
+    
+    //Checks the text of incoming request to see what screen should be presented and returns the appropriate node id
+    let screen = await newscreen(service, session.text, parent_node);
+
+    //Returns the node object using the node ID from the previous function
+    let display = await ussdModel.getScreen(screen);
+
+    //Converts each option into the text format for USSD usage
+    let counter = 0;
+    let convertedTextOptions = await display.options.map(item =>{
+        counter++;
+        return (`${counter})${item}\n`);
+    }).join('')
+
+    res.send(`${display.text}\n${convertedTextOptions}\n`)
+})
+
+router.post('/sim/:id', async (req, res) => {    
+    const project_id = req.params.id
+    const parent_node = await projectModel.getParentNode(project_id)
+
+    if(!req.body.user_id){
+        res.status(400).json({error: "Please send a request with a valid user_id that has an integer value"})
+    }
+
+    if(!parent_node){
+        res.status(400).json({error: "The project you were trying to access either does not exist or does not have a designated parent node"})
+    }
+
+
+    const session = {
+        session_id: req.body.user_id,
+        text: req.body.text,
+        workflow: project_id
     }
 
     //This code begins the session with all the appropriate session to
     //keep track of who the user is and where they are accessing from.
-    const service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
-
-    let screen = await newscreen(service[0], session.text, parent_node);
-
-    let display = await ussdModel.getScreen(screen);
-    console.log(display);
-    let options1 = [];
-    let options2 = await display.map(ops => {
-        for(i = 0; i < ops.options.length; i++){
-            options1.push(ops.options[i]);
-        }
-    })
-
-    let opsyNew = await options1.forEach(function(oppy) {
-        console.log('oppy:',oppy);
-        let popsicle = "";
-        popsicle = oppy;
-        return `${popsicle}`;
-    })
-    let counter = 0;
-    let opsyNew2 = await options1.map(thing =>{
-        // console.log(thing);
-        counter++
-        return (`${counter})${thing}\n`);
-    }).join('')
+    let service = await ussdModel.startSession(session); 
     
-    res.send(`${display[0].text}\n${opsyNew2}\n`)
+    //Checks the text of incoming request to see what screen should be presented and returns the appropriate node id
+    let screen = await newscreen(service, session.text, parent_node);
 
+    //Returns the node object using the node ID from the previous function
+    let display = await ussdModel.getScreen(screen);
+
+    //Converts each option into the text format for USSD usage
+    let counter = 0;
+    let convertedTextOptions = await display.options.map(item =>{
+        counter++;
+        return (`${counter})${item}\n`);
+    }).join('')
+
+    res.send(`${display.text}\n${convertedTextOptions}\n`)
 })
 
 
 const newscreen = async(curSession, request, initial_node) => {
 
+    if(!curSession.phone_num){
+        curSession.phone_num = '';
+        curSession.servicecode = '';
+        curSession.network_code = '';
+    }
+
     const newSessionInfo = {
         session_id: curSession.session_id,
         phone_num: curSession.phone_num,
         service_code: curSession.service_code,
+        network_code: curSession.network_code,
         text: curSession.text,
         page: curSession.page, 
       };    
@@ -141,6 +187,8 @@ const newscreen = async(curSession, request, initial_node) => {
                 
                 if (request === numby) {
                     console.log('curSession.page contents: ', curSession.page)
+                    if(!curSession.page)
+                        curSession.page = initial_node
                     const choice = await db('nodes').where({node_id : curSession.page});
                     
                     // console.log('choice: ',choice[0]);
