@@ -12,6 +12,14 @@ const startSession = async session => {
     .where({ session_id: session.session_id })
     .catch(error => error.message);
 
+  if(active.workflow != session.workflow){
+    await db('session')
+          .update({workflow: session.workflow, page: null})
+          .catch(error => error.message)
+     active.workflow = session.workflow
+     active.page = null     
+  }
+
   if (!active || active.length === 0) {
     const [newSession] = await db('sessions').returning("*")
       .insert({ ...session })
