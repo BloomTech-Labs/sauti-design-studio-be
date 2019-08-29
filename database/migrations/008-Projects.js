@@ -9,10 +9,10 @@ exports.up = function(knex, Promise) {
         tbl.json('graph_json');
         tbl
           .integer('user_id')
-          .unsigned()
-          .notNullable()
-          .references('id')
-          .inTable('users');
+          // .unsigned()
+          // .notNullable()
+          // .references('id')
+          // .inTable('users');
 
         // tbl
         //   .integer('graph_id')
