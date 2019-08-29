@@ -3,7 +3,8 @@ const db = require('../database/dbConfig');
 module.exports = {
 	find,
     insert,
-    getNode
+	getNode,
+	deleteAllProjectNodes
 };
 
 function find(filter) {
@@ -11,8 +12,11 @@ function find(filter) {
 }
 
 function getNode(node_id){
-    console.log(node_id)
     return db('nodes').where({node_id}).catch(error => error.message);
+}
+
+function deleteAllProjectNodes(project_id){
+	return db('nodes').where({project_id}).del()
 }
 
 async function insert(rowData) {
