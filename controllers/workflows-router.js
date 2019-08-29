@@ -32,13 +32,14 @@ router.post('/ussd/:id', async (req, res) => {
 
     //This code begins the session with all the appropriate session to
     //keep track of who the user is and where they are accessing from.
-    let service = await ussdModel.startSession(session); //TODO: change this so that it returns the first value instead of an array
+    let service = await ussdModel.startSession(session);
     
     //Checks the text of incoming request to see what screen should be presented and returns the appropriate node id
     let screen = await newscreen(service, session.text, parent_node);
-
+    console.log("Screen", screen);
     //Returns the node object using the node ID from the previous function
     let display = await ussdModel.getScreen(screen);
+    console.log(display)
 
     //Converts each option into the text format for USSD usage
     let counter = 0;
@@ -55,24 +56,25 @@ router.post('/sim/:id', async (req, res) => {
     const parent_node = await projectModel.getParentNode(project_id)
 
     if(!req.body.user_id){
-        res.status(400).json({error: "Please send a request with a valid user_id that has an integer value"})
+        res.status(400).json({error: "Please send a request with a valid user_id that has an integer value."})
     }
 
     if(!parent_node){
-        res.status(400).json({error: "The project you were trying to access either does not exist or does not have a designated parent node"})
+        res.status(400).json({error: "The project you were trying to access either does not exist or does not have a designated parent node."})
     }
 
-
+    console.log("REQ BODY DATA", req.body
+    )
     const session = {
         session_id: req.body.user_id,
         text: req.body.text,
         workflow: project_id
     }
-
+    console.log("SESSION AFTER OBJ", session)
     //This code begins the session with all the appropriate session to
     //keep track of who the user is and where they are accessing from.
     let service = await ussdModel.startSession(session); 
-    
+    console.log("SERVICE:" , service);
     //Checks the text of incoming request to see what screen should be presented and returns the appropriate node id
     let screen = await newscreen(service, session.text, parent_node);
 
@@ -86,7 +88,10 @@ router.post('/sim/:id', async (req, res) => {
         return (`${counter})${item}\n`);
     }).join('')
 
-    res.send(`${display.text}\n${convertedTextOptions}\n`)
+    const responseObject = {display, convertedTextOptions
+    }
+
+    res.status(200).send(responseObject)
 })
 
 
@@ -105,7 +110,10 @@ const newscreen = async(curSession, request, initial_node) => {
         network_code: curSession.network_code,
         text: curSession.text,
         page: curSession.page, 
-      };    
+      };
+      
+      console.log("curSession page contents at newscreen function", curSession)
+
 
     let newscreen = "";
 
@@ -186,9 +194,12 @@ const newscreen = async(curSession, request, initial_node) => {
                 let numby = i.toString();
                 
                 if (request === numby) {
+        
                     console.log('curSession.page contents: ', curSession.page)
                     if(!curSession.page)
                         curSession.page = initial_node
+
+                    console.log("reassigned page", curSession.page)
                     const choice = await db('nodes').where({node_id : curSession.page});
                     
                     // console.log('choice: ',choice[0]);

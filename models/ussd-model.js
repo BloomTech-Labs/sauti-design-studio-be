@@ -12,13 +12,19 @@ const startSession = async session => {
     .where({ session_id: session.session_id })
     .catch(error => error.message);
 
+    console.log("ACTIVE BEFORE", active)
+
   if(active && active.workflow != session.workflow){
-    await db('session')
+    const updatePosition = await db('sessions')
+          .where({session_id: session.session_id})
           .update({workflow: session.workflow, page: null})
           .catch(error => error.message)
+     console.log("UPDATED SPOT", updatePosition);
      active.workflow = session.workflow
      active.page = null     
   }
+
+  console.log("ACTIVE AFTER", active)
 
   if (!active || active.length === 0) {
     const [newSession] = await db('sessions').returning("*")
