@@ -14,10 +14,12 @@ router.get(
 );
 
 // google login redirect
-router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+  console.log("req",req.user);
   res
     .status(200)
     .cookie('token', res.req.authInfo)
+    .cookie('user_id', req.user.id)
     .redirect(`${process.env.FRONTEND_URL}/profile`);
 });
 
