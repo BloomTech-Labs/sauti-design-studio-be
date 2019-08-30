@@ -20,7 +20,7 @@ router.get('/google/redirect', passport.authenticate('google', { failureRedirect
     .status(200)
     .cookie('token', res.req.authInfo)
     .cookie('user_id', req.user.id)
-    .redirect(`${process.env.FRONTEND_URL}/profile`);
+    .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
 });
 
 // Login with facebook
