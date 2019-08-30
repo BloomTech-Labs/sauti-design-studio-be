@@ -149,6 +149,7 @@ router.post('/publish/:id', async (req,res) => {
  // console.log(testJSON);
     return res.status(200).json({message: 'Publishing successful!', successful})
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       message: `Unable to publish Project #${id}`,
     });
