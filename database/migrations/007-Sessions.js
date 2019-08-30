@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
       
     tbl.string('page');
 
-    tbl.string('previous');
+    tbl.specificType('history', 'text ARRAY');
 
     tbl.timestamps(true, true);
 

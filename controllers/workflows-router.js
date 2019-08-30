@@ -96,6 +96,10 @@ router.post('/sim/:id', async (req, res) => {
 
 
 const newscreen = async(curSession, request, initial_node) => {
+    if(!curSession.history)
+        curSession.history = []
+
+        console.log('SESSIOON HISTORY', curSession.history)
 
     if(!curSession.phone_num){
         curSession.phone_num = '';
@@ -110,6 +114,7 @@ const newscreen = async(curSession, request, initial_node) => {
         network_code: curSession.network_code,
         text: curSession.text,
         page: curSession.page, 
+        history: curSession.history
       };
       
       console.log("curSession page contents at newscreen function", curSession)
@@ -129,7 +134,8 @@ const newscreen = async(curSession, request, initial_node) => {
             console.log('newscreen ', newscreen );
 
             newSessionInfo.page = respo[0]["node_id"];
-
+            
+            curSession.history.push(newscreen);
             console.log('newSessionInfo to update: ', newSessionInfo);
 
             let update = await ussdModel.updateSessionPage(curSession, newscreen)
@@ -151,22 +157,32 @@ const newscreen = async(curSession, request, initial_node) => {
     else {
         // PREVIOUS/GO BACK REQUEST //
         if (request == "99") {
-            console.log('curSession.page contents: ', curSession.page)
-            const choice = await db('nodes').where({node_id : curSession.page});
+            // console.log('curSession.page contents: ', curSession.page)
+            // const choice = await db('nodes').where({node_id : curSession.page});
             
-            console.log('choice: ',choice[0]['previous'])
-            if (choice[0]['previous'] == "" || !choice[0]['previous']) {
-                newscreen = curSession.page;
+            // console.log('choice: ',choice[0]['previous'])
+            // if (choice[0]['previous'] == "" || !choice[0]['previous']) {
+            //     newscreen = curSession.page;
+            // }
+            // else {
+            //     newscreen = choice[0]['previous'];
+            // }
+            curSession.history.pop();
+            let previousPage = curSession.history[curSession.history.length - 1];
+            try{
+            newscreen = await nodeModel.getNode(previousPage);
+            let update = await ussdModel.updateSessionPage(curSession, newscreen[0].node_id)
+            console.log('HERE', newscreen)
+            if(!newscreen)
+                return initial_node
+            return newscreen[0].node_id
             }
-            else {
-                newscreen = choice[0]['previous'];
-            }
+            catch(error){}
+            //let update = await ussdModel.updateSessionPage(curSession, newscreen)
 
-            let update = await ussdModel.updateSessionPage(curSession, newscreen)
+           // console.log('updated session info: ', update);
 
-            console.log('updated session info: ', update);
-
-            return newscreen;
+           //return newscreen;
         }
 
         // GO HOME REQUEST //
@@ -180,6 +196,10 @@ const newscreen = async(curSession, request, initial_node) => {
             newSessionInfo.page = respo[0]["node_id"];
 
             console.log('newSessionInfo to update: ', newSessionInfo);
+
+            console.log('CURSESSION HISTORY', curSession.historypush)
+
+            curSession.history.push(newscreen);
 
             let update = await ussdModel.updateSessionPage(curSession, newscreen)
 
@@ -212,6 +232,7 @@ const newscreen = async(curSession, request, initial_node) => {
                         newscreen = choice[0]['connections'][`${i-1}`];
                     }
 
+                    curSession.history.push(newscreen)
                     let update = await ussdModel.updateSessionPage(curSession, newscreen)
 
                     console.log('updated session info: ', update);
