@@ -1,9 +1,14 @@
+/*DEFUNCT Comment: This was built by the lab13 team trying to use a library to build the ussd approriate menus */
+
 /* eslint-disable no-useless-concat */
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');
 const router = require('express').Router();
 const Promise = require('bluebird');
+
 // Function to create a new menu. Recommended to create a new menu for each request
+
+
 const createMenu = () => {
   const menu = new UssdMenu();
   return menu;
@@ -27,6 +32,8 @@ function getSessionInfo(body) {
   };
   return session;
 }
+
+
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
   try {

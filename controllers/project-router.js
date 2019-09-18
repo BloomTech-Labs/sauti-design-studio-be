@@ -2,7 +2,6 @@ const router = require('express').Router();
 const Projects = require('../models/project-models');
 const nodes = require('../models/nodes-models');
 const parseGraph = require('./graph-parser')
-const testJSON = require('./testjson2');
 
 router.get('/', async (req, res) => {
   try {
@@ -157,6 +156,9 @@ router.post('/publish/:id', async (req,res) => {
 
 })
 
+
+/*Testing that the graph JSON works
+
 router.post('/test', async (req,res) => {
   let graph_json = testJSON
   let id = 12
@@ -168,11 +170,12 @@ router.post('/test', async (req,res) => {
   }
 try{
  const successful = await parseGraph(obj);
- // console.log(testJSON);
   return res.status(200).json({message: 'Parsing successful!', successful})
 } catch(error) {
   console.log(error);
   res.status(500).json({message: 'Something broke along the way parsing the graph', error})
 }})
+*/
+
 
 module.exports = router;

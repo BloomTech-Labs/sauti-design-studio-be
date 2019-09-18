@@ -1,11 +1,12 @@
+//DEFUNCT comments: This was created by the labs 13 group. Appears to be an attempt to build the menu responses for ussd
+
+
 /* eslint-disable no-useless-concat */
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');
 const router = require('express').Router();
 const Promise = require('bluebird');
 // Function to create a new menu. Recommended to create a new menu for each request
-
-
 const createMenu = () => {
   const menu = new UssdMenu();
   return menu;
@@ -29,8 +30,6 @@ function getSessionInfo(body) {
   };
   return session;
 }
-
-
 // DYNAMIC ROUTE HANDLER
 router.post('/', async (req, res) => {
   try {
