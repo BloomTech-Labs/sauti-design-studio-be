@@ -1,3 +1,5 @@
+//DEFUNCT Comments: This was the router used to test out the responses our server would give to requests for a workflow
+
 const router = require('express').Router();
 
 const UssdModel = require('../models/ussd-model');

@@ -1,3 +1,4 @@
+//DEFUNCT Comment: This was built by the labs13 group. CRUD capabilities for profiles
 const router = require('express').Router();
 const ProfileModel = require('../models/profile-model');
 

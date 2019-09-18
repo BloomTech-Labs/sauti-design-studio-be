@@ -1,3 +1,5 @@
+//Defunct COMMENTS: This was built by the Lambda X v1 team. This was the prototype of the graph-parser used to convert
+//                  the JSON object into nodes in our database
 // Dependencies
 const router = require('express').Router();
 
