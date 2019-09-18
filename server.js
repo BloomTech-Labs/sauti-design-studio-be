@@ -13,25 +13,14 @@ const corsOptions = {
 
 const server = express();
 const cookieSession = require('cookie-session');
-const Pusher = require('pusher');
 const bodyParser = require('body-parser');
 const passportSetup = require('./config/passport-setup');
 const UsersRouter = require('./controllers/users-router');
 const WorkflowsRouter = require('./controllers/workflows-router');
-const ClientsRouter = require('./controllers/clients-router');
-const ResponsesRouter = require('./controllers/responses');
-const UssdRouter = require('./controllers/ussd-router');
 const AuthRouter = require('./controllers/auth-router');
-const authCheck = require('./controllers/authCheck');
-const ProfileRouter = require('./controllers/profile-router');
 const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
-
-const TestIntake = require('./controllers/testintake');
-const TestOutput = require('./controllers/testrouter');
-
-const pusher = new Pusher(credentials.pusher);
 
 // middleware
 server.use(
@@ -59,19 +48,12 @@ server.use(passport.session());
 server.use('/auth', AuthRouter);
 
 // endpoints
-server.use('/profile', ProfileRouter);
 // projects endpoint
 server.use('/users', /*authCheck,*/ UsersRouter);
 server.use('/projects', ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
-server.use('/clients', ClientsRouter);
-server.use('/responses', ResponsesRouter);
-server.use('/ussd', UssdRouter);
 
 
-
-server.use('/testintake', TestIntake)
-server.use('/testoutput', TestOutput)
 
 
 
