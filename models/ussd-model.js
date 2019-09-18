@@ -1,23 +1,72 @@
+
 /* eslint-disable no-shadow */
 const db = require('../database/dbConfig');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
+
+
 const startSession = async session => {
-  const active = await db('sessions')
+
+  const [active] = await db('sessions')
     .where({ session_id: session.session_id })
     .catch(error => error.message);
 
-  if (!active || active.length === 0)
-    return db('sessions')
+    console.log("ACTIVE BEFORE", active)
+
+  if(active && active.workflow != session.workflow){
+    const updatePosition = await db('sessions')
+          .where({session_id: session.session_id})
+          .update({workflow: session.workflow, page: null})
+          .catch(error => error.message)
+     console.log("UPDATED SPOT", updatePosition);
+     active.workflow = session.workflow
+     active.page = null     
+  }
+
+  console.log("ACTIVE AFTER", active)
+
+  if (!active || active.length === 0) {
+    const [newSession] = await db('sessions').returning("*")
       .insert({ ...session })
       .catch(error => error.message);
-
-  return db('sessions')
-    .where({ session_id: session.session_id })
-    .update({ ...session })
-    .catch(error => error.message);
+      return newSession
+  }
+  // might have errors updating here, testing to find out...
+  return active;
 };
+
+
+const getScreen = async page => {
+  const [screen] = await db('nodes')
+  .where({ node_id : page})
+    return screen
+}
+
+
+
+const updateSessionPage = (session, value) =>
+  db('sessions')
+    .where({ session_id : session.session_id })
+    .update({ 
+      history: session.history,
+      page : value
+      
+     })
+    .catch(error => error.message);
+
+
+
+
+const updateSession = (session_id, key, value) =>
+  db('sessions')
+    .where({ session_id })
+    .update({ [key]: Number(value) })
+    .catch(error => error.message);
+
+
+
+
 
 const getSession = (session_id, key) =>
   db('sessions')
@@ -26,11 +75,10 @@ const getSession = (session_id, key) =>
     .first()
     .catch(error => error.message);
 
-const updateSession = (session_id, key, value) =>
-  db('sessions')
-    .where({ session_id })
-    .update({ [key]: Number(value) })
-    .catch(error => error.message);
+
+
+
+
 
 const endSession = session_id =>
   db('sessions')
@@ -79,4 +127,7 @@ module.exports = {
   getWorkflow,
   getResponses,
   getScreenData,
+  updateSessionPage,
+  getScreen,
+  
 };

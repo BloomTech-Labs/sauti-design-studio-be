@@ -1,8 +1,10 @@
+//DEFUNCT Comment: This was built by the labs13 group. CRUD capabilities for profiles
 const router = require('express').Router();
 const ProfileModel = require('../models/profile-model');
 
 router.get('/', async (req, res) => {
   try {
+    // console.log("req",req);
     const { id } = req.user;
     const info = await ProfileModel.getById(id);
     res.status(200).json(info);

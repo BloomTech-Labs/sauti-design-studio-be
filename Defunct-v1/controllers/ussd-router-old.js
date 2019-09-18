@@ -1,3 +1,6 @@
+//DEFUNCT comments: This was created by the labs 13 group. Appears to be an attempt to build the menu responses for ussd
+
+
 /* eslint-disable no-useless-concat */
 const UssdMenu = require('ussd-menu-builder');
 const UssdModel = require('../models/ussd-model');

@@ -7,9 +7,10 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: [process.env.FRONTEND_URL,"http://localhost:3000"],
   credentials: true,
 };
+
 const server = express();
 const cookieSession = require('cookie-session');
 const Pusher = require('pusher');
@@ -25,6 +26,10 @@ const authCheck = require('./controllers/authCheck');
 const ProfileRouter = require('./controllers/profile-router');
 const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
+const ProjectRouter = require('./controllers/project-router');
+
+const TestIntake = require('./controllers/testintake');
+const TestOutput = require('./controllers/testrouter');
 
 const pusher = new Pusher(credentials.pusher);
 
@@ -55,11 +60,22 @@ server.use('/auth', AuthRouter);
 
 // endpoints
 server.use('/profile', ProfileRouter);
-server.use('/users', authCheck, UsersRouter);
+// projects endpoint
+server.use('/users', /*authCheck,*/ UsersRouter);
+server.use('/projects', ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
 server.use('/clients', ClientsRouter);
 server.use('/responses', ResponsesRouter);
 server.use('/ussd', UssdRouter);
+
+
+
+server.use('/testintake', TestIntake)
+server.use('/testoutput', TestOutput)
+
+
+
+
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);
 });
