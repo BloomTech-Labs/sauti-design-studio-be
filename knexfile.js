@@ -4,13 +4,6 @@ require('dotenv').config();
 module.exports = {
   development: {
     client: 'pg',
-    // connection: process.env.POSTGRES_URL,
-    // connection: {
-    //   host : 'localhost',
-    //   user : 'postgres',
-    //   password : 'postgresPASS',
-    //   database : 'sauti-studio',
-    // },
     connection: {
       host : process.env.POSTGRES_HOST,
       user : process.env.POSTGRES_USER,
@@ -24,6 +17,22 @@ module.exports = {
     seeds: {
       directory: './database/seeds',
     },
+  },
+  staging: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: 'knex_migrations',
+      directory: './database/migrations',
+    },
+    seeds: {
+      directory: './database/seeds',
+    },
+    useNullAsDefault: true,
   },
   production: {
     client: 'pg',

@@ -12,22 +12,6 @@ exports.up = function(knex, Promise) {
     tbl.string('name', 128).notNullable();
     tbl.string('service_code');
     tbl.string('category');
-    /* If we have time to set this up
-    tbl
-      .integer('category')
-      .unsigned()
-      .references('id')
-      .inTable('categories')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE'); */
-    tbl
-      .integer('client_id')
-      .unsigned()
-      .references('id')
-      .inTable('clients')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
-  });
 };
 
 exports.down = function(knex, Promise) {
