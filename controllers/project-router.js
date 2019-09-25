@@ -130,31 +130,31 @@ router.delete('/user/:id', async (req, res) => {
   }
 });
 
-router.post('/publish/:id', async (req,res) => {
-  const { id } = req.params;
-  const { project_title, graph_json, user_id, initial_node_id} = req.body;
-    const obj = {
-      id,
-      project_title,
-      graph_json,
-      user_id,
-      initial_node_id
-    };
-    
-    
-  try {
-    await Projects.update(obj)
-    const successful = await parseGraph(obj);
- // console.log(testJSON);
-    return res.status(200).json({message: 'Publishing successful!', successful})
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      message: `Unable to publish Project #${id}`,
-    });
-  }
+router.post('/publish/:id', async (req, res) => {
+	const { id } = req.params;
+	const { project_title, graph_json, user_id, initial_node_id } = req.body;
+	const obj = {
+		id,
+		project_title,
+		graph_json,
+		user_id,
+		initial_node_id
+	};
 
-})
+	try {
+		await Projects.update(obj);
+		const successful = await parseGraph(obj);
+		// console.log(testJSON);
+		return res
+			.status(200)
+			.json({ message: 'Publishing successful!', successful });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			message: `Unable to publish Project #${id}`
+		});
+	}
+});
 
 
 /*Testing that the graph JSON works
