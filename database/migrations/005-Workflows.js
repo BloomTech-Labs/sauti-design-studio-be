@@ -12,6 +12,7 @@ exports.up = function(knex, Promise) {
     tbl.string('name', 128).notNullable();
     tbl.string('service_code');
     tbl.string('category');
+  })
 };
 
 exports.down = function(knex, Promise) {

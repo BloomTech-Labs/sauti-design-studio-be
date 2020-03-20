@@ -19,7 +19,7 @@ const UsersRouter = require('./controllers/users-router');
 const WorkflowsRouter = require('./controllers/workflows-router');
 const AuthRouter = require('./controllers/auth-router');
 const credentials = require('./config/africas-talking');
-const africastalking = require('africastalking')(credentials.AT);
+// const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
 
 // middleware
