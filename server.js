@@ -23,16 +23,16 @@ const credentials = require('./config/africas-talking');
 const ProjectRouter = require('./controllers/project-router');
 
 // middleware
-server.use(
-  cookieSession({
-    name: 'cookie',
-    maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.SESSION_COOKIE],
-    secure: false,
-    // httpOnly: true,
-    signed: true,
-  })
-);
+// server.use(
+//   cookieSession({
+//     name: 'cookie',
+//     maxAge: 24 * 60 * 60 * 1000,
+//     keys: [process.env.SESSION_COOKIE],
+//     secure: false,
+//     // httpOnly: true,
+//     signed: true,
+//   })
+// );
 server.use(helmet());
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: false }));
@@ -41,11 +41,11 @@ server.use(cors(corsOptions));
 server.use(morgan('dev'));
 
 // initialize passport
-server.use(passport.initialize());
-server.use(passport.session());
+// server.use(passport.initialize());
+// server.use(passport.session());
 
 //  Register and login routes
-server.use('/auth', AuthRouter);
+// server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
@@ -77,8 +77,4 @@ server.get('/', function(req, res) {
   res.sendFile(path.join(`${__dirname}/index.html`));
 });
 
-const port = process.env.PORT || 5000;
-
-server.listen(port, () => {
-  console.log(`Server is live at ${port}`);
-});
+module.exports = server;

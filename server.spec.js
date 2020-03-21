@@ -10,9 +10,25 @@ const server = require("./server.js");
 //   });
 // });
 
-describe('GET', () => {
+describe('GET ', () => {
+  it('should return 200', async () => {
+    const res = await request(server).get('/');
+    expect(res.status).toBe(200);
+  });
+  it('should return text', async () =>{
+    const res = await request(server).get('/');
+    expect(res.type).toBe('text/html')
+  })
+});
+
+describe('GET /home', () => {
   it('should return 200', async () => {
     const res = await request(server).get('/home');
     expect(res.status).toBe(200);
   });
+  it('should return json', async () =>{
+    const res = await request(server).get('/home');
+    expect(res.type).toBe('application/json')
+  })
 });
+
