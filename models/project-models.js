@@ -9,7 +9,8 @@ module.exports = {
   update,
   remove,
   removeAll,
-  getParentNode
+  getParentNode,
+  insert
 };
 
 function find() {
@@ -38,7 +39,7 @@ async function getParentNode(id){
 }
 
 function add(user) {
-  return db('projects').insert(user);
+  return db('projects').insert(user, "id");
 }
 
 function update(values) {
@@ -59,4 +60,12 @@ function removeAll(id) {
   return db('projects')
     .where('user_id', '=', id)
     .del();
+}
+
+function insert(user) {
+  return db('projects')
+    .insert(user, "id")
+    .then(ids => {
+      return ids;
+    });
 }

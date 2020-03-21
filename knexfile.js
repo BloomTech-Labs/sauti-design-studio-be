@@ -4,19 +4,39 @@ require('dotenv').config();
 module.exports = {
   development: {
     client: 'pg',
+    // connection: process.env.TEST_CON,
     connection: {
       host : process.env.POSTGRES_HOST,
       user : process.env.POSTGRES_USER,
       password : process.env.POSTGRES_PASSWORD,
       database : process.env.POSTGRES_DATABASE_NAME,
     },
-    useNullAsDefault: true,
+    pool: {
+      min: 2,
+      max: 10
+    },
     migrations: {
       directory: './database/migrations',
+      tableName: 'knex_migrations'
     },
     seeds: {
-      directory: './database/seeds',
+      directory: './database/seeds'
+    }
+  },
+  testing: {
+    client: 'postgresql',
+    connection: process.env.TEST_CON,
+    pool: {
+      min: 2,
+      max: 10
     },
+    migrations: {
+      directory: './database/migrations',
+      tableName: 'knex_migrations'
+    },
+    seeds: {
+      directory: './database/seeds'
+    }
   },
   staging: {
     client: 'pg',

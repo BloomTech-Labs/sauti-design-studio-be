@@ -7,8 +7,8 @@ router.get('/', async (req, res) => {
   try {
     const projects = await Projects.find();
     res.status(200).json(projects);
-  } catch (error) {
-    res.status(500).json(error);
+  } catch ({name, code, message, stack}) {
+    res.status(500).json({name,code,message,stack});
   }
 });
 
@@ -48,6 +48,8 @@ router.get('/user/:id', async (req, res) => {
   }
 });
 
+
+// Function needs to be re-written???
 router.post('/', async (req, res) => {
     console.log("req.body", req.body);
     const { project_title, graph_json, user_id, initial_node_id } = req.body;
@@ -66,6 +68,17 @@ router.post('/', async (req, res) => {
       res.status(500).json({ error: err.message });
       console.log(err);
     }
+
+
+      // Projects.insert(obj)
+      // .then(res => {
+      //   console.log(res);
+      //   res.status(201).json(res)
+      // })
+      // .catch (err => {
+      //   res.json(err)
+      // })
+
 });
 
 // UPDATES THE RESPONSE
@@ -100,9 +113,9 @@ router.delete('/:id', async (req, res) => {
   id = Number(id);
   try {
     const deleteNodes = await nodes.deleteAllProjectNodes(id);
-    console.log(deleteNodes)
+    // console.log(deleteNodes)
     const deleteRes = await Projects.remove(id);
-    console.log(deleteRes);
+    // console.log(deleteRes);
     if (deleteRes)
       res.status(200).json({
         message: 'You have successfully deleted the Project',
@@ -148,10 +161,11 @@ router.post('/publish/:id', async (req, res) => {
 		return res
 			.status(200)
 			.json({ message: 'Publishing successful!', successful });
-	} catch (error) {
-		console.log(error);
+	} catch ({name,code,stack,message}) {
+		console.log({name,code,stack,message});
 		res.status(500).json({
-			message: `Unable to publish Project #${id}`
+      // message: `Unable to publish Project #${id}`
+      name,code,stack,message
 		});
 	}
 });
