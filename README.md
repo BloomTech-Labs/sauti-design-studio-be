@@ -8,7 +8,8 @@
 
 # API Documentation
 
-#### Backend delpoyed at [Heroku](https://sauti-studio.herokuapp.com/) <br>
+#### Backend deployed at [Heroku](https://sauti-design.herokuapp.com/) <br>
+#### OLD Backend delpoyed at [Heroku](https://sauti-studio.herokuapp.com/) <br>
 
 ## Getting started
 
