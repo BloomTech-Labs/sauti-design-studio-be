@@ -19,33 +19,33 @@ const UsersRouter = require('./controllers/users-router');
 const WorkflowsRouter = require('./controllers/workflows-router');
 const AuthRouter = require('./controllers/auth-router');
 const credentials = require('./config/africas-talking');
-// const africastalking = require('africastalking')(credentials.AT);
+const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
 
 // middleware
-// server.use(
-//   cookieSession({
-//     name: 'cookie',
-//     maxAge: 24 * 60 * 60 * 1000,
-//     keys: [process.env.SESSION_COOKIE],
-//     secure: false,
-//     // httpOnly: true,
-//     signed: true,
-//   })
-// );
+server.use(
+   cookieSession({
+     name: 'cookie',
+     maxAge: 24 * 60 * 60 * 1000,
+     keys: [process.env.SESSION_COOKIE],
+     secure: false,
+     // httpOnly: true,
+     signed: true,
+   })
+ );
 server.use(helmet());
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: false }));
-// server.use(bodyParser());
+server.use(bodyParser());
 server.use(cors(corsOptions));
 server.use(morgan('dev'));
 
 // initialize passport
-// server.use(passport.initialize());
-// server.use(passport.session());
+server.use(passport.initialize());
+server.use(passport.session());
 
 //  Register and login routes
-// server.use('/auth', AuthRouter);
+server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
