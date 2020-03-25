@@ -24,15 +24,15 @@ const ProjectRouter = require('./controllers/project-router');
 
 // middleware
 server.use(
-   cookieSession({
-     name: 'cookie',
-     maxAge: 24 * 60 * 60 * 1000,
-     keys: [process.env.SESSION_COOKIE],
-     secure: false,
-     // httpOnly: true,
-     signed: true,
-   })
- );
+  cookieSession({
+    name: 'cookie',
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [process.env.SESSION_COOKIE],
+    secure: false,
+    // httpOnly: true,
+    signed: true,
+  })
+);
 server.use(helmet());
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: false }));

@@ -8,6 +8,7 @@ describe('project-router ', () => {
 
   describe('POST /', () => {
     let resType = "";
+    let resBody = "";
     it('should return 200', async () => {
           const res = await request(server).post('/projects')
           .send({
@@ -17,6 +18,7 @@ describe('project-router ', () => {
             initial_node_id: "a string"
           })
           resType = res.type;
+          resBody = res.body;
           createdProjectID = res.body[0];
           expect(res.status).toBe(201)
     });
@@ -24,21 +26,31 @@ describe('project-router ', () => {
     it('should return json', async () => {
       expect(resType).toBe('application/json')
     })
+    it('should return an array with id', () =>{
+      expect(Array.isArray(resBody)).toBe(true)
+      expect(resBody.length).toBe(1)
+    } )
+    
 
   })
   
   describe('POST nothing to /projects/publish/:id', () => {
     let resType = "";
+    let resBody = "";
     it('should return 500', async () => {
           const res = await request(server).post(`/projects/publish/${createdProjectID}`)
           .send({
           })
           resType = res.type;
+          resBody = res.body;
           expect(res.status).toBe(500)
     });
 
     it('should return json', async () => {
       expect(resType).toBe('application/json')
+    })
+    it('should return error message', async () =>{
+      expect(resBody.message).toEqual( "Cannot read property 'layers' of undefined")
     })
 
   })
@@ -53,7 +65,6 @@ describe('project-router ', () => {
       const res = await request(server).get('/projects');
       expect(res.type).toBe('application/json')
     })
-
   })
 
   describe('GET /:id', () => {
