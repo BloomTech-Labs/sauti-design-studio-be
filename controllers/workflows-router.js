@@ -96,10 +96,10 @@ router.post('/sim/:id', async (req, res) => {
 
 
 const newscreen = async(curSession, request, initial_node) => {
-    if(!curSession.history)
+    if(!curSession.history){}
         curSession.history = []
 
-        console.log('SESSIOON HISTORY', curSession.history)
+        console.log('SESSION HISTORY', curSession.history)
 
     if(!curSession.phone_num){
         curSession.phone_num = '';
