@@ -56,7 +56,8 @@
     "reset": "npx knex migrate:latest && npx knex seed:run",
     "test": "cross-env DB_ENV=testing jest --watch --verbose --detectOpenHandles --forceExit",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "coverage": "jest --coverage --detectOpenHandles --forceExit || true"
   },
   "jest": {
     "collectCoverageFrom": [

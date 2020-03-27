@@ -5,13 +5,12 @@ module.exports = {
   development: {
     client: 'pg',
     connection: process.env.DEV_CON,
-    // connection: process.env.TEST_CON,
     // connection: {
     //   host : process.env.POSTGRES_HOST,
     //   user : process.env.POSTGRES_USER,
     //   password : process.env.POSTGRES_PASSWORD,
     //   database : process.env.POSTGRES_DATABASE_NAME,
-    // },
+    },
     pool: {
       min: 2,
       max: 10
@@ -22,8 +21,8 @@ module.exports = {
     },
     seeds: {
       directory: './database/seeds'
-    }
-  },
+    },
+  
   testing: {
     client: 'postgresql',
     connection: process.env.TEST_CON,
@@ -71,4 +70,4 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
-};
+}
