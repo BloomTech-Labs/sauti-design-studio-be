@@ -11,6 +11,7 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
+
 // Need to set up facebook account
 // passport.use(
 //   new FacebookStrategy(
@@ -44,6 +45,7 @@ const verifyGoogleUser = async (obj, done) => {
   const user = await Users.getByEmail(profile.emails[0].value).catch(err =>
     console.error(err)
   );
+
 
   try {
     if (!user) {
