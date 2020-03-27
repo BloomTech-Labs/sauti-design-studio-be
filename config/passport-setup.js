@@ -11,20 +11,21 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-// // Need to set up facebook account
-// // passport.use(
-// //   new FacebookStrategy(
-// //     {
-// //       clientID: process.env.FACEBOOK_CLIENT_ID,
-// //       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-// //       callbackURL: process.env.REDIRECT_URL,
-// //       profileFields: ['id', 'displayName', 'photos', 'email'],
-// //     },
-// //     (accessToken, refreshToken, profile, done) => {
-// //       verifyFacebookUser(profile, done);
-// //     }
-// //   )
-// // );
+
+// Need to set up facebook account
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       clientID: process.env.FACEBOOK_CLIENT_ID,
+//       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+//       callbackURL: process.env.REDIRECT_URL,
+//       profileFields: ['id', 'displayName', 'photos', 'email'],
+//     },
+//     (accessToken, refreshToken, profile, done) => {
+//       verifyFacebookUser(profile, done);
+//     }
+//   )
+// );
 
 passport.use(
   new GoogleStrategy(
@@ -45,6 +46,7 @@ const verifyGoogleUser = async (obj, done) => {
     console.error(err)
   );
 
+
   try {
     if (!user) {
       const [id] = await Users.add({
@@ -62,25 +64,25 @@ const verifyGoogleUser = async (obj, done) => {
   }
 };
 
-// const verifyFacebookUser = async (profile, done) => {
-//   const facebookUser = await Users.getByEmail(profile.emails[0].value);
+const verifyFacebookUser = async (profile, done) => {
+  const facebookUser = await Users.getByEmail(profile.emails[0].value);
 
-//   console.log(profile);
+  console.log(profile);
 
-//   try {
-//     if (!facebookUser) {
-//       const newFacebookUser = await Users.add({
-//         display_name: profile.displayName,
-//         email: profile.emails[0].value,
-//         facebook_id: profile.id,
-//         pic: profile._pic,
-//       });
+  try {
+    if (!facebookUser) {
+      const newFacebookUser = await Users.add({
+        display_name: profile.displayName,
+        email: profile.emails[0].value,
+        facebook_id: profile.id,
+        pic: profile._pic,
+      });
 
-//       done(null, newFacebookUser);
-//     } else {
-//       done(null, facebookUser);
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+      done(null, newFacebookUser);
+    } else {
+      done(null, facebookUser);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
