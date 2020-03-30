@@ -21,7 +21,7 @@ const AuthRouter = require('./controllers/auth-router');
 const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
-const PublishRouter = require('./controllers/publish-router.js');
+const PublishRouter = require('./controllers/publish-router');
 
 // middleware
 server.use(
