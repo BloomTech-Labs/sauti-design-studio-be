@@ -1,4 +1,4 @@
 module.exports = {
     USER: 'testsautidesignstudio@gmail.com', 
-    PASS: 'lambdaschool26'
+    PASS: 'lambdaschool'
 }

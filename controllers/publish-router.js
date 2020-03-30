@@ -4,10 +4,10 @@ var nodemailer = require('nodemailer');
 const creds = require('../config');
 
 var transport = {
-    host: 'http://smtp.gmail.com', // Don’t forget to replace with the SMTP host of your provider
+    host: 'smtp.gmail.com', // Don’t forget to replace with the SMTP host of your provider
     port: 587,
     auth: {
-    user: creds.USER,// replace these when replacing config file email stuff
+    user: creds.USER,
     pass: creds.PASS
   }
 }
