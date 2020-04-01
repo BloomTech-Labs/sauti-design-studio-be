@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
 const creds = require('../config');
+require("dotenv").config()
 
 var transport = {
     host: 'smtp.gmail.com', // Don’t forget to replace with the SMTP host of your provider
@@ -31,11 +32,12 @@ router.post('/send', (req, res, next) => {
   let user_id = req.body.user_id
   let project_id = req.body.project_id
   let comments = req.body.comments
-  let content = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementationCountry: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n `
+  let callback = req.body.callback
+  let content = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementationCountry: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n callback: ${callback} \n`
 
   let mail = {
     from: name,
-    to: `testsautidesignstudio@gmail.com`,  // Change to email address that you want to receive messages on
+    to: process.env.EMAIL_USERNAME,  // Change to email address that you want to receive messages on
     subject: `New workflow from ${name}, user id: ${user_id}`,
     text: content
   }
@@ -53,7 +55,7 @@ router.post('/send', (req, res, next) => {
   })
 
   transporter.sendMail({
-    from: `testsautidesignstudio@gmail.com`,
+    from: process.env.EMAIL_USERNAME,
     to: email,
     subject: "Submission was successful",
     text: `Thank you for contacting us!\n\nForm details \n Content: ${content}\n`

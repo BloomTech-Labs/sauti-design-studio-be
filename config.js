@@ -1,4 +1,4 @@
 module.exports = {
-    USER: 'testsautidesignstudio@gmail.com', 
-    PASS: 'lambdaschool'
+    USER: process.env.EMAIL_USERNAME, 
+    PASS: process.env.EMAIL_PASSWORD
 }
