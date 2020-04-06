@@ -33,7 +33,7 @@ router.post('/send', (req, res, next) => {
   let project_id = req.body.project_id
   let comments = req.body.comments
   let callback = req.body.callback
-  let content = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementationCountry: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n callback: ${callback} \n`
+  let content = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementation Country: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n callback: ${callback} \n`
 
   let mail = {
     from: name,
