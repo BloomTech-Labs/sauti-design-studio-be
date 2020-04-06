@@ -96,8 +96,9 @@ router.post('/sim/:id', async (req, res) => {
 
 
 const newscreen = async(curSession, request, initial_node) => {
-    if(!curSession.history){}
+    if(!curSession.history){
         curSession.history = []
+    }
 
         console.log('SESSION HISTORY', curSession.history)
 
