@@ -11,6 +11,7 @@ exports.up = function(knex, Promise) {
         tbl.string('phone_num', 128);
         tbl.string('pic', 128);
         tbl.string('password', 16);
+        tbl.string('okta_id', 255);
         tbl.string('google_id', 255);
         tbl.string('facebook_id', 255);
       })
