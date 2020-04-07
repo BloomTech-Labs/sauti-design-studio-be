@@ -23,6 +23,7 @@ const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
 const PublishRouter = require('./controllers/publish-router');
+const AdminRouter = require('./controllers/admin-router');
 
 // middleware
 server.use(
@@ -62,6 +63,7 @@ server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
+server.use('/admin', /*admincheck*/, AdminRouter);
 server.use('/users', /*authCheck,*/ ensureLoggedIn, UsersRouter);
 server.use('/projects', ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
@@ -97,6 +99,7 @@ module.exports = server;
 
 
 // okta middleware ensure logged in
+//do i make sure user id(s)match?
 function ensureLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

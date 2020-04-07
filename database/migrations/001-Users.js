@@ -14,6 +14,7 @@ exports.up = function(knex, Promise) {
         tbl.string('okta_id', 255);
         tbl.string('google_id', 255);
         tbl.string('facebook_id', 255);
+        tbl.integer('user_type').defaultTo(1);
       })
   );
 };
