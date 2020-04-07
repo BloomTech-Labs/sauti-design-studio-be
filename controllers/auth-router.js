@@ -35,7 +35,6 @@ router.get('/okta/redirect',
   passport.authenticate('oidc', { failureRedirect: '/' }),
   (req, res) => {
     console.log("req", req.user);
-    console.log("this is the cookie: ", res.headers.cookie)
     res
       .status(200)
       .cookie("okta_token", res.req.authInfo)
