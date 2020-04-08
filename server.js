@@ -12,6 +12,7 @@ const corsOptions = {
 };
 
 const server = express();
+const session = require('express-session');
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
 const passportSetup = require('./config/passport-setup');
@@ -21,6 +22,7 @@ const AuthRouter = require('./controllers/auth-router');
 const credentials = require('./config/africas-talking');
 const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
+const PublishRouter = require('./controllers/publish-router');
 
 // middleware
 server.use(
@@ -33,6 +35,17 @@ server.use(
     signed: true,
   })
 );
+
+// express-session cookie
+// server.use(express.static(path.join(__dirname, 'public')))
+
+server.use(session({
+  secret: process.env.SESSION_COOKIE,
+  resave: false,
+  saveUninitialized: true
+}));
+
+
 server.use(helmet());
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: false }));
@@ -49,9 +62,10 @@ server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
-server.use('/users', /*authCheck,*/ UsersRouter);
+server.use('/users', /*authCheck,*/ ensureLoggedIn, UsersRouter);
 server.use('/projects', ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
+server.use('/publish', PublishRouter);
 
 
 
@@ -69,6 +83,8 @@ server.get('/home', (req, res) => {
 // Logout route
 server.get('/logout', (req, res) => {
   req.logOut();
+  req.logout(); // added for okta logout
+  req.session.destroy(); // added for okta logout
   res.status(400).redirect(`${process.env.FRONTEND_URL}`);
 });
 
@@ -78,3 +94,13 @@ server.get('/', function(req, res) {
 });
 
 module.exports = server;
+
+
+// okta middleware ensure logged in
+function ensureLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect(`${process.env.FRONTEND_URL}`)
+}
