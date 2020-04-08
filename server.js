@@ -24,6 +24,7 @@ const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
 const PublishRouter = require('./controllers/publish-router');
 const AdminRouter = require('./controllers/admin-router');
+const restricted = require('./controllers/auth/restricted-middleware')
 
 // middleware
 server.use(
@@ -63,11 +64,11 @@ server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
-server.use('/admin', /*admincheck,*/ AdminRouter);
-server.use('/users', /*authCheck,*/ ensureLoggedIn, UsersRouter);
-server.use('/projects', ProjectRouter);
-server.use('/workflows', WorkflowsRouter);
-server.use('/publish', PublishRouter);
+server.use('/admin', restricted, /*admincheck,*/ AdminRouter);
+server.use('/users', restricted, /*authCheck,ensureLoggedIn,*/  UsersRouter);
+server.use('/projects', restricted, ProjectRouter);
+server.use('/workflows', restricted, WorkflowsRouter);
+server.use('/publish', restricted, PublishRouter);
 
 
 
