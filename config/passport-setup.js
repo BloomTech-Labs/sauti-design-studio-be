@@ -5,6 +5,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const Users = require('../models/user-models');
 
+const callback = process.env.BACKEND_URL ? process.env.BACKEND_URL : "http://localhost:5000"
+
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -20,7 +23,7 @@ passport.use('oidc', new OidcStrategy({
   userInfoURL: `${process.env.OIDC_OKTA_DOMAIN}/oauth2/default/v1/userinfo`,
   clientID: `${process.env.OKTA_CLIENT_ID}`,
   clientSecret: `${process.env.OKTA_CLIENT_SECRET}`,
-  callbackURL: `/auth/okta/redirect`,
+  callbackURL: `${callback}/auth/okta/redirect`,
   scope: `openid profile`
 }, (issuer, sub, profile, accessToken, refreshToken, done) => {
   // return done(null, profile);
