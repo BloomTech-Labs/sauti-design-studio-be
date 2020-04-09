@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Projects = require('../models/project-models');
 const nodes = require('../models/nodes-models');
 const parseGraph = require('./graph-parser')
+const restrictId = require('./auth/restrict-id-middleware');
 
 router.get('/', async (req, res) => {
   try {
@@ -30,7 +31,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:id', restrictId, async (req, res) => {
+  console.log("this is the decoded token", req.decodedToken)
   const { id } = req.params;
   try {
     const project = await Projects.getByUserId(id);

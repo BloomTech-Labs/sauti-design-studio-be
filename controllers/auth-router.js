@@ -21,10 +21,13 @@ router.get(
   "/google/redirect",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    console.log("req", req.user);
+    const token = generateToken(req.user);
+    console.log("google req.user", req.user);
+    // in response, set the generated token to some cookie called 'my token'
     res
       .status(200)
-      .cookie("token", res.req.authInfo)
+      .cookie("sauti_token", token)
+      .cookie("google token", res.req.authInfo)
       .cookie("user_id", req.user.id)
       .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
   }
@@ -33,10 +36,13 @@ router.get(
 // okta login redirect
 router.get('/okta/redirect',
   passport.authenticate('oidc', { failureRedirect: '/' }),
+  // generate token
   (req, res) => {
-    console.log("req", req.user);
+    const token = generateToken(req.user)
+    console.log("okta req.user", req.user);
     res
       .status(200)
+      .cookie("sauti_token", token)
       .cookie("okta_token", res.req.authInfo)
       .cookie("user_id", req.user.id)
       .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
@@ -62,3 +68,19 @@ router.get(
 );
 
 module.exports = router;
+
+
+// function generates a token
+function generateToken(user){
+  const payload = {
+      subject: user.email,
+      id: user.id,
+      user_type: user.user_type
+  }
+
+  options = {
+      expiresIn: '1h'
+  }
+
+  return jwt.sign(payload, process.env.JWT_SECRET, options)
+}

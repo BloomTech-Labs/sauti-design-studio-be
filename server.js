@@ -24,6 +24,7 @@ const africastalking = require('africastalking')(credentials.AT);
 const ProjectRouter = require('./controllers/project-router');
 const PublishRouter = require('./controllers/publish-router');
 const AdminRouter = require('./controllers/admin-router');
+const restricted = require('./controllers/auth/restricted-middleware')
 
 // middleware
 server.use(
@@ -63,16 +64,11 @@ server.use('/auth', AuthRouter);
 
 // endpoints
 // projects endpoint
-server.use('/admin', /*admincheck,*/ AdminRouter);
-server.use('/users', /*authCheck,*/ ensureLoggedIn, UsersRouter);
-server.use('/projects', ProjectRouter);
+server.use('/admin', restricted, /*admincheck,*/ AdminRouter);
+server.use('/users', restricted, /*authCheck,ensureLoggedIn,*/  UsersRouter);
+server.use('/projects', restricted, ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
-server.use('/publish', PublishRouter);
-
-
-
-
-
+server.use('/publish', restricted, PublishRouter);
 
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);
@@ -86,7 +82,6 @@ server.get('/home', (req, res) => {
 server.get('/logout', (req, res) => {
   req.logOut();
   req.logout(); // added for okta logout
-  req.session.destroy(); // added for okta logout
   res.status(400).redirect(`${process.env.FRONTEND_URL}`);
 });
 
