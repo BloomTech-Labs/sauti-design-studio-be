@@ -1,2 +1,2 @@
 version: "2"
-exclude_patterns:  - "**/_tests_/**"
+# exclude_patterns:  - "**/_tests_/**"
