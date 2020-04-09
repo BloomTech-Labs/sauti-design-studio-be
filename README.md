@@ -1,8 +1,8 @@
 # Code Climate QA
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/ec61b69c0b4bbd2e4b5b/maintainability)](https://codeclimate.com/github/Lambda-School-Labs/sauti-design-studio-be/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/db5d729afcad6ae448a0/maintainability)](https://codeclimate.com/github/Lambda-School-Labs/sauti-design-studio-be/maintainability)
 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/ec61b69c0b4bbd2e4b5b/test_coverage)](https://codeclimate.com/github/Lambda-School-Labs/sauti-design-studio-be/test_coverage)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/db5d729afcad6ae448a0/test_coverage)](https://codeclimate.com/github/Lambda-School-Labs/sauti-design-studio-be/test_coverage)
 
 
 

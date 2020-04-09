@@ -1,6 +1,6 @@
 const request = require("supertest");
 const server = require("./server.js");
-// const db = require('../database/dbConfig.js');
+//const db = require('../database/dbConfig.js');
 
 // describe("GET", () => {
 //   it("should respond with status code 200 OK", async () => {
