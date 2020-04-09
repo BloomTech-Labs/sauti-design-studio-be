@@ -26,9 +26,9 @@ router.get(
     // in response, set the generated token to some cookie called 'my token'
     res
       .status(200)
-      .cookie("sauti_token", token)
-      .cookie("google token", res.req.authInfo)
-      .cookie("user_id", req.user.id)
+      .cookie("sauti_token", token, { sameSite: 'none', secure: true })
+      .cookie("google token", res.req.authInfo, { sameSite: 'none', secure: true })
+      .cookie("user_id", req.user.id, { sameSite: 'none', secure: true })
       .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
   }
 );
@@ -42,9 +42,9 @@ router.get('/okta/redirect',
     console.log("okta req.user", req.user);
     res
       .status(200)
-      .cookie("sauti_token", token)
-      .cookie("okta_token", res.req.authInfo)
-      .cookie("user_id", req.user.id)
+      .cookie("sauti_token", token, { sameSite: 'none', secure: true })
+      .cookie("okta_token", res.req.authInfo, { sameSite: 'none', secure: true })
+      .cookie("user_id", req.user.id, { sameSite: 'none', secure: true })
       .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
   }
 );
