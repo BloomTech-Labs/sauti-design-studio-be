@@ -67,13 +67,8 @@ server.use('/auth', AuthRouter);
 server.use('/admin', restricted, /*admincheck,*/ AdminRouter);
 server.use('/users', restricted, /*authCheck,ensureLoggedIn,*/  UsersRouter);
 server.use('/projects', restricted, ProjectRouter);
-server.use('/workflows', restricted, WorkflowsRouter);
+server.use('/workflows', WorkflowsRouter);
 server.use('/publish', restricted, PublishRouter);
-
-
-
-
-
 
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);
@@ -87,7 +82,6 @@ server.get('/home', (req, res) => {
 server.get('/logout', (req, res) => {
   req.logOut();
   req.logout(); // added for okta logout
-  req.session.destroy(); // added for okta logout
   res.status(400).redirect(`${process.env.FRONTEND_URL}`);
 });
 
