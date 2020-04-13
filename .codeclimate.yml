@@ -45,3 +45,8 @@ plugins:
   enabled: true
  eslint:
   enabled: true
+exclude_patterns:
+    - "tests/"
+    - "spec/"
+    - "**/vendor/"
+    - "**/node_modules/"
