@@ -1,45 +1,95 @@
 const request = require("supertest");
-const server = require("../server.js");
-const db = require('../database/dbConfig');
+
+// These are unit tests, so we don't need to test our middleware,
+//  so use a fresh new Express server.
+const express = require("express");
+const server = express();
+
+// This is the module being tested
+const UsersRouter = require('./users-router');
+server.use('/users', UsersRouter);
+
+// Mock up the model that this route uses
+jest.mock('../models/user-models');
+
+// This is now mocked up and under our control
+const Users = require('../models/user-models');
+
 describe('user router endpoints', () =>{
     describe('GET /users', () =>{
-        it('should return 200', async () => {
+        it('should call Users.find()', async () => {
             const res = await request(server).get('/users')
+
+            expect(Users.find.mock.calls).toHaveLength(1)
+        })
+
+        it('should an empty list when no users were returned from Users.find()', async () =>{
+            Users.find = () => {return []}
+
+            const res = await request(server).get('/users')
+
+            expect(res.body).toEqual([])
             expect(res.status).toBe(200)
-        })
-        it('should return json', async () => {
-            const res = await request(server).get('/users')
             expect(res.type).toBe('application/json')
-            console.log(res.body)
         })
-        it('should return an array ', async () =>{
+
+        it('should the exact same list returned by Users.find()', async () =>{
+            const dummyList = ["user1", "user2"]
+            Users.find = () => {return dummyList}
+
             const res = await request(server).get('/users')
-            expect(Array.isArray(res.body)).toBe(true)
+
+            expect(res.body).toEqual(dummyList)
+            expect(res.status).toBe(200)
+            expect(res.type).toBe('application/json')
+        })
+
+        it('should return 500 error when Users.find() throws an exception', async () =>{
+            Users.find = () => {throw new Error()}
+
+            const res = await request(server).get('/users')
+
+            expect(res.body).toEqual({})
+            expect(res.status).toBe(500)
+            expect(res.type).toBe('application/json')
         })
     })
+
     describe('GET /users/:id', () =>{
-        it('should return 200 if seeds have run', async () => {
+        it('should call Users.getById()', async () => {
             const res = await request(server).get('/users/1')
-            expect(res.status).toBe(200)            
+
+            expect(Users.getById.mock.calls).toHaveLength(1)
         })
-        it('should return json', async () => {
-            const res = await request(server).get('/users')
+
+        it('should return a 404 if the user does not exist', async () => {
+            const res = await request(server).get('/users/1')
+
+            expect(res.status).toBe(404)
             expect(res.type).toBe('application/json')
         })
-        it('should return an error message', async () =>{
+
+        it('should return 200 if a user with the id exists', async () => {
+            dummyUser = {id: 1}
+            Users.getById = () => {return dummyUser}
+
             const res = await request(server).get('/users/1')
+
+            expect(res.status).toBe(200)
+            expect(res.body).toEqual(dummyUser)
+            expect(res.type).toBe('application/json')
+        })
+
+        it('should return a 500 if there is an error', async () => {
+            Users.getById = () => {throw new Error("Error Message")}
+
+            const res = await request(server).get('/users/1')
+
+            expect(res.status).toBe(500)
             expect(res.body).toEqual({
-                  "company_name": "Sauti Studio Designs",
-                  "country": "USA",
-                  "display_name": "Sauti Studio",
-                  "email": "sauti.design.studio@gmail.com",
-                  "facebook_id": null,
-                  "google_id": "103512929668160621184",
-                  "id": 1,
-                  "password": null,
-                  "phone_num": "235556969",
-                  "pic": "https://avatars0.githubusercontent.com/u/51124353?s=200&v=4",
-                  })
+                message: "The reason you're getting an error: Error: Error Message"
+            })
+            expect(res.type).toBe('application/json')
         })
     })
 })
