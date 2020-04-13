@@ -54,6 +54,8 @@ const verifyOktaUser = async (obj, done) => {
   }
 };
 
+
+
 // Need to set up facebook account
 // passport.use(
 //   new FacebookStrategy(
