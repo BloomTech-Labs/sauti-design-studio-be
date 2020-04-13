@@ -32,8 +32,8 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/user/:id', restrictId, async (req, res) => {
-  console.log("this is the decoded token", req.decodedToken)
-  const { id } = req.params;
+  // const { id } = req.params;
+  const id = req.decodedToken.id;
   try {
     const project = await Projects.getByUserId(id);
     if (project) {
