@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     }
   } catch (error) {
     res
-      .status(404)
+      .status(500)
       .json({ message: `The reason you're getting an error: ${error}` });
   }
 });

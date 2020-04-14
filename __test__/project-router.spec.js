@@ -1,7 +1,19 @@
 const request = require("supertest");
-const server = require("../server.js");
 
-const db = require('../database/dbConfig')
+// These are unit tests, so we don't need to test our middleware,
+//  so use a fresh new Express server.
+const express = require("express");
+const server = express();
+
+// This is the module being tested
+const ProjectRouter = require('../controllers/project-router');
+server.use('/project', ProjectRouter );
+
+// Mock up the model that this route uses
+jest.mock('../models/project-models');
+
+// This is now mocked up and under our control
+const Projects = require('../models/project-models');
 
 describe('project-router ', () => {
   let createdProjectID;
@@ -20,7 +32,7 @@ describe('project-router ', () => {
           resType = res.type;
           resBody = res.body;
           createdProjectID = res.body[0];
-          expect(res.status).toBe(201)
+          expect(Projects.add.mock.calls).toBe(201)
     });
 
     it('should return json', async () => {

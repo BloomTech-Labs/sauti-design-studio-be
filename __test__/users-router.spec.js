@@ -6,7 +6,7 @@ const express = require("express");
 const server = express();
 
 // This is the module being tested
-const UsersRouter = require('./users-router');
+const UsersRouter = require('../controllers/users-router');
 server.use('/users', UsersRouter);
 
 // Mock up the model that this route uses

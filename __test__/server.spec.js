@@ -1,6 +1,27 @@
 const request = require("supertest");
-const server = require("./server.js");
-//const db = require('../database/dbConfig.js');
+
+const server = require("../server.js");
+
+const db = require('../database/dbConfig.js');
+
+//clear and seed testing database
+beforeAll(async () => {
+	await db.seed.run();
+});
+
+//Close worker connection thread
+afterAll(async () => {
+	await db.destroy();
+});
+
+describe("server.js", () => {
+  describe("environment", function() {
+    it("should set environment to testing", function() {
+      expect(process.env.DB_ENV).toBe("testing");
+    })
+  })
+})
+
 
 // describe("GET", () => {
 //   it("should respond with status code 200 OK", async () => {
