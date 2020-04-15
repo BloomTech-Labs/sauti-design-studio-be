@@ -11,7 +11,6 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  console.log("this is the decoded token", req.decodedToken)
   const { id } = req.params;
   try {
     const user = await Users.getById(id);

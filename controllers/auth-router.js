@@ -1,7 +1,5 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const passport = require("passport");
 const Users = require("../models/user-models");
 const axios = require('axios')
 const okta = require('@okta/okta-sdk-nodejs');
@@ -10,50 +8,6 @@ const oktaClient = new okta.Client({
   orgUrl: process.env.OIDC_OKTA_DOMAIN,
   token: process.env.OKTA_REGISTER_TOKEN
 });
-
-// Login with google
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    prompt: "select_account"
-  })
-);
-
-// Login with okta
-router.get("/okta", passport.authenticate('oidc'));
-
-// google login redirect
-router.get(
-  "/google/redirect",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    const token = generateToken(req.user);
-    console.log("google req.user", req.user);
-    res
-      .status(200)
-      .cookie("sauti_token", token, { sameSite: 'none', secure: true })
-      .cookie("google_token", res.req.authInfo, { sameSite: 'none', secure: true })
-      .cookie("user_id", req.user.id, { sameSite: 'none', secure: true })
-      .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
-  }
-);
-
-// okta login redirect
-router.get('/okta/redirect',
-  passport.authenticate('oidc', { failureRedirect: '/' }),
-  (req, res) => {
-    const token = generateToken(req.user)
-    console.log("okta req.user", req.user);
-    res
-      .status(200)
-      .cookie("sauti_token", token, { sameSite: 'none', secure: true })
-      .cookie("okta_token", res.req.authInfo, { sameSite: 'none', secure: true })
-      .cookie("user_id", req.user.id, { sameSite: 'none', secure: true })
-      .redirect(`${process.env.FRONTEND_URL}/profile/${req.user.id}`);
-  }
-);
-
 
 // receives information from frontend to create a new okta user
 router.post('/okta/register', (req, res) => {
@@ -146,24 +100,6 @@ async function getOrAddUser(req,res,next){
       res.status(400).json({ message: 'No user info.' });
     }
   }
-
-// Login with facebook
-router.get(
-  "/facebook",
-  passport.authenticate("facebook", {
-    authType: "reauthenticate",
-    scope: ["public_profile", "email"]
-  })
-);
-
-// facebook login redirect
-router.get(
-  "/facebook/redirect",
-  passport.authenticate("facebook"),
-  (req, res) => {
-    res.status(200).redirect(`${process.env.FRONTEND_URL}/workflows`);
-  }
-);
 
 module.exports = router;
 
