@@ -33,12 +33,53 @@ router.post('/send', (req, res, next) => {
   let project_id = req.body.project_id
   let comments = req.body.comments
   let callback = req.body.callback
-  let content = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementation Country: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n callback: ${callback} \n`
+
+  let contentForSauti = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementation Country: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n callback: ${callback} \n`
+
+  let contentForUser = `name: ${name} \n email: ${email} \n organization: ${organization} \n title: ${title} \n implementation Country: ${implementationCountry} \n user_id: ${user_id} \n project_id: ${project_id} \n comments: ${comments} \n `
 
   let mail = {
     from: name,
     to: process.env.EMAIL_USERNAME,  // Change to email address that you want to receive messages on
     subject: `New workflow from ${name}, user id: ${user_id}`,
+    text: contentForSauti
+  }
+
+  transporter.sendMail(mail, (err, data) => {
+    if (err) {
+      res.json({
+        status: 'fail'
+      })
+    } else {
+      res.json({
+       status: 'success'
+      })
+    }
+  })
+
+  transporter.sendMail({
+    from: process.env.EMAIL_USERNAME,
+    to: email,
+    subject: "Submission was successful",
+    text: `Thank you for contacting us!\n\nForm details \n Content: ${contentForUser}\n`
+  }, function(error, info){
+    if(error) {
+      console.log(error);
+    } else{
+      console.log('Message sent: ' + info.response);
+    }
+  });
+})
+
+router.post('/contact', (req,res,next) => {
+  let email = req.body.email
+  let comments = req.body.comments
+  let content = `email: ${email} \n comments: ${comments} \n`
+
+  let mail = {
+    from: email,
+    to: process.env.EMAIL_USERNAME,  // Change to email address that you want to receive messages on
+    subject: `New Comment from ${email}`,
     text: content
   }
 

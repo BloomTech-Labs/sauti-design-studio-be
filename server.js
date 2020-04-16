@@ -38,7 +38,7 @@ server.use('/admin', restricted, /*admincheck,*/ AdminRouter);
 server.use('/users', restricted, UsersRouter);
 server.use('/projects', restricted, ProjectRouter);
 server.use('/workflows', WorkflowsRouter);
-server.use('/publish', restricted, PublishRouter);
+server.use('/publish', PublishRouter);
 
 server.get('/', (req, res) => {
   res.send(`We're live! Please Login.`);
