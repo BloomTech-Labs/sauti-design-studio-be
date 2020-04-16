@@ -99,7 +99,7 @@ router.post('/contact', (req,res,next) => {
     from: process.env.EMAIL_USERNAME,
     to: email,
     subject: "Submission was successful",
-    text: `Thank you for contacting us!\n\nForm details \n Content: ${content}\n`
+    text: `Thank you for contacting us!\n\nForm details \n ${content}\n`
   }, function(error, info){
     if(error) {
       console.log(error);
