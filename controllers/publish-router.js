@@ -61,7 +61,7 @@ router.post('/send', (req, res, next) => {
     from: process.env.EMAIL_USERNAME,
     to: email,
     subject: "Submission was successful",
-    text: `Thank you for contacting us!\n\nForm details \n Content: ${contentForUser}\n`
+    text: `Thank you for contacting us. You are very important to us, all information received will always remain confidential. We will contact you as soon as we review your message and begin the process fo getting your app published.\n\nForm details \n Content: ${contentForUser}\n`
   }, function(error, info){
     if(error) {
       console.log(error);
