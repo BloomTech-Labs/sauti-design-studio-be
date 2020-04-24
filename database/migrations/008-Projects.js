@@ -1,5 +1,5 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('projects').then(() =>
+  return knex.schema.raw('drop table if exists projects cascade').then(() =>
     knex.schema
       // PROJECTS TABLE
       .createTable('projects', tbl => {
