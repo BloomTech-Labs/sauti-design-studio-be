@@ -16,9 +16,8 @@
 To get the server running locally:
 
 - Clone this repo
-- **yarn install** to install all required dependencies
-- **yarn server** to start the local server
-- **yarn test** to start server using testing environment
+- **npm install** to install all required dependencies
+- **npm run server** to start the local server
 
 #### Express JS
 
@@ -109,21 +108,43 @@ In order for the app to function correctly, the user must set up their own envir
 
 create a .env file that includes the following:
     
-    *  GOOGLE_CLIENT_ID=
-    *  GOOGLE_CLIENT_SECRET=
-    *  JWT_SECRET=
-    *  SESSION_COOKIE=
-    *  FRONTEND_URL=
-    *  DATABASE_URL=
-    *  REDIRECT_URL=
-    *  FACEBOOK_CLIENT_ID=
-    *  FACEBOOK_CLIENT_SECRET=
+    *  OKTA_CLIENT_ID=
+    *  OKTA_CLIENT_SECRET=
+    *  OIDC_OKTA_DOMAIN=
+    *  OKTA_REGISTER_TOKEN=
     *  AT_API_KEY=
-    *  PUSHER_APP_ID=
-    *  PUSHER_KEY=
-    *  PUSHER_SECRET=
-    *  POSTGRES_URL=
-    
+    *  JWT_SECRET=
+    *  FRONTEND_URL=
+    *  DEV_CON=
+    *  TEST_CON=
+    *  EMAIL_USERNAME=
+    *  EMAIL_PASSWORD=
+    *  DB_ENV=
+
+OKTA_CLIENT_ID -- Once you have your okta app created, under the client credentials section of your app's settings, you will find your client ID and client secret.
+
+OKTA_CLIENT_SECRET -- Once you have your okta app created, under the client credentials section of your app's settings, you will find your client ID and client secret.
+
+OIDC_OKTA_DOMAIN -- Set this to your okta app's domain. You will need to sign up for an okta developer account and create an app. From there you will get your app's URL.
+
+OKTA_REGISTER_TOKEN -- A token that needs to be created on the okta developer control panel, under "api -> tokens". This token seems to expire a month after initial creation and the expiration date extends for another month from the date last used, so every time a new user registers an account, the expiration date extends to a month from that time.
+
+AT_API_KEY -- Can be any string(?). Is required for functionality but not exactly sure what it does.
+
+JWT_SECRET -- Can be any string. Used for creating the app's JWT token and decoding it.
+
+FRONTEND_URL -- Set this to your frontend's URL. If you are using a local frontend, use http://localhost:port. If you are using a deployed frontend, use your frontend's URL.
+
+DEV_CON -- The connection string used to access the development environment on the knexfile. Example: DEV_CON=postgresql://USERNAME:PASSWORD@localhost/DATABASENAME
+
+TEST_CON -- The connection string used to access the testing environment on the knexfile. Example: TEST_CON=postgresql://USERNAME:PASSWORD@localhost/DATABASENAME
+
+EMAIL_USERNAME -- The gmail account username that will receive all the contact information and the publish submissions.
+
+EMAIL_PASSWORD -- The gmail account's password.
+
+DB_ENV -- For deployment, this should be set to "production" to use the production environment or it will default to "development". See "./database/dbConfig.js" for details.
+
 ## Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
