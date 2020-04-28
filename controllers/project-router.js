@@ -71,15 +71,6 @@ router.post('/', async (req, res) => {
     }
 
 
-      // Projects.insert(obj)
-      // .then(res => {
-      //   console.log(res);
-      //   res.status(201).json(res)
-      // })
-      // .catch (err => {
-      //   res.json(err)
-      // })
-
 });
 
 // UPDATES THE RESPONSE
@@ -172,25 +163,7 @@ router.post('/publish/:id', async (req, res) => {
 });
 
 
-/*Testing that the graph JSON works
 
-router.post('/test', async (req,res) => {
-  let graph_json = testJSON
-  let id = 12
-  let user_id = 1
-  const obj = {
-    graph_json,
-    user_id,
-    id
-  }
-try{
- const successful = await parseGraph(obj);
-  return res.status(200).json({message: 'Parsing successful!', successful})
-} catch(error) {
-  console.log(error);
-  res.status(500).json({message: 'Something broke along the way parsing the graph', error})
-}})
-*/
 
 
 module.exports = router;

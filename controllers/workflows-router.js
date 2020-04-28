@@ -158,16 +158,7 @@ const newscreen = async(curSession, request, initial_node) => {
     else {
         // PREVIOUS/GO BACK REQUEST //
         if (request == "99") {
-            // console.log('curSession.page contents: ', curSession.page)
-            // const choice = await db('nodes').where({node_id : curSession.page});
-            
-            // console.log('choice: ',choice[0]['previous'])
-            // if (choice[0]['previous'] == "" || !choice[0]['previous']) {
-            //     newscreen = curSession.page;
-            // }
-            // else {
-            //     newscreen = choice[0]['previous'];
-            // }
+
             curSession.history.pop();
             let previousPage = curSession.history[curSession.history.length - 1];
             try{
@@ -179,11 +170,7 @@ const newscreen = async(curSession, request, initial_node) => {
             return newscreen[0].node_id
             }
             catch(error){}
-            //let update = await ussdModel.updateSessionPage(curSession, newscreen)
-
-           // console.log('updated session info: ', update);
-
-           //return newscreen;
+ 
         }
 
         // GO HOME REQUEST //
