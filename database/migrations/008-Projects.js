@@ -14,14 +14,7 @@ exports.up = function(knex, Promise) {
           // .references('id')
           // .inTable('users');
 
-        // tbl
-        //   .integer('graph_id')
-        //   .unsigned()
-        //   .notNullable()
-        //   .references('id')
-        //   .inTable('???????')
-        //   .onDelete('CASCADE')
-        //   .onUpdate('CASCADE');
+
       })
   );
 };

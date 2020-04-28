@@ -30,10 +30,4 @@ async function insert(rowData) {
 		.catch(err => console.error(err));
 }
 
-// db('analyses').insert({
-//     userid: data.id,
-//     choice: data.choice,
-//     Label:  data.labelG,
-//     Results: data.resultG,
-//     description: data.description
-// })
+
