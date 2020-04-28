@@ -183,9 +183,16 @@ These contribution guidelines have been adapted from [this good-Contributing.md-
 
 ## Documentation
 
-See [Frontend Documentation](https://github.com/labs13-sauti-studio/labs13-sauti-studio-FE/edit/master/README.md) for details on the fronend of our project.
+See [Frontend Documentation](https://github.com/labs13-sauti-studio/labs13-sauti-studio-FE/edit/master/README.md) for details on the frontend of our project.
 
 ## Notes
+
+#### Reset Password Page
+When a user registers an account on the application, recovery questions and answers are not required, therefore a user cannot request a self-service password reset because by default okta requires a recovery question and recovery answer to reset a password.
+
+The email sent to a user when resetting their email will not be a self-service email until the setting within "password policy -> account recovery -> additional self-service recovery option -> security question" is unchecked. This option by default, when creating a new okta app, will not be available. 
+
+You MUST contact okta support, create a ticket, and ask them to enable this option for your application. Once this option is available you can uncheck the option and save.
 
 #### Heroku Migration CLI Command: 
 heroku run knex --knexfile=./knexfile.js migrate:latest -a sauti-studio-main-server
