@@ -6,7 +6,7 @@
   "dependencies": {
     "@okta/okta-sdk-nodejs": "^3.2.0",
     "africastalking": "^0.4.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",
